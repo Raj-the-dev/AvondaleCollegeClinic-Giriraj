@@ -1,4 +1,12 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using AvondaleCollegeClinic.Areas.Identity.Data;
 var builder = WebApplication.CreateBuilder(args);
+var connectionString = builder.Configuration.GetConnectionString("AvondaleCollegeClinicContextConnection") ?? throw new InvalidOperationException("Connection string 'AvondaleCollegeClinicContextConnection' not found.");
+
+builder.Services.AddDbContext<AvondaleCollegeClinicContext>(options => options.UseSqlServer(connectionString));
+
+builder.Services.AddDefaultIdentity<AvondaleCollegeClinicUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<AvondaleCollegeClinicContext>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
