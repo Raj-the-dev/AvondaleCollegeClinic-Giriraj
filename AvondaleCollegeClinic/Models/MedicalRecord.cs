@@ -2,7 +2,7 @@
 {
     public class MedicalRecord
     {
-        public int RecordID { get; set; }
+        public int MedicalRecordID { get; set; }
         public string StudentID { get; set; }
         public int DoctorID { get; set; }
         public string Notes { get; set; }

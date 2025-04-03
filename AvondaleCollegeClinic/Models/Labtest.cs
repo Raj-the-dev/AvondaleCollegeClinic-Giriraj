@@ -2,7 +2,7 @@
 {
     public class Labtest
     {
-        public int ReportID { get; set; }
+        public int LabtestID { get; set; }
         public int RecordID { get; set; }
         public string TestType { get; set; }
         public string File { get; set; }
