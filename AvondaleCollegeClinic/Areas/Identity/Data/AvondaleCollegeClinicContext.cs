@@ -82,7 +82,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
 
         modelBuilder.Entity<Labtest>()
             .HasOne(l => l.MedicalRecord)
-            .WithMany(r => r.LabTests)
+            .WithMany(r => r.Labtests)
             .HasForeignKey(l => l.RecordID);
 
         modelBuilder.Entity<Homeroom>()
