@@ -49,8 +49,8 @@ namespace AvondaleCollegeClinic.Controllers
         // GET: Appointments/Create
         public IActionResult Create()
         {
-            ViewData["DoctorID"] = new SelectList(_context.Doctors, "DoctorID", "FirstName");
-            ViewData["StudentID"] = new SelectList(_context.Students, "StudentID", "FirstName");
+            ViewData["DoctorID"] = new SelectList(_context.Doctors, "DoctorID", "DoctorID");
+            ViewData["StudentID"] = new SelectList(_context.Students, "StudentID", "DoctorID");
             return View();
         }
 
@@ -67,8 +67,8 @@ namespace AvondaleCollegeClinic.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DoctorID"] = new SelectList(_context.Doctors, "DoctorID", "FirstName", appointment.DoctorID);
-            ViewData["StudentID"] = new SelectList(_context.Students, "StudentID", "FirstName", appointment.StudentID);
+            ViewData["DoctorID"] = new SelectList(_context.Doctors, "DoctorID", "DoctorID", appointment.DoctorID);
+            ViewData["StudentID"] = new SelectList(_context.Students, "StudentID", "StudentID", appointment.StudentID);
             return View(appointment);
         }
 

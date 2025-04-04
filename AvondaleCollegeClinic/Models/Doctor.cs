@@ -13,7 +13,9 @@ namespace AvondaleCollegeClinic.Models
     public class Doctor
     {
         [Key]
-        public int DoctorID { get; set; } // Unique identifier for the doctor
+        [StringLength(12)]
+        [Display(Name = "Doctor ID")]
+        public string DoctorID { get; set; }
 
         [Required]
         [StringLength(50)]

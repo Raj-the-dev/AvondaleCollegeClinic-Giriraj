@@ -72,12 +72,11 @@ namespace AvondaleCollegeClinic.Migrations
                 name: "Doctors",
                 columns: table => new
                 {
-                    DoctorID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DoctorID = table.Column<string>(type: "nvarchar(12)", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Photo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Specialization = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Specialization = table.Column<int>(type: "int", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Phone = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
@@ -212,7 +211,7 @@ namespace AvondaleCollegeClinic.Migrations
                 {
                     DoctorAvailabilityID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    DoctorID = table.Column<int>(type: "int", nullable: false),
+                    DoctorID = table.Column<string>(type: "nvarchar(12)", nullable: false),
                     AvailableDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     StartTime = table.Column<TimeSpan>(type: "time", nullable: false),
                     EndTime = table.Column<TimeSpan>(type: "time", nullable: false)
@@ -285,7 +284,7 @@ namespace AvondaleCollegeClinic.Migrations
                     AppointmentID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     StudentID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    DoctorID = table.Column<int>(type: "int", nullable: false),
+                    DoctorID = table.Column<string>(type: "nvarchar(12)", nullable: false),
                     AppointmentDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Reason = table.Column<string>(type: "nvarchar(max)", nullable: false)
@@ -314,7 +313,7 @@ namespace AvondaleCollegeClinic.Migrations
                     MedicalRecordID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     StudentID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    DoctorID = table.Column<int>(type: "int", nullable: false),
+                    DoctorID = table.Column<string>(type: "nvarchar(12)", nullable: false),
                     Notes = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },

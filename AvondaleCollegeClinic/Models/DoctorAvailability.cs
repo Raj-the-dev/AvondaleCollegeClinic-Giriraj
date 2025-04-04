@@ -9,7 +9,7 @@ namespace AvondaleCollegeClinic.Models
 
         [Required]
         [Display(Name = "Doctor")]
-        public int DoctorID { get; set; } // Foreign Key to Doctor
+        public string DoctorID { get; set; } // Foreign Key to Doctor
 
         [Required]
         [DataType(DataType.Date)]

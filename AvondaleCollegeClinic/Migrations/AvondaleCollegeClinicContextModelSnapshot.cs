@@ -119,7 +119,7 @@ namespace AvondaleCollegeClinic.Migrations
 
                     b.HasIndex("StudentID");
 
-                    b.ToTable("Appointments");
+                    b.ToTable("Appointments", (string)null);
                 });
 
             modelBuilder.Entity("AvondaleCollegeClinic.Models.Caregiver", b =>
@@ -156,7 +156,7 @@ namespace AvondaleCollegeClinic.Migrations
 
                     b.HasKey("CaregiverID");
 
-                    b.ToTable("Caregivers");
+                    b.ToTable("Caregivers", (string)null);
                 });
 
             modelBuilder.Entity("AvondaleCollegeClinic.Models.Diagnosis", b =>
@@ -183,7 +183,7 @@ namespace AvondaleCollegeClinic.Migrations
                     b.HasIndex("AppointmentID")
                         .IsUnique();
 
-                    b.ToTable("Diagnoses");
+                    b.ToTable("Diagnoses", (string)null);
                 });
 
             modelBuilder.Entity("AvondaleCollegeClinic.Models.Doctor", b =>
@@ -221,7 +221,7 @@ namespace AvondaleCollegeClinic.Migrations
 
                     b.HasKey("DoctorID");
 
-                    b.ToTable("Doctors");
+                    b.ToTable("Doctors", (string)null);
                 });
 
             modelBuilder.Entity("AvondaleCollegeClinic.Models.DoctorAvailability", b =>
@@ -248,7 +248,7 @@ namespace AvondaleCollegeClinic.Migrations
 
                     b.HasIndex("DoctorID");
 
-                    b.ToTable("DoctorAvailabilities");
+                    b.ToTable("DoctorAvailabilities", (string)null);
                 });
 
             modelBuilder.Entity("AvondaleCollegeClinic.Models.Homeroom", b =>
@@ -270,7 +270,7 @@ namespace AvondaleCollegeClinic.Migrations
 
                     b.HasIndex("TeacherID");
 
-                    b.ToTable("Homerooms");
+                    b.ToTable("Homerooms", (string)null);
                 });
 
             modelBuilder.Entity("AvondaleCollegeClinic.Models.Labtest", b =>
@@ -300,7 +300,7 @@ namespace AvondaleCollegeClinic.Migrations
 
                     b.HasIndex("RecordID");
 
-                    b.ToTable("LabTests");
+                    b.ToTable("LabTests", (string)null);
                 });
 
             modelBuilder.Entity("AvondaleCollegeClinic.Models.MedicalRecord", b =>
@@ -332,7 +332,7 @@ namespace AvondaleCollegeClinic.Migrations
 
                     b.HasIndex("StudentID");
 
-                    b.ToTable("MedicalRecords");
+                    b.ToTable("MedicalRecords", (string)null);
                 });
 
             modelBuilder.Entity("AvondaleCollegeClinic.Models.Prescription", b =>
@@ -366,7 +366,7 @@ namespace AvondaleCollegeClinic.Migrations
 
                     b.HasIndex("DiagnosisID");
 
-                    b.ToTable("Prescriptions");
+                    b.ToTable("Prescriptions", (string)null);
                 });
 
             modelBuilder.Entity("AvondaleCollegeClinic.Models.Student", b =>
@@ -408,7 +408,7 @@ namespace AvondaleCollegeClinic.Migrations
 
                     b.HasIndex("HomeroomID");
 
-                    b.ToTable("Students");
+                    b.ToTable("Students", (string)null);
                 });
 
             modelBuilder.Entity("AvondaleCollegeClinic.Models.Teacher", b =>
@@ -432,7 +432,7 @@ namespace AvondaleCollegeClinic.Migrations
 
                     b.HasKey("TeacherID");
 
-                    b.ToTable("Teachers");
+                    b.ToTable("Teachers", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

@@ -21,7 +21,7 @@ namespace AvondaleCollegeClinic.Models
 
         [Required]
         [Display(Name = "Doctor")]
-        public int DoctorID { get; set; } // FK to Doctor
+        public string DoctorID { get; set; } // FK to Doctor
 
         [Required]
         [DataType(DataType.DateTime)]
