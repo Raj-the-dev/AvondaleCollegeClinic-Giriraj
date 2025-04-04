@@ -61,7 +61,7 @@ namespace AvondaleCollegeClinic.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("MedicalRecordID,StudentID,DoctorID,Notes,Date")] MedicalRecord medicalRecord)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 _context.Add(medicalRecord);
                 await _context.SaveChangesAsync();
@@ -102,7 +102,7 @@ namespace AvondaleCollegeClinic.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 try
                 {

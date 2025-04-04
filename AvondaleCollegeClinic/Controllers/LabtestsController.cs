@@ -59,7 +59,7 @@ namespace AvondaleCollegeClinic.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("LabtestID,RecordID,TestType,File,ProtectedPDF,ResultDate")] Labtest labtest)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 _context.Add(labtest);
                 await _context.SaveChangesAsync();
@@ -98,7 +98,7 @@ namespace AvondaleCollegeClinic.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 try
                 {

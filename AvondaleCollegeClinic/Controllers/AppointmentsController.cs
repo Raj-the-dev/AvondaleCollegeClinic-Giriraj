@@ -61,7 +61,7 @@ namespace AvondaleCollegeClinic.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("AppointmentID,StudentID,DoctorID,AppointmentDateTime,Status,Reason")] Appointment appointment)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 _context.Add(appointment);
                 await _context.SaveChangesAsync();
@@ -102,7 +102,7 @@ namespace AvondaleCollegeClinic.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 try
                 {
