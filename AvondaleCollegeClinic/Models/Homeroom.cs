@@ -17,7 +17,7 @@ namespace AvondaleCollegeClinic.Models
         public string HomeroomID { get; set; } // Unique ID
 
         [Required]
-        [Range(1, 13, ErrorMessage = "Year level must be between 1 and 13")]
+        [Range(9, 13, ErrorMessage = "Year level must be between 9 and 13")]
         [Display(Name = "Year Level")]
         public int YearLevel { get; set; } // Grade or year level
 

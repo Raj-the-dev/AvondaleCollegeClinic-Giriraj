@@ -46,7 +46,11 @@ namespace AvondaleCollegeClinic.Controllers
         // GET: Teachers/Create
         public IActionResult Create()
         {
-            return View();
+            var teacher = new Teacher
+            {
+                TeacherID = GenerateTeacherID()
+            };
+            return View(teacher);
         }
 
         // POST: Teachers/Create
@@ -153,5 +157,27 @@ namespace AvondaleCollegeClinic.Controllers
         {
             return _context.Teachers.Any(e => e.TeacherID == id);
         }
+
+        private string GenerateTeacherID()
+        {
+            string newId;
+            var random = new Random();
+            int year = DateTime.Now.Year % 100;
+
+            do
+            {
+                int num = random.Next(1000, 9999);
+                newId = $"act-{year}{num}";
+            }
+            while (_context.Teachers.Any(t => t.TeacherID == newId));
+
+            return newId;
+        }
+        // This method creates a unique TeacherID for every new teacher.
+        // Which as a format of act-YYXXXX
+        // "act" referes to Avondale College Teacher
+        // "YY"  last two digits of the current year (e.g., 2025 -> 25)
+        // "XXXX" is a random 4-digit number (from 1000 to 9999)
+        // The method checks the database to make sure the generated ID doesn't already exist. If it does, it tries again until it finds a unique one.
     }
 }
