@@ -20,10 +20,13 @@ namespace AvondaleCollegeClinic.Controllers
         }
 
         // GET: Students
+
         public async Task<IActionResult> Index()
         {
-            var avondaleCollegeClinicContext = _context.Students.Include(s => s.Caregiver).Include(s => s.Homeroom);
-            return View(await avondaleCollegeClinicContext.ToListAsync());
+            var context = _context.Students
+                .Include(s => s.Caregiver)
+                .Include(s => s.Homeroom).ThenInclude(h => h.Teacher);
+            return View(await context.ToListAsync());
         }
 
         // GET: Students/Details/5
@@ -36,8 +39,9 @@ namespace AvondaleCollegeClinic.Controllers
 
             var student = await _context.Students
                 .Include(s => s.Caregiver)
-                .Include(s => s.Homeroom)
+                .Include(s => s.Homeroom).ThenInclude(h => h.Teacher)
                 .FirstOrDefaultAsync(m => m.StudentID == id);
+
             if (student == null)
             {
                 return NotFound();
@@ -49,9 +53,14 @@ namespace AvondaleCollegeClinic.Controllers
         // GET: Students/Create
         public IActionResult Create()
         {
-            ViewData["CaregiverID"] = new SelectList(_context.Caregivers, "CaregiverID", "CaregiverID");
-            ViewData["HomeroomID"] = new SelectList(_context.Homerooms, "HomeroomID", "HomeroomID");
-            return View();
+            var student = new Student
+            {
+                StudentID = GenerateStudentID(),
+                DOB = DateTime.Now
+            };
+
+            PopulateDropDowns();
+            return View(student);
         }
 
         // POST: Students/Create
@@ -67,8 +76,8 @@ namespace AvondaleCollegeClinic.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CaregiverID"] = new SelectList(_context.Caregivers, "CaregiverID", "CaregiverID", student.CaregiverID);
-            ViewData["HomeroomID"] = new SelectList(_context.Homerooms, "HomeroomID", "HomeroomID", student.HomeroomID);
+
+            PopulateDropDowns(student.HomeroomID, student.CaregiverID);
             return View(student);
         }
 
@@ -82,11 +91,9 @@ namespace AvondaleCollegeClinic.Controllers
 
             var student = await _context.Students.FindAsync(id);
             if (student == null)
-            {
                 return NotFound();
-            }
-            ViewData["CaregiverID"] = new SelectList(_context.Caregivers, "CaregiverID", "CaregiverID", student.CaregiverID);
-            ViewData["HomeroomID"] = new SelectList(_context.Homerooms, "HomeroomID", "HomeroomID", student.HomeroomID);
+
+            PopulateDropDowns(student.HomeroomID, student.CaregiverID);
             return View(student);
         }
 
@@ -118,12 +125,12 @@ namespace AvondaleCollegeClinic.Controllers
                     else
                     {
                         throw;
-                    }
+                }
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CaregiverID"] = new SelectList(_context.Caregivers, "CaregiverID", "CaregiverID", student.CaregiverID);
-            ViewData["HomeroomID"] = new SelectList(_context.Homerooms, "HomeroomID", "HomeroomID", student.HomeroomID);
+
+            PopulateDropDowns(student.HomeroomID, student.CaregiverID);
             return View(student);
         }
 
@@ -139,6 +146,7 @@ namespace AvondaleCollegeClinic.Controllers
                 .Include(s => s.Caregiver)
                 .Include(s => s.Homeroom)
                 .FirstOrDefaultAsync(m => m.StudentID == id);
+
             if (student == null)
             {
                 return NotFound();
@@ -156,15 +164,67 @@ namespace AvondaleCollegeClinic.Controllers
             if (student != null)
             {
                 _context.Students.Remove(student);
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool StudentExists(string id)
         {
             return _context.Students.Any(e => e.StudentID == id);
+        }
+
+        private string GenerateStudentID()
+        {
+            // Start the ID with "ac" + current year's last two digits (e.g., "ac25" for 2025)
+            string yearPrefix = "ac" + DateTime.Now.ToString("yy");
+
+            // Find the most recent student ID that starts with that prefix
+            var latestId = _context.Students
+                .Where(s => s.StudentID.StartsWith(yearPrefix))
+                .OrderByDescending(s => s.StudentID)
+                .Select(s => s.StudentID)
+                .FirstOrDefault();
+
+            // Figure out what the next number should be
+            int nextNumber = 1;
+            if (!string.IsNullOrEmpty(latestId) && latestId.Length == 8)
+            {
+                int.TryParse(latestId.Substring(4), out nextNumber);
+                nextNumber++; // Increment for the new ID
+            }
+
+            // Return something like "ac250001", "ac250002", etc.
+            return $"{yearPrefix}{nextNumber:D4}";
+        }
+
+        private void PopulateDropDowns(string? selectedHomeroomId = null, int? selectedCaregiverId = null)
+        {
+            // Caregiver dropdown will show FirstName
+            ViewData["CaregiverID"] = new SelectList(
+                _context.Caregivers,
+                nameof(Caregiver.CaregiverID),
+                nameof(Caregiver.FirstName),
+                selectedCaregiverId
+            );
+
+            // Homeroom dropdown will show something like "hr250001 - OPA"
+            var homeroomList = _context.Homerooms
+                .Include(h => h.Teacher)
+                .Select(h => new
+                {
+                    h.HomeroomID,
+                    DisplayName = $"{h.HomeroomID} - {h.Teacher.TeacherCode}"
+                })
+                .ToList();
+
+            ViewData["HomeroomID"] = new SelectList(
+                homeroomList,
+                "HomeroomID",
+                "DisplayName",
+                selectedHomeroomId
+            );
         }
     }
 }
