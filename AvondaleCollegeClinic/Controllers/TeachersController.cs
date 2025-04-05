@@ -58,7 +58,7 @@ namespace AvondaleCollegeClinic.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("TeacherID,FirstName,LastName,Email")] Teacher teacher)
+        public async Task<IActionResult> Create([Bind("TeacherID,FirstName,LastName,Email,TeacherCode")] Teacher teacher)
         {
             if (!ModelState.IsValid)
             {
@@ -90,7 +90,7 @@ namespace AvondaleCollegeClinic.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("TeacherID,FirstName,LastName,Email")] Teacher teacher)
+        public async Task<IActionResult> Edit(string id, [Bind("TeacherID,FirstName,LastName,Email,TeacherCode")] Teacher teacher)
         {
             if (id != teacher.TeacherID)
             {

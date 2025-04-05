@@ -21,6 +21,11 @@ namespace AvondaleCollegeClinic.Models
         [EmailAddress]
         public string Email { get; set; }
 
+        [Required]
+        [StringLength(10)]
+        [Display(Name = "Teacher Code")]
+        public string TeacherCode { get; set; } // User-entered code
+
         public ICollection<Homeroom> Homerooms { get; set; } // link to teacher homeroom
     }
 }

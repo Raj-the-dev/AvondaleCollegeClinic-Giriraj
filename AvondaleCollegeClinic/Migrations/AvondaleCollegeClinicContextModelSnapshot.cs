@@ -98,8 +98,9 @@ namespace AvondaleCollegeClinic.Migrations
                     b.Property<DateTime>("AppointmentDateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("DoctorID")
-                        .HasColumnType("int");
+                    b.Property<string>("DoctorID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(12)");
 
                     b.Property<string>("Reason")
                         .IsRequired()
@@ -119,7 +120,7 @@ namespace AvondaleCollegeClinic.Migrations
 
                     b.HasIndex("StudentID");
 
-                    b.ToTable("Appointments", (string)null);
+                    b.ToTable("Appointments");
                 });
 
             modelBuilder.Entity("AvondaleCollegeClinic.Models.Caregiver", b =>
@@ -156,7 +157,7 @@ namespace AvondaleCollegeClinic.Migrations
 
                     b.HasKey("CaregiverID");
 
-                    b.ToTable("Caregivers", (string)null);
+                    b.ToTable("Caregivers");
                 });
 
             modelBuilder.Entity("AvondaleCollegeClinic.Models.Diagnosis", b =>
@@ -183,16 +184,14 @@ namespace AvondaleCollegeClinic.Migrations
                     b.HasIndex("AppointmentID")
                         .IsUnique();
 
-                    b.ToTable("Diagnoses", (string)null);
+                    b.ToTable("Diagnoses");
                 });
 
             modelBuilder.Entity("AvondaleCollegeClinic.Models.Doctor", b =>
                 {
-                    b.Property<int>("DoctorID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DoctorID"));
+                    b.Property<string>("DoctorID")
+                        .HasMaxLength(12)
+                        .HasColumnType("nvarchar(12)");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -221,7 +220,7 @@ namespace AvondaleCollegeClinic.Migrations
 
                     b.HasKey("DoctorID");
 
-                    b.ToTable("Doctors", (string)null);
+                    b.ToTable("Doctors");
                 });
 
             modelBuilder.Entity("AvondaleCollegeClinic.Models.DoctorAvailability", b =>
@@ -235,8 +234,9 @@ namespace AvondaleCollegeClinic.Migrations
                     b.Property<DateTime>("AvailableDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("DoctorID")
-                        .HasColumnType("int");
+                    b.Property<string>("DoctorID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(12)");
 
                     b.Property<TimeSpan>("EndTime")
                         .HasColumnType("time");
@@ -248,7 +248,7 @@ namespace AvondaleCollegeClinic.Migrations
 
                     b.HasIndex("DoctorID");
 
-                    b.ToTable("DoctorAvailabilities", (string)null);
+                    b.ToTable("DoctorAvailabilities");
                 });
 
             modelBuilder.Entity("AvondaleCollegeClinic.Models.Homeroom", b =>
@@ -256,7 +256,10 @@ namespace AvondaleCollegeClinic.Migrations
                     b.Property<string>("HomeroomID")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("Class")
+                    b.Property<int>("Block")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ClassNumber")
                         .HasColumnType("int");
 
                     b.Property<string>("TeacherID")
@@ -270,7 +273,7 @@ namespace AvondaleCollegeClinic.Migrations
 
                     b.HasIndex("TeacherID");
 
-                    b.ToTable("Homerooms", (string)null);
+                    b.ToTable("Homerooms");
                 });
 
             modelBuilder.Entity("AvondaleCollegeClinic.Models.Labtest", b =>
@@ -300,7 +303,7 @@ namespace AvondaleCollegeClinic.Migrations
 
                     b.HasIndex("RecordID");
 
-                    b.ToTable("LabTests", (string)null);
+                    b.ToTable("LabTests");
                 });
 
             modelBuilder.Entity("AvondaleCollegeClinic.Models.MedicalRecord", b =>
@@ -314,8 +317,9 @@ namespace AvondaleCollegeClinic.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("DoctorID")
-                        .HasColumnType("int");
+                    b.Property<string>("DoctorID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(12)");
 
                     b.Property<string>("Notes")
                         .IsRequired()
@@ -332,7 +336,7 @@ namespace AvondaleCollegeClinic.Migrations
 
                     b.HasIndex("StudentID");
 
-                    b.ToTable("MedicalRecords", (string)null);
+                    b.ToTable("MedicalRecords");
                 });
 
             modelBuilder.Entity("AvondaleCollegeClinic.Models.Prescription", b =>
@@ -366,7 +370,7 @@ namespace AvondaleCollegeClinic.Migrations
 
                     b.HasIndex("DiagnosisID");
 
-                    b.ToTable("Prescriptions", (string)null);
+                    b.ToTable("Prescriptions");
                 });
 
             modelBuilder.Entity("AvondaleCollegeClinic.Models.Student", b =>
@@ -408,7 +412,7 @@ namespace AvondaleCollegeClinic.Migrations
 
                     b.HasIndex("HomeroomID");
 
-                    b.ToTable("Students", (string)null);
+                    b.ToTable("Students");
                 });
 
             modelBuilder.Entity("AvondaleCollegeClinic.Models.Teacher", b =>
@@ -430,9 +434,14 @@ namespace AvondaleCollegeClinic.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<string>("TeacherCode")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
                     b.HasKey("TeacherID");
 
-                    b.ToTable("Teachers", (string)null);
+                    b.ToTable("Teachers");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

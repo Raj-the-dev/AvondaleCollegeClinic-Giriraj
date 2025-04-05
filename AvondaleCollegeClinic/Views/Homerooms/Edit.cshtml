@@ -15,7 +15,7 @@
             <input type="hidden" asp-for="HomeroomID" />
             <div class="form-group">
                 <label asp-for="YearLevel" class="control-label"></label>
-                <input asp-for="YearLevel" class="form-control" />
+                <select asp-for="YearLevel" class="form-control" asp-items="Html.GetEnumSelectList<YearLevel>()"></select>
                 <span asp-validation-for="YearLevel" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -24,11 +24,18 @@
                 <span asp-validation-for="TeacherID" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Class" class="control-label"></label>
-                <select asp-for="Class" class="form-control"
-                        asp-items="Html.GetEnumSelectList<HomeroomClass>()">
+                <label asp-for="Block" class="control-label"></label>
+                <select asp-for="Block" class="form-control"
+                        asp-items="Html.GetEnumSelectList<Block>()">
                 </select>
-                <span asp-validation-for="Class" class="text-danger"></span>
+                <span asp-validation-for="Block" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ClassNumber" class="control-label"></label>
+                <select asp-for="ClassNumber" class="form-control"
+                        asp-items="Html.GetEnumSelectList<ClassNumber>()">
+                </select>
+                <span asp-validation-for="ClassNumber" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

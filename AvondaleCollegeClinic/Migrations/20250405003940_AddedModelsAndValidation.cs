@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace AvondaleCollegeClinic.Migrations
 {
     /// <inheritdoc />
-    public partial class AddedModels : Migration
+    public partial class AddedModelsAndValidation : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -56,12 +56,12 @@ namespace AvondaleCollegeClinic.Migrations
                 {
                     CaregiverID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     DOB = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Relationship = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Relationship = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -72,7 +72,7 @@ namespace AvondaleCollegeClinic.Migrations
                 name: "Doctors",
                 columns: table => new
                 {
-                    DoctorID = table.Column<string>(type: "nvarchar(12)", nullable: false),
+                    DoctorID = table.Column<string>(type: "nvarchar(12)", maxLength: 12, nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Photo = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -90,9 +90,10 @@ namespace AvondaleCollegeClinic.Migrations
                 columns: table => new
                 {
                     TeacherID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TeacherCode = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -234,7 +235,8 @@ namespace AvondaleCollegeClinic.Migrations
                     HomeroomID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     YearLevel = table.Column<int>(type: "int", nullable: false),
                     TeacherID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Class = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Block = table.Column<int>(type: "int", nullable: false),
+                    ClassNumber = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -252,8 +254,8 @@ namespace AvondaleCollegeClinic.Migrations
                 columns: table => new
                 {
                     StudentID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Photo = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DOB = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -286,8 +288,8 @@ namespace AvondaleCollegeClinic.Migrations
                     StudentID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     DoctorID = table.Column<string>(type: "nvarchar(12)", nullable: false),
                     AppointmentDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Reason = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    Reason = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -314,7 +316,7 @@ namespace AvondaleCollegeClinic.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     StudentID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     DoctorID = table.Column<string>(type: "nvarchar(12)", nullable: false),
-                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Notes = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -341,7 +343,7 @@ namespace AvondaleCollegeClinic.Migrations
                     DiagnosisID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     AppointmentID = table.Column<int>(type: "int", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
                     DateDiagnosed = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -362,10 +364,9 @@ namespace AvondaleCollegeClinic.Migrations
                     LabtestID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     RecordID = table.Column<int>(type: "int", nullable: false),
-                    TestType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TestType = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     File = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ProtectedPDF = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ResultDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    ResultDate = table.Column<DateOnly>(type: "date", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -385,8 +386,8 @@ namespace AvondaleCollegeClinic.Migrations
                     PrescriptionID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     DiagnosisID = table.Column<int>(type: "int", nullable: false),
-                    Medication = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Dosage = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Medication = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Dosage = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },

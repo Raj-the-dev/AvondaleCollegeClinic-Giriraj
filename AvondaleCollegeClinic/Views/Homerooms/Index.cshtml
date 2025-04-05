@@ -16,7 +16,10 @@
                 @Html.DisplayNameFor(model => model.YearLevel)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Class)
+                @Html.DisplayNameFor(model => model.Block)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ClassNumber)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Teacher)
@@ -31,8 +34,11 @@
                 @Html.DisplayFor(modelItem => item.YearLevel)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Class)
+                @Html.DisplayFor(modelItem => item.Block)
             </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ClassNumber)
+                </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Teacher.TeacherID)
             </td>

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AvondaleCollegeClinic.Migrations
 {
     [DbContext(typeof(AvondaleCollegeClinicContext))]
-    [Migration("20250404004404_AddedValidationMODELS")]
-    partial class AddedValidationMODELS
+    [Migration("20250405003940_AddedModelsAndValidation")]
+    partial class AddedModelsAndValidation
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -101,8 +101,9 @@ namespace AvondaleCollegeClinic.Migrations
                     b.Property<DateTime>("AppointmentDateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("DoctorID")
-                        .HasColumnType("int");
+                    b.Property<string>("DoctorID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(12)");
 
                     b.Property<string>("Reason")
                         .IsRequired()
@@ -191,11 +192,9 @@ namespace AvondaleCollegeClinic.Migrations
 
             modelBuilder.Entity("AvondaleCollegeClinic.Models.Doctor", b =>
                 {
-                    b.Property<int>("DoctorID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DoctorID"));
+                    b.Property<string>("DoctorID")
+                        .HasMaxLength(12)
+                        .HasColumnType("nvarchar(12)");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -238,8 +237,9 @@ namespace AvondaleCollegeClinic.Migrations
                     b.Property<DateTime>("AvailableDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("DoctorID")
-                        .HasColumnType("int");
+                    b.Property<string>("DoctorID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(12)");
 
                     b.Property<TimeSpan>("EndTime")
                         .HasColumnType("time");
@@ -259,7 +259,10 @@ namespace AvondaleCollegeClinic.Migrations
                     b.Property<string>("HomeroomID")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("Class")
+                    b.Property<int>("Block")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ClassNumber")
                         .HasColumnType("int");
 
                     b.Property<string>("TeacherID")
@@ -317,8 +320,9 @@ namespace AvondaleCollegeClinic.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("DoctorID")
-                        .HasColumnType("int");
+                    b.Property<string>("DoctorID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(12)");
 
                     b.Property<string>("Notes")
                         .IsRequired()
@@ -432,6 +436,11 @@ namespace AvondaleCollegeClinic.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("TeacherCode")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.HasKey("TeacherID");
 

@@ -57,14 +57,35 @@ namespace AvondaleCollegeClinic.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("HomeroomID,YearLevel,TeacherID,Class")] Homeroom homeroom)
+        public async Task<IActionResult> Create([Bind("YearLevel,TeacherID,Block,ClassNumber")] Homeroom homeroom)
         {
+            // Get the current year in short form (e.g., "25" for 2025)
+            string year = DateTime.Now.Year.ToString().Substring(2);
+
+            // Get the last HomeroomID that starts with current year
+            var lastId = await _context.Homerooms
+                .Where(h => h.HomeroomID.StartsWith($"hr{year}"))
+                .OrderByDescending(h => h.HomeroomID)
+                .Select(h => h.HomeroomID)
+                .FirstOrDefaultAsync();
+
+            int nextNumber = 1;
+            if (!string.IsNullOrEmpty(lastId))
+            {
+                int.TryParse(lastId.Substring(4), out nextNumber); // skip "hr" + year (4 chars)
+                nextNumber++;
+            }
+
+            // Generate ID like "hr250001"
+            homeroom.HomeroomID = $"hr{year}{nextNumber.ToString("D4")}";
+
             if (!ModelState.IsValid)
             {
                 _context.Add(homeroom);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["TeacherID"] = new SelectList(_context.Teachers, "TeacherID", "TeacherID", homeroom.TeacherID);
             return View(homeroom);
         }
@@ -91,7 +112,7 @@ namespace AvondaleCollegeClinic.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("HomeroomID,YearLevel,TeacherID,Class")] Homeroom homeroom)
+        public async Task<IActionResult> Edit(string id, [Bind("HomeroomID, YearLevel,TeacherID,Block,ClassNumber")] Homeroom homeroom)
         {
             if (id != homeroom.HomeroomID)
             {
