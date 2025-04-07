@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AvondaleCollegeClinic.Models
 {
@@ -19,8 +20,12 @@ namespace AvondaleCollegeClinic.Models
         [RegularExpression(@"^[A-Za-z\s]+$", ErrorMessage = "Only letters and spaces are allowed.")]
         public string LastName { get; set; }
 
-        [Display(Name = "Photo URL")]
-        public string Photo { get; set; }
+        [Display(Name = "Upload Image")]
+        [NotMapped]
+        public IFormFile? ImageFile { get; set; }
+
+        [Display(Name = "Profile Image")]
+        public string? ImagePath { get; set; }
 
         [Required]
         [DataType(DataType.Date)]

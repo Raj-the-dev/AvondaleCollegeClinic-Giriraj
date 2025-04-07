@@ -88,10 +88,32 @@ namespace AvondaleCollegeClinic.Controllers
         // POST: Students/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("StudentID,FirstName,LastName,Photo,DOB,Email,HomeroomID,CaregiverID")] Student student)
+        public async Task<IActionResult> Create([Bind("StudentID,FirstName,LastName,Photo,DOB,Email,HomeroomID,CaregiverID,ImageFile,ImagePath")] Student student)
         {
             if (!ModelState.IsValid)
             {
+                string uniqueFileName = null;
+
+                if (student.ImageFile != null)
+                {
+                    // Ensure directory exists
+                    string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/students");
+                    Directory.CreateDirectory(uploadsFolder);
+
+                    // Generate unique filename
+                    uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(student.ImageFile.FileName);
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    // Save file
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await student.ImageFile.CopyToAsync(fileStream);
+                    }
+
+                    // Store relative path
+                    student.ImagePath = "/images/students/" + uniqueFileName;
+                }
+
                 _context.Add(student);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -119,7 +141,6 @@ namespace AvondaleCollegeClinic.Controllers
                 "DisplayName",
                 student.HomeroomID
             );
-
             return View(student);
         }
         // GET: Students/Edit/5
