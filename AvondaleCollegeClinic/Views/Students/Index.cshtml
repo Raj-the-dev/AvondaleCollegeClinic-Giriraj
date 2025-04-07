@@ -6,6 +6,12 @@
 
 <h1>Index</h1>
 
+
+<th>
+    <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]">@Html.DisplayNameFor(model => model.LastName)</a>
+</th>
+
+
 <p>
     <a asp-action="Create">Create New</a>
 </p>

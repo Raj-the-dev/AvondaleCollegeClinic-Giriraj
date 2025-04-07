@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AvondaleCollegeClinic.Areas.Identity.Data;
 using AvondaleCollegeClinic.Models;
+using Microsoft.Data.SqlClient;
 
 namespace AvondaleCollegeClinic.Controllers
 {
@@ -21,12 +22,33 @@ namespace AvondaleCollegeClinic.Controllers
 
         // GET: Students
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder)
         {
+
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "LastName_desc" : "";
+
             var context = _context.Students
                 .Include(s => s.Caregiver)
                 .Include(s => s.Homeroom).ThenInclude(h => h.Teacher);
-            return View(await context.ToListAsync());
+            var students = from s in _context.Students
+                           select s;
+            switch (sortOrder)
+            {
+                case "LastName_desc":
+                    students
+                     = students.OrderByDescending(s => s.LastName);
+                    break;
+
+
+                default:
+                    students = students.OrderBy(s => s.LastName);
+                    break;
+
+
+            }
+
+
+                    return View(await context.ToListAsync());
         }
 
         // GET: Students/Details/5
