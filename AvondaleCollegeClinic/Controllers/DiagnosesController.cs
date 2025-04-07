@@ -48,7 +48,18 @@ namespace AvondaleCollegeClinic.Controllers
         // GET: Diagnoses/Create
         public IActionResult Create()
         {
-            ViewData["AppointmentID"] = new SelectList(_context.Appointments, "AppointmentID", "AppointmentID");
+            ViewBag.AppointmentID = new SelectList(_context.Appointments
+                .Include(a => a.Student)
+                .Include(a => a.Doctor)
+                .Select(a => new
+                {
+                    a.AppointmentID,
+                    Display = a.Student.FirstName + " " + a.Student.LastName +
+                              " by " + a.Doctor.FirstName + " " + a.Doctor.LastName +
+                              " - " + a.AppointmentDateTime.ToString("dd MMM yyyy")
+                }),
+                "AppointmentID", "Display");
+
             return View();
         }
 
@@ -82,7 +93,17 @@ namespace AvondaleCollegeClinic.Controllers
             {
                 return NotFound();
             }
-            ViewData["AppointmentID"] = new SelectList(_context.Appointments, "AppointmentID", "AppointmentID", diagnosis.AppointmentID);
+            ViewBag.AppointmentID = new SelectList(_context.Appointments
+                    .Include(a => a.Student)
+                    .Include(a => a.Doctor)
+                    .Select(a => new
+                    {
+                        a.AppointmentID,
+                        Display = a.Student.FirstName + " " + a.Student.LastName +
+                                  " by " + a.Doctor.FirstName + " " + a.Doctor.LastName +
+                                  " - " + a.AppointmentDateTime.ToString("dd MMM yyyy")
+                    }),
+                    "AppointmentID", "Display", diagnosis.AppointmentID);
             return View(diagnosis);
         }
 

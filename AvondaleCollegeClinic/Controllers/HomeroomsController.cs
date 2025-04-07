@@ -48,9 +48,19 @@ namespace AvondaleCollegeClinic.Controllers
         // GET: Homerooms/Create
         public IActionResult Create()
         {
-            ViewData["TeacherID"] = new SelectList(_context.Teachers, "TeacherID", "TeacherID");
+            ViewData["TeacherID"] = new SelectList(
+                _context.Teachers.Select(t => new
+                {
+                    t.TeacherID,
+                    FullName = t.FirstName + " " + t.LastName
+                }),
+                "TeacherID",
+                "FullName"
+            );
+
             return View();
         }
+
 
         // POST: Homerooms/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -86,7 +96,16 @@ namespace AvondaleCollegeClinic.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["TeacherID"] = new SelectList(_context.Teachers, "TeacherID", "TeacherID", homeroom.TeacherID);
+            ViewData["TeacherID"] = new SelectList(
+                _context.Teachers.Select(t => new
+                {
+                    t.TeacherID,
+                    FullName = t.FirstName + " " + t.LastName
+                }),
+                "TeacherID",
+                "FullName",
+                homeroom.TeacherID
+            );
             return View(homeroom);
         }
 
@@ -103,7 +122,16 @@ namespace AvondaleCollegeClinic.Controllers
             {
                 return NotFound();
             }
-            ViewData["TeacherID"] = new SelectList(_context.Teachers, "TeacherID", "TeacherID", homeroom.TeacherID);
+            ViewData["TeacherID"] = new SelectList(
+                    _context.Teachers.Select(t => new
+                    {
+                        t.TeacherID,
+                        FullName = t.FirstName + " " + t.LastName
+                    }),
+                "TeacherID",
+                "FullName",
+                homeroom.TeacherID
+            );
             return View(homeroom);
         }
 
@@ -139,7 +167,16 @@ namespace AvondaleCollegeClinic.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["TeacherID"] = new SelectList(_context.Teachers, "TeacherID", "TeacherID", homeroom.TeacherID);
+            ViewData["TeacherID"] = new SelectList(
+                _context.Teachers.Select(t => new
+                {
+                    t.TeacherID,
+                    FullName = t.FirstName + " " + t.LastName
+                }),
+                "TeacherID",
+                "FullName",
+                homeroom.TeacherID
+            );
             return View(homeroom);
         }
 

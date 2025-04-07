@@ -44,6 +44,8 @@ namespace AvondaleCollegeClinic.Models
         [Required]
         [Phone]
         [Display(Name = "Phone Number")]
+        [RegularExpression(@"^02\d{1}[- ]?\d{3}[- ]?\d{4}$",
+    ErrorMessage = "Please enter a valid NZ mobile number (e.g., 021-123-4567).")]
         public string Phone { get; set; } // Contact number for the doctor
 
         public ICollection<DoctorAvailability> Availabilities { get; set; } // Linked availability slots

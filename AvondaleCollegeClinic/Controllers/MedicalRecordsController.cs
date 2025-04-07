@@ -49,8 +49,15 @@ namespace AvondaleCollegeClinic.Controllers
         // GET: MedicalRecords/Create
         public IActionResult Create()
         {
-            ViewData["DoctorID"] = new SelectList(_context.Doctors, "DoctorID", "DoctorID");
-            ViewData["StudentID"] = new SelectList(_context.Students, "StudentID", "StudentID");
+            ViewBag.StudentID = new SelectList(_context.Students.Select(s => new {
+                s.StudentID,
+                FullName = s.FirstName + " " + s.LastName
+            }), "StudentID", "FullName");
+
+            ViewBag.DoctorID = new SelectList(_context.Doctors.Select(d => new {
+                d.DoctorID,
+                FullName = d.FirstName + " " + d.LastName
+            }), "DoctorID", "FullName");
             return View();
         }
 
@@ -85,8 +92,15 @@ namespace AvondaleCollegeClinic.Controllers
             {
                 return NotFound();
             }
-            ViewData["DoctorID"] = new SelectList(_context.Doctors, "DoctorID", "DoctorID", medicalRecord.DoctorID);
-            ViewData["StudentID"] = new SelectList(_context.Students, "StudentID", "StudentID", medicalRecord.StudentID);
+            ViewBag.StudentID = new SelectList(_context.Students.Select(s => new {
+                s.StudentID,
+                FullName = s.FirstName + " " + s.LastName
+            }), "StudentID", "FullName");
+
+            ViewBag.DoctorID = new SelectList(_context.Doctors.Select(d => new {
+                d.DoctorID,
+                FullName = d.FirstName + " " + d.LastName
+            }), "DoctorID", "FullName");
             return View(medicalRecord);
         }
 

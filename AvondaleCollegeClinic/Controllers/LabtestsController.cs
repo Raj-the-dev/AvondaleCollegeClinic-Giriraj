@@ -48,7 +48,15 @@ namespace AvondaleCollegeClinic.Controllers
         // GET: Labtests/Create
         public IActionResult Create()
         {
-            ViewData["RecordID"] = new SelectList(_context.MedicalRecords, "MedicalRecordID", "MedicalRecordID");
+            ViewBag.RecordID = new SelectList(_context.MedicalRecords
+                .Include(m => m.Student)
+                .Select(m => new
+                {
+                    m.MedicalRecordID,
+                    FullName = m.Student.FirstName + " " + m.Student.LastName
+                }),
+                "MedicalRecordID", "FullName");
+
             return View();
         }
 

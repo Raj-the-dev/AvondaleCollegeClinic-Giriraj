@@ -49,9 +49,17 @@ namespace AvondaleCollegeClinic.Controllers
         // GET: Appointments/Create
         public IActionResult Create()
         {
-            ViewData["DoctorID"] = new SelectList(_context.Doctors, "DoctorID", "DoctorID");
-            ViewData["StudentID"] = new SelectList(_context.Students, "StudentID", "DoctorID");
-            return View();
+            var appointment = new Appointment();
+            ViewBag.StudentID = new SelectList(_context.Students.Select(s => new {
+                s.StudentID,
+                FullName = s.FirstName + " " + s.LastName
+            }), "StudentID", "FullName");
+
+            ViewBag.DoctorID = new SelectList(_context.Doctors.Select(d => new {
+                d.DoctorID,
+                FullName = d.FirstName + " " + d.LastName
+            }), "DoctorID", "FullName");
+            return View(appointment);
         }
 
         // POST: Appointments/Create
@@ -85,8 +93,15 @@ namespace AvondaleCollegeClinic.Controllers
             {
                 return NotFound();
             }
-            ViewData["DoctorID"] = new SelectList(_context.Doctors, "DoctorID", "DoctorID", appointment.DoctorID);
-            ViewData["StudentID"] = new SelectList(_context.Students, "StudentID", "StudentID", appointment.StudentID);
+            ViewBag.StudentID = new SelectList(_context.Students.Select(s => new {
+                s.StudentID,
+                FullName = s.FirstName + " " + s.LastName
+            }), "StudentID", "FullName");
+
+            ViewBag.DoctorID = new SelectList(_context.Doctors.Select(d => new {
+                d.DoctorID,
+                FullName = d.FirstName + " " + d.LastName
+            }), "DoctorID", "FullName");
             return View(appointment);
         }
 

@@ -59,13 +59,33 @@ namespace AvondaleCollegeClinic.Controllers
                 DOB = DateTime.Now
             };
 
-            PopulateDropDowns();
+            ViewData["CaregiverID"] = new SelectList(
+                _context.Caregivers.Select(c => new
+                {
+                    c.CaregiverID,
+                    FullName = c.FirstName + " " + c.LastName
+                }).ToList(),
+                "CaregiverID",
+                "FullName"
+            );
+
+            ViewData["HomeroomID"] = new SelectList(
+                _context.Homerooms.Include(h => h.Teacher).Select(h => new
+                {
+                    h.HomeroomID,
+                    DisplayName = h.Teacher.FirstName + " " + h.Teacher.LastName + " - " + h.Teacher.TeacherCode
+                }).ToList(),
+                "HomeroomID",
+                "DisplayName"
+            );
+
             return View(student);
         }
 
         // POST: Students/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Students/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("StudentID,FirstName,LastName,Photo,DOB,Email,HomeroomID,CaregiverID")] Student student)
@@ -77,37 +97,78 @@ namespace AvondaleCollegeClinic.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            PopulateDropDowns(student.HomeroomID, student.CaregiverID);
+            // Repopulate dropdowns if validation fails
+            ViewData["CaregiverID"] = new SelectList(
+                _context.Caregivers.Select(c => new
+                {
+                    c.CaregiverID,
+                    FullName = c.FirstName + " " + c.LastName
+                }).ToList(),
+                "CaregiverID",
+                "FullName",
+                student.CaregiverID
+            );
+
+            ViewData["HomeroomID"] = new SelectList(
+                _context.Homerooms.Include(h => h.Teacher).Select(h => new
+                {
+                    h.HomeroomID,
+                    DisplayName = h.Teacher.FirstName + " " + h.Teacher.LastName + " - " + h.Teacher.TeacherCode
+                }).ToList(),
+                "HomeroomID",
+                "DisplayName",
+                student.HomeroomID
+            );
+
             return View(student);
         }
-
         // GET: Students/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var student = await _context.Students.FindAsync(id);
             if (student == null)
                 return NotFound();
 
-            PopulateDropDowns(student.HomeroomID, student.CaregiverID);
+            ViewData["CaregiverID"] = new SelectList(
+                _context.Caregivers.Select(c => new
+                {
+                    c.CaregiverID,
+                    FullName = c.FirstName + " " + c.LastName
+                }).ToList(),
+                "CaregiverID",
+                "FullName",
+                student.CaregiverID
+            );
+
+            ViewData["HomeroomID"] = new SelectList(
+                _context.Homerooms.Include(h => h.Teacher).Select(h => new
+                {
+                    h.HomeroomID,
+                    DisplayName = h.Teacher.FirstName + " " + h.Teacher.LastName + " - " + h.Teacher.TeacherCode
+                }).ToList(),
+                "HomeroomID",
+                "DisplayName",
+                student.HomeroomID
+            );
+
             return View(student);
         }
+
+
 
         // POST: Students/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Students/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("StudentID,FirstName,LastName,Photo,DOB,Email,HomeroomID,CaregiverID")] Student student)
         {
             if (id != student.StudentID)
-            {
                 return NotFound();
-            }
 
             if (!ModelState.IsValid)
             {
@@ -118,7 +179,7 @@ namespace AvondaleCollegeClinic.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!StudentExists(student.StudentID))
+                    if (!_context.Students.Any(e => e.StudentID == student.StudentID))
                     {
                         return NotFound();
                     }
@@ -130,9 +191,31 @@ namespace AvondaleCollegeClinic.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            PopulateDropDowns(student.HomeroomID, student.CaregiverID);
+            ViewData["CaregiverID"] = new SelectList(
+                _context.Caregivers.Select(c => new
+                {
+                    c.CaregiverID,
+                    FullName = c.FirstName + " " + c.LastName
+                }).ToList(),
+                "CaregiverID",
+                "FullName",
+                student.CaregiverID
+            );
+
+            ViewData["HomeroomID"] = new SelectList(
+                _context.Homerooms.Include(h => h.Teacher).Select(h => new
+                {
+                    h.HomeroomID,
+                    DisplayName = h.Teacher.FirstName + " " + h.Teacher.LastName + " - " + h.Teacher.TeacherCode
+                }).ToList(),
+                "HomeroomID",
+                "DisplayName",
+                student.HomeroomID
+            );
+
             return View(student);
         }
+
 
         // GET: Students/Delete/5
         public async Task<IActionResult> Delete(string id)
@@ -199,32 +282,5 @@ namespace AvondaleCollegeClinic.Controllers
             return $"{yearPrefix}{nextNumber:D4}";
         }
 
-        private void PopulateDropDowns(string? selectedHomeroomId = null, int? selectedCaregiverId = null)
-        {
-            // Caregiver dropdown will show FirstName
-            ViewData["CaregiverID"] = new SelectList(
-                _context.Caregivers,
-                nameof(Caregiver.CaregiverID),
-                nameof(Caregiver.FirstName),
-                selectedCaregiverId
-            );
-
-            // Homeroom dropdown will show something like "hr250001 - OPA"
-            var homeroomList = _context.Homerooms
-                .Include(h => h.Teacher)
-                .Select(h => new
-                {
-                    h.HomeroomID,
-                    DisplayName = $"{h.HomeroomID} - {h.Teacher.TeacherCode}"
-                })
-                .ToList();
-
-            ViewData["HomeroomID"] = new SelectList(
-                homeroomList,
-                "HomeroomID",
-                "DisplayName",
-                selectedHomeroomId
-            );
-        }
     }
 }

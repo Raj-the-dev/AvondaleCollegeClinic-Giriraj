@@ -50,6 +50,12 @@ namespace AvondaleCollegeClinic.Controllers
             {
                 TeacherID = GenerateTeacherID()
             };
+            ViewBag.TeacherID = new SelectList( _context.Teachers.Select(t => new
+                {
+                    t.TeacherID,
+                    FullName = t.FirstName + " " + t.LastName
+                }),
+                "TeacherID", "FullName");
             return View(teacher);
         }
 
@@ -82,6 +88,12 @@ namespace AvondaleCollegeClinic.Controllers
             {
                 return NotFound();
             }
+            ViewBag.TeacherID = new SelectList(_context.Teachers.Select(t => new
+                {
+                    t.TeacherID,
+                    FullName = t.FirstName + " " + t.LastName
+                }),
+                "TeacherID", "FullName");
             return View(teacher);
         }
 

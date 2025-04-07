@@ -10,11 +10,13 @@ namespace AvondaleCollegeClinic.Models
         [Required]
         [StringLength(50)]
         [Display(Name = "First Name")]
+        [RegularExpression(@"^[A-Za-z\s]+$", ErrorMessage = "Only letters and spaces are allowed.")]
         public string FirstName { get; set; }
 
         [Required]
         [StringLength(50)]
         [Display(Name = "Last Name")]
+        [RegularExpression(@"^[A-Za-z\s]+$", ErrorMessage = "Only letters and spaces are allowed.")]
         public string LastName { get; set; }
 
         [Display(Name = "Photo URL")]

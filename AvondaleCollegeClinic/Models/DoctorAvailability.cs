@@ -17,12 +17,14 @@ namespace AvondaleCollegeClinic.Models
         public DateTime AvailableDate { get; set; } // Date the doctor is available
 
         [Required]
+        [DataType(DataType.Time)]
         [Display(Name = "Start Time")]
-        public TimeSpan StartTime { get; set; } // Time availability starts
+        public DateTime StartTime { get; set; } // Time availability starts
 
         [Required]
+        [DataType(DataType.Time)]
         [Display(Name = "End Time")]
-        public TimeSpan EndTime { get; set; } // Time availability ends
+        public DateTime EndTime { get; set; } // Time availability ends
 
         public Doctor Doctor { get; set; } // Link to Doctor model
     }

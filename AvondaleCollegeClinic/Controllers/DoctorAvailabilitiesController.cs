@@ -48,7 +48,10 @@ namespace AvondaleCollegeClinic.Controllers
         // GET: DoctorAvailabilities/Create
         public IActionResult Create()
         {
-            ViewData["DoctorID"] = new SelectList(_context.Doctors, "DoctorID", "DoctorID");
+            ViewBag.DoctorID = new SelectList(_context.Doctors.Select(d => new {
+                d.DoctorID,
+                FullName = d.FirstName + " " + d.LastName
+            }), "DoctorID", "FullName");
             return View();
         }
 
@@ -82,7 +85,10 @@ namespace AvondaleCollegeClinic.Controllers
             {
                 return NotFound();
             }
-            ViewData["DoctorID"] = new SelectList(_context.Doctors, "DoctorID", "DoctorID", doctorAvailability.DoctorID);
+            ViewBag.DoctorID = new SelectList(_context.Doctors.Select(d => new {
+                d.DoctorID,
+                FullName = d.FirstName + " " + d.LastName
+            }), "DoctorID", "FullName");
             return View(doctorAvailability);
         }
 

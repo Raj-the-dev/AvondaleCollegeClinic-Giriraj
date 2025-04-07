@@ -48,9 +48,23 @@ namespace AvondaleCollegeClinic.Controllers
         // GET: Prescriptions/Create
         public IActionResult Create()
         {
-            ViewData["DiagnosisID"] = new SelectList(_context.Diagnoses, "DiagnosisID", "DiagnosisID");
+            ViewBag.DiagnosisID = new SelectList(_context.Diagnoses
+                .Include(d => d.Appointment)
+                    .ThenInclude(a => a.Student)
+                .Include(d => d.Appointment)
+                    .ThenInclude(a => a.Doctor)
+                .Select(d => new
+                {
+                    d.DiagnosisID,
+                    Display = d.Appointment.Student.FirstName + " " + d.Appointment.Student.LastName +
+                              " by " + d.Appointment.Doctor.FirstName + " " + d.Appointment.Doctor.LastName +
+                              " - " + d.Appointment.AppointmentDateTime.ToString("dd MMM yyyy")
+                }),
+                "DiagnosisID", "Display");
+
             return View();
         }
+
 
         // POST: Prescriptions/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -82,7 +96,21 @@ namespace AvondaleCollegeClinic.Controllers
             {
                 return NotFound();
             }
-            ViewData["DiagnosisID"] = new SelectList(_context.Diagnoses, "DiagnosisID", "DiagnosisID", prescription.DiagnosisID);
+            ViewBag.DiagnosisID = new SelectList(_context.Diagnoses
+                .Include(d => d.Appointment)
+                    .ThenInclude(a => a.Student)
+                .Include(d => d.Appointment)
+                    .ThenInclude(a => a.Doctor)
+                .Select(d => new
+                {
+                    d.DiagnosisID,
+                    Display = d.Appointment.Student.FirstName + " " + d.Appointment.Student.LastName +
+                              " by " + d.Appointment.Doctor.FirstName + " " + d.Appointment.Doctor.LastName +
+                              " - " + d.Appointment.AppointmentDateTime.ToString("dd MMM yyyy")
+                }),
+                "DiagnosisID", "Display", prescription.DiagnosisID);
+
+            return View(prescription);
             return View(prescription);
         }
 
