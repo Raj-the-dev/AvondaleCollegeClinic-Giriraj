@@ -22,33 +22,26 @@ namespace AvondaleCollegeClinic.Controllers
 
         // GET: Students
 
-        public async Task<IActionResult> Index(string sortOrder)
+        public async Task<IActionResult> Index( string searchString)
         {
 
-            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "LastName_desc" : "";
 
             var context = _context.Students
                 .Include(s => s.Caregiver)
                 .Include(s => s.Homeroom).ThenInclude(h => h.Teacher);
             var students = from s in _context.Students
                            select s;
-            switch (sortOrder)
+
+
+            if (!String.IsNullOrEmpty(searchString))
             {
-                case "LastName_desc":
-                    students
-                     = students.OrderByDescending(s => s.LastName);
-                    break;
-
-
-                default:
-                    students = students.OrderBy(s => s.LastName);
-                    break;
-
-
+                students = students.Where(s => s.LastName.Contains(searchString)
+                                           || s.FirstName.Contains(searchString));
             }
 
+            return View(await students.ToListAsync());
 
-                    return View(await context.ToListAsync());
+
         }
 
         // GET: Students/Details/5

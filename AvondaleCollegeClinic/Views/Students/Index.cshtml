@@ -7,9 +7,12 @@
 <h1>Index</h1>
 
 
-<th>
-    <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]">@Html.DisplayNameFor(model => model.LastName)</a>
-</th>
+<form asp-controller="Students" asp-action="Index" method="get">
+    <p>
+        Find by name: <input type="text" name="searchString" />
+        <input type="submit" value="Search" />
+    </p>
+</form>
 
 
 <p>

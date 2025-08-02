@@ -20,9 +20,18 @@ namespace AvondaleCollegeClinic.Controllers
         }
 
         // GET: Doctors
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
-            return View(await _context.Doctors.ToListAsync());
+            var doctors = from s in _context.Doctors
+                           select s;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                doctors = doctors.Where(s => s.LastName.Contains(searchString)
+                                           || s.FirstName.Contains(searchString));
+            }
+
+            return View(await doctors.ToListAsync());
         }
 
         // GET: Doctors/Details/5

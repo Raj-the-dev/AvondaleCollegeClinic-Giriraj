@@ -6,6 +6,13 @@
 
 <h1>Index</h1>
 
+<form asp-controller="Teachers" asp-action="Index" method="get">
+    <p>
+        Find by name: <input type="text" name="searchString" />
+        <input type="submit" value="Search" />
+    </p>
+</form>
+
 <p>
     <a asp-action="Create">Create New</a>
 </p>
