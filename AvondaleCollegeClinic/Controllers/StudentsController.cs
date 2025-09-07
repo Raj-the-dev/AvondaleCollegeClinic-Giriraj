@@ -22,26 +22,24 @@ namespace AvondaleCollegeClinic.Controllers
 
         // GET: Students
 
-        public async Task<IActionResult> Index( string searchString)
+        public async Task<IActionResult> Index(string searchString)
         {
-
-
-            var context = _context.Students
+            // Start with all students, and also load their caregiver and homeroom (and teacher info).
+            IQueryable<Student> students = _context.Students
                 .Include(s => s.Caregiver)
-                .Include(s => s.Homeroom).ThenInclude(h => h.Teacher);
-            var students = from s in _context.Students
-                           select s;
-
-
-            if (!String.IsNullOrEmpty(searchString))
+                .Include(s => s.Homeroom)
+                    .ThenInclude(h => h.Teacher)
+                .AsNoTracking();
+            // If the user typed something to search,
+            // only keep students whose first or last name has that text.
+            if (!string.IsNullOrWhiteSpace(searchString))
             {
-                students = students.Where(s => s.LastName.Contains(searchString)
-                                           || s.FirstName.Contains(searchString));
+                students = students.Where(s =>
+                    s.LastName.Contains(searchString) ||
+                    s.FirstName.Contains(searchString));
             }
-
+            // Turn the results into a list and send it to the page (the View) to show them.
             return View(await students.ToListAsync());
-
-
         }
 
         // GET: Students/Details/5
@@ -201,42 +199,53 @@ namespace AvondaleCollegeClinic.Controllers
         // POST: Students/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("StudentID,FirstName,LastName,Photo,DOB,Email,HomeroomID,CaregiverID")] Student student)
+        public async Task<IActionResult> Edit(string id,[Bind("StudentID,FirstName,LastName,Photo,DOB,Email,HomeroomID,CaregiverID,ImageFile")]Student form)
         {
-            if (id != student.StudentID)
+            if (id != form.StudentID)
                 return NotFound();
 
+            // Save only when valid
             if (!ModelState.IsValid)
             {
-                try
+                // Load the existing student so we can preserve the current ImagePath
+                var student = await _context.Students.FirstOrDefaultAsync(s => s.StudentID == id);
+                if (student == null) return NotFound();
+
+                // Update simple fields
+                student.FirstName = form.FirstName;
+                student.LastName = form.LastName;
+                student.DOB = form.DOB;
+                student.Email = form.Email;
+                student.HomeroomID = form.HomeroomID;
+                student.CaregiverID = form.CaregiverID;
+
+                // If a new image was uploaded, save it and update ImagePath
+                if (form.ImageFile != null && form.ImageFile.Length > 0)
                 {
-                    _context.Update(student);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!_context.Students.Any(e => e.StudentID == student.StudentID))
+                    string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/students");
+                    Directory.CreateDirectory(uploadsFolder);
+
+                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(form.ImageFile.FileName);
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
                     {
-                        return NotFound();
+                        await form.ImageFile.CopyToAsync(fileStream);
                     }
-                    else
-                    {
-                        throw;
+
+                    student.ImagePath = "/images/students/" + uniqueFileName;
+                    // (optional) delete the old file here if you want to clean up
                 }
-                }
+                // else: keep student.ImagePath as-is
+
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
+            // Repopulate dropdowns if invalid (same as your Create)
             ViewData["CaregiverID"] = new SelectList(
-                _context.Caregivers.Select(c => new
-                {
-                    c.CaregiverID,
-                    FullName = c.FirstName + " " + c.LastName
-                }).ToList(),
-                "CaregiverID",
-                "FullName",
-                student.CaregiverID
-            );
+                _context.Caregivers.Select(c => new { c.CaregiverID, FullName = c.FirstName + " " + c.LastName }).ToList(),
+                "CaregiverID", "FullName", form.CaregiverID);
 
             ViewData["HomeroomID"] = new SelectList(
                 _context.Homerooms.Include(h => h.Teacher).Select(h => new
@@ -244,13 +253,12 @@ namespace AvondaleCollegeClinic.Controllers
                     h.HomeroomID,
                     DisplayName = h.Teacher.FirstName + " " + h.Teacher.LastName + " - " + h.Teacher.TeacherCode
                 }).ToList(),
-                "HomeroomID",
-                "DisplayName",
-                student.HomeroomID
-            );
+                "HomeroomID", "DisplayName", form.HomeroomID);
 
-            return View(student);
+            return View(form);
         }
+
+
 
 
         // GET: Students/Delete/5

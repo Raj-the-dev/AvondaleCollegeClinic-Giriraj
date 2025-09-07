@@ -10,7 +10,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="StudentID" />
             <div class="form-group">
@@ -23,6 +23,13 @@
                 <input asp-for="LastName" class="form-control" />
                 <span asp-validation-for="LastName" class="text-danger"></span>
             </div>
+            @* show current image if there is one *@
+            @if (!string.IsNullOrEmpty(Model.ImagePath))
+            {
+                <div class="mb-2">
+                    <img src="@Model.ImagePath" alt="Current photo" width="120" height="120" />
+                </div>
+            }
             <div class="form-group">
                 <label asp-for="ImageFile"></label>
                 <input asp-for="ImageFile" type="file" class="form-control" />
