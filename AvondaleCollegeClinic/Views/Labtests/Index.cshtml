@@ -34,7 +34,14 @@
                 @Html.DisplayFor(modelItem => item.TestType)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.File)
+                @if (!string.IsNullOrEmpty(item.File))
+                {
+                  <a href="@item.File" target="_blank" rel="noopener">Open PDF</a>
+                }
+                else
+                {
+                  <span>No PDF</span>
+                }
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.ResultDate)

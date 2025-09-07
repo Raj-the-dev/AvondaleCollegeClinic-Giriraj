@@ -10,9 +10,10 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="LabtestID" />
+            <input type="hidden" asp-for="File" />
             <div class="form-group">
                 <label asp-for="RecordID" class="control-label"></label>
                 <select asp-for="RecordID" class="form-control" asp-items="ViewBag.RecordID"></select>
@@ -23,10 +24,17 @@
                 <input asp-for="TestType" class="form-control" />
                 <span asp-validation-for="TestType" class="text-danger"></span>
             </div>
+            @if (!string.IsNullOrEmpty(Model.File))
+            {
+                <div class="mb-2">
+                    <a href="@Model.File" target="_blank" rel="noopener">View current PDF</a>
+                </div>
+            }
+
             <div class="form-group">
-                <label asp-for="File" class="control-label"></label>
-                <input asp-for="File" class="form-control" />
-                <span asp-validation-for="File" class="text-danger"></span>
+                <label asp-for="PDFFile">Replace PDF (optional)</label>
+                <input asp-for="PDFFile" type="file" accept="application/pdf,.pdf" class="form-control" />
+                <span asp-validation-for="PDFFile" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="ResultDate" class="control-label"></label>

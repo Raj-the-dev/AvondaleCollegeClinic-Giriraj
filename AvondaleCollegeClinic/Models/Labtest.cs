@@ -1,30 +1,36 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Http;
 
 namespace AvondaleCollegeClinic.Models
 {
     public class Labtest
     {
         [Key]
-        public int LabtestID { get; set; } // report ID
+        public int LabtestID { get; set; }
 
         [Required]
         [Display(Name = "Medical Record")]
-        public int RecordID { get; set; } // FK to MedicalRecord
+        public int RecordID { get; set; }
 
-        [Required]
-        [StringLength(100)]
+        [Required, StringLength(100)]
         [Display(Name = "Test Type")]
-        public string TestType { get; set; } // E.g., Blood Test, X-Ray
+        public string TestType { get; set; }
 
+        // Store the relative URL to the PDF, e.g. "/files/labtests/abcd_report.pdf"
         [Required]
-        [Display(Name = "File Name")]
-        public string File { get; set; } // File of report
+        [Display(Name = "Report (PDF)")]
+        public string File { get; set; }
 
         [Required]
         [DataType(DataType.Date)]
         [Display(Name = "Result Date")]
-        public DateOnly ResultDate { get; set; } // When test results were received
+        public DateOnly ResultDate { get; set; }
+
+        [NotMapped]
+        public IFormFile PDFFile { get; set; }
 
         public MedicalRecord MedicalRecord { get; set; }
+
     }
 }

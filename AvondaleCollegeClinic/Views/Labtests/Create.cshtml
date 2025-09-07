@@ -10,7 +10,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="RecordID" class="control-label"></label>
@@ -22,9 +22,9 @@
                 <span asp-validation-for="TestType" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="File" class="control-label"></label>
-                <input asp-for="File" class="form-control" />
-                <span asp-validation-for="File" class="text-danger"></span>
+                <label asp-for="PDFFile" class="control-label">Lab Report (PDF)</label>
+                <input asp-for="PDFFile" type="file" accept="application/pdf,.pdf" class="form-control" />
+                <span asp-validation-for="PDFFile" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="ResultDate" class="control-label"></label>

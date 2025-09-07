@@ -234,15 +234,15 @@ namespace AvondaleCollegeClinic.Controllers
                     }
 
                     student.ImagePath = "/images/students/" + uniqueFileName;
-                    // (optional) delete the old file here if you want to clean up
+                     
                 }
-                // else: keep student.ImagePath as-is
+    
 
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
-            // Repopulate dropdowns if invalid (same as your Create)
+         
             ViewData["CaregiverID"] = new SelectList(
                 _context.Caregivers.Select(c => new { c.CaregiverID, FullName = c.FirstName + " " + c.LastName }).ToList(),
                 "CaregiverID", "FullName", form.CaregiverID);

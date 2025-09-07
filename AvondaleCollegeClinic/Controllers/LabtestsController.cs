@@ -65,14 +65,35 @@ namespace AvondaleCollegeClinic.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("LabtestID,RecordID,TestType,File,ProtectedPDF,ResultDate")] Labtest labtest)
+        public async Task<IActionResult> Create([Bind("LabtestID,RecordID,TestType,PDFFile,PDFPath,ResultDate")] Labtest labtest)
         {
+            // KEEPING YOUR PATTERN: save when !ModelState.IsValid
             if (!ModelState.IsValid)
             {
+                // --- PDF SAVE (Create) ---
+                if (labtest.PDFFile != null && labtest.PDFFile.Length > 0)
+                {
+                    string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/files/labtests");
+                    Directory.CreateDirectory(uploadsFolder);
+
+                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(labtest.PDFFile.FileName);
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await labtest.PDFFile.CopyToAsync(fileStream);
+                    }
+
+                    // store relative path to serve later
+                    labtest.File = "/files/labtests/" + uniqueFileName;
+                }
+                // --- end PDF SAVE (Create) ---
+
                 _context.Add(labtest);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["RecordID"] = new SelectList(_context.MedicalRecords, "MedicalRecordID", "MedicalRecordID", labtest.RecordID);
             return View(labtest);
         }
@@ -99,15 +120,51 @@ namespace AvondaleCollegeClinic.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("LabtestID,RecordID,TestType,File,ProtectedPDF,ResultDate")] Labtest labtest)
+        public async Task<IActionResult> Edit(int id, [Bind("LabtestID,RecordID,TestType,File,PDFFile,ResultDate")] Labtest labtest)
         {
             if (id != labtest.LabtestID)
             {
                 return NotFound();
             }
 
+            // KEEPING YOUR PATTERN: save when !ModelState.IsValid
             if (!ModelState.IsValid)
             {
+                // Load existing to preserve current file path if no new file is uploaded
+                var existing = await _context.LabTests.AsNoTracking()
+                    .FirstOrDefaultAsync(l => l.LabtestID == id);
+                if (existing == null)
+                {
+                    return NotFound();
+                }
+
+                // --- PDF SAVE (Edit) ---
+                if (labtest.PDFFile != null && labtest.PDFFile.Length > 0)
+                {
+                    string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/files/labtests");
+                    Directory.CreateDirectory(uploadsFolder);
+
+                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(labtest.PDFFile.FileName);
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await labtest.PDFFile.CopyToAsync(fileStream);
+                    }
+
+                    // Assuming "File" is your path column on Labtest for Edit
+                    labtest.File = "/files/labtests/" + uniqueFileName;
+
+                    // (optional) clean up the old file:
+                    // if (!string.IsNullOrEmpty(existing.File)) { ... delete existing.File ... }
+                }
+                else
+                {
+                    // No new file selected—keep the old path
+                    labtest.File = existing.File;
+                }
+                // --- end PDF SAVE (Edit) ---
+
                 try
                 {
                     _context.Update(labtest);
@@ -126,6 +183,7 @@ namespace AvondaleCollegeClinic.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["RecordID"] = new SelectList(_context.MedicalRecords, "MedicalRecordID", "MedicalRecordID", labtest.RecordID);
             return View(labtest);
         }
@@ -168,5 +226,6 @@ namespace AvondaleCollegeClinic.Controllers
         {
             return _context.LabTests.Any(e => e.LabtestID == id);
         }
+
     }
 }
