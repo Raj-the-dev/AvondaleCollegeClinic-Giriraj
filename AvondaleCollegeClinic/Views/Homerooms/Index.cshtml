@@ -31,16 +31,16 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.YearLevel)
+                @((int)item.YearLevel)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Block)
+                @Html.DisplayFor(_ => item.Block)
             </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ClassNumber)
-                </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Teacher.TeacherID)
+                @((int)item.ClassNumber)
+            </td>
+            <td>
+                @(item.Teacher != null ? item.Teacher.FirstName + " " + item.Teacher.LastName : item.TeacherID)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.HomeroomID">Edit</a> |

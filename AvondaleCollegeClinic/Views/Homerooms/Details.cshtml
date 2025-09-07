@@ -10,30 +10,17 @@
     <h4>Homeroom</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.YearLevel)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.YearLevel)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Block)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Block)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ClassNumber)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.ClassNumber)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Teacher)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Teacher.TeacherID)
-        </dd>
+        <dt class="col-sm-2">@Html.DisplayNameFor(m => m.YearLevel)</dt>
+        <dd class="col-sm-10">@((int)Model.YearLevel)</dd>
+
+        <dt class="col-sm-2">@Html.DisplayNameFor(m => m.Block)</dt>
+        <dd class="col-sm-10">@Html.DisplayFor(_ => Model.Block)</dd>
+
+        <dt class="col-sm-2">@Html.DisplayNameFor(m => m.ClassNumber)</dt>
+        <dd class="col-sm-10">@((int)Model.ClassNumber)</dd>
+
+        <dt class="col-sm-2">@Html.DisplayNameFor(m => m.Teacher)</dt>
+        <dd class="col-sm-10">@((Model.Teacher != null) ? Model.Teacher.FirstName + " " + Model.Teacher.LastName : Model.TeacherID)</dd>
     </dl>
 </div>
 <div>

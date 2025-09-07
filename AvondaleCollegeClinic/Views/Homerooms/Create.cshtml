@@ -1,7 +1,16 @@
 ﻿@model AvondaleCollegeClinic.Models.Homeroom
+@using Microsoft.AspNetCore.Mvc.Rendering
+@using AvondaleCollegeClinic.Models
 
 @{
     ViewData["Title"] = "Create";
+
+    // Build number-only dropdowns for the enums
+    var yearOptions = Enum.GetValues(typeof(YearLevel)).Cast<YearLevel>()
+        .Select(y => new SelectListItem { Value = ((int)y).ToString(), Text = ((int)y).ToString() });
+
+    var classOptions = Enum.GetValues(typeof(ClassNumber)).Cast<ClassNumber>()
+        .Select(c => new SelectListItem { Value = ((int)c).ToString(), Text = ((int)c).ToString() });
 }
 
 <h1>Create</h1>
@@ -15,27 +24,27 @@
 
             <div class="form-group">
                 <label asp-for="YearLevel" class="control-label"></label>
-                <select asp-for="YearLevel" class="form-control" asp-items="Html.GetEnumSelectList<YearLevel>()"></select>
+                <select asp-for="YearLevel" class="form-control" asp-items="yearOptions"></select>
                 <span asp-validation-for="YearLevel" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="TeacherID" class="control-label"></label>
-                <select asp-for="TeacherID" class ="form-control" asp-items="ViewBag.TeacherID"></select>
+                <select asp-for="TeacherID" class="form-control" asp-items="ViewBag.TeacherID"></select>
             </div>
+
             <div class="form-group">
                 <label asp-for="Block" class="control-label"></label>
-                <select asp-for="Block" class="form-control"
-                        asp-items="Html.GetEnumSelectList<Block>()">
-                </select>
+                <select asp-for="Block" class="form-control" asp-items="Html.GetEnumSelectList<Block>()"></select>
                 <span asp-validation-for="Block" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="ClassNumber" class="control-label"></label>
-                <select asp-for="ClassNumber" class="form-control"
-                        asp-items="Html.GetEnumSelectList<ClassNumber>()">
-                </select>
+                <select asp-for="ClassNumber" class="form-control" asp-items="classOptions"></select>
                 <span asp-validation-for="ClassNumber" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
@@ -48,5 +57,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
