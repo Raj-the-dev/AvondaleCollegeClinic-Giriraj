@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AvondaleCollegeClinic.Models
 {
@@ -29,8 +30,14 @@ namespace AvondaleCollegeClinic.Models
         [Display(Name = "Last Name")]
         public string LastName { get; set; } // Doctor's last name
 
-        [Display(Name = "Photo URL")]
-        public string Photo { get; set; } // URL or file path to the doctor's photo
+
+        // NEW: same pattern as Student
+        [Display(Name = "Upload Image")]
+        [NotMapped]
+        public IFormFile? ImageFile { get; set; }
+
+        [Display(Name = "Profile Image")]
+        public string? ImagePath { get; set; }
 
         [Required]
         [Display(Name = "Specialization")]

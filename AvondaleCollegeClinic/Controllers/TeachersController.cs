@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AvondaleCollegeClinic.Areas.Identity.Data;
 using AvondaleCollegeClinic.Models;
+using System.IO;
 
 namespace AvondaleCollegeClinic.Controllers
 {
@@ -73,14 +74,32 @@ namespace AvondaleCollegeClinic.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("TeacherID,FirstName,LastName,Email,TeacherCode")] Teacher teacher)
+        public async Task<IActionResult> Create([Bind("TeacherID,FirstName,LastName,Email,TeacherCode,ImageFile,ImagePath")] Teacher teacher)
         {
+            // keep your pattern: save when !ModelState.IsValid
             if (!ModelState.IsValid)
             {
+                if (teacher.ImageFile != null && teacher.ImageFile.Length > 0)
+                {
+                    string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/teachers");
+                    Directory.CreateDirectory(uploadsFolder);
+
+                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(teacher.ImageFile.FileName);
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using (var fs = new FileStream(filePath, FileMode.Create))
+                    {
+                        await teacher.ImageFile.CopyToAsync(fs);
+                    }
+
+                    teacher.ImagePath = "/images/teachers/" + uniqueFileName;
+                }
+
                 _context.Add(teacher);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
             return View(teacher);
         }
 
@@ -111,34 +130,50 @@ namespace AvondaleCollegeClinic.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("TeacherID,FirstName,LastName,Email,TeacherCode")] Teacher teacher)
+        public async Task<IActionResult> Edit(string id, [Bind("TeacherID,FirstName,LastName,Email,TeacherCode,ImageFile")] Teacher form)
         {
-            if (id != teacher.TeacherID)
+            if (id != form.TeacherID)
             {
                 return NotFound();
             }
 
+            // keep your pattern: save when !ModelState.IsValid
             if (!ModelState.IsValid)
             {
-                try
+                // load existing so we can preserve ImagePath
+                var teacher = await _context.Teachers.FirstOrDefaultAsync(t => t.TeacherID == id);
+                if (teacher == null) return NotFound();
+
+                // update simple fields
+                teacher.FirstName = form.FirstName;
+                teacher.LastName = form.LastName;
+                teacher.Email = form.Email;
+                teacher.TeacherCode = form.TeacherCode;
+
+                // handle new upload (optional)
+                if (form.ImageFile != null && form.ImageFile.Length > 0)
                 {
-                    _context.Update(teacher);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TeacherExists(teacher.TeacherID))
+                    string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/teachers");
+                    Directory.CreateDirectory(uploadsFolder);
+
+                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(form.ImageFile.FileName);
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using (var fs = new FileStream(filePath, FileMode.Create))
                     {
-                        return NotFound();
+                        await form.ImageFile.CopyToAsync(fs);
                     }
-                    else
-                    {
-                        throw;
-                    }
+
+                    teacher.ImagePath = "/images/teachers/" + uniqueFileName;
+                    // (optional) delete old file here if you want to clean up
                 }
+                // else keep existing teacher.ImagePath
+
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(teacher);
+
+            return View(form);
         }
 
         // GET: Teachers/Delete/5

@@ -4,6 +4,7 @@ using AvondaleCollegeClinic.Areas.Identity.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AvondaleCollegeClinic.Migrations
 {
     [DbContext(typeof(AvondaleCollegeClinicContext))]
-    partial class AvondaleCollegeClinicContextModelSnapshot : ModelSnapshot
+    [Migration("20250907021551_UpdatingDocotorsFields")]
+    partial class UpdatingDocotorsFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -234,9 +237,6 @@ namespace AvondaleCollegeClinic.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("ImagePath")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -483,6 +483,10 @@ namespace AvondaleCollegeClinic.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Photo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("Specialization")
                         .HasColumnType("int");
 
@@ -498,6 +502,7 @@ namespace AvondaleCollegeClinic.Migrations
                             FirstName = "Anna",
                             LastName = "Roberts",
                             Phone = "021-111-2345",
+                            Photo = "",
                             Specialization = 0
                         },
                         new
@@ -507,6 +512,7 @@ namespace AvondaleCollegeClinic.Migrations
                             FirstName = "Ben",
                             LastName = "Morris",
                             Phone = "021-222-3456",
+                            Photo = "",
                             Specialization = 1
                         },
                         new
@@ -516,6 +522,7 @@ namespace AvondaleCollegeClinic.Migrations
                             FirstName = "Claire",
                             LastName = "Nguyen",
                             Phone = "021-333-4567",
+                            Photo = "",
                             Specialization = 2
                         },
                         new
@@ -525,6 +532,7 @@ namespace AvondaleCollegeClinic.Migrations
                             FirstName = "David",
                             LastName = "Chen",
                             Phone = "021-444-5678",
+                            Photo = "",
                             Specialization = 3
                         },
                         new
@@ -534,6 +542,7 @@ namespace AvondaleCollegeClinic.Migrations
                             FirstName = "Ella",
                             LastName = "Turner",
                             Phone = "021-555-6789",
+                            Photo = "",
                             Specialization = 4
                         },
                         new
@@ -543,6 +552,7 @@ namespace AvondaleCollegeClinic.Migrations
                             FirstName = "Frank",
                             LastName = "White",
                             Phone = "021-666-7890",
+                            Photo = "",
                             Specialization = 0
                         },
                         new
@@ -552,6 +562,7 @@ namespace AvondaleCollegeClinic.Migrations
                             FirstName = "Grace",
                             LastName = "Lee",
                             Phone = "021-777-8901",
+                            Photo = "",
                             Specialization = 1
                         },
                         new
@@ -561,6 +572,7 @@ namespace AvondaleCollegeClinic.Migrations
                             FirstName = "Harry",
                             LastName = "Singh",
                             Phone = "021-888-9012",
+                            Photo = "",
                             Specialization = 2
                         },
                         new
@@ -570,6 +582,7 @@ namespace AvondaleCollegeClinic.Migrations
                             FirstName = "Isla",
                             LastName = "Walker",
                             Phone = "021-999-0123",
+                            Photo = "",
                             Specialization = 3
                         },
                         new
@@ -579,6 +592,7 @@ namespace AvondaleCollegeClinic.Migrations
                             FirstName = "Jack",
                             LastName = "Patel",
                             Phone = "021-000-1234",
+                            Photo = "",
                             Specialization = 4
                         });
                 });
@@ -1319,9 +1333,6 @@ namespace AvondaleCollegeClinic.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("ImagePath")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
                         .IsRequired()

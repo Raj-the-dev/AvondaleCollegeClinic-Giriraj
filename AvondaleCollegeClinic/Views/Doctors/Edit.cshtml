@@ -23,10 +23,18 @@
                 <input asp-for="LastName" class="form-control" />
                 <span asp-validation-for="LastName" class="text-danger"></span>
             </div>
+            @* show current image if there is one *@
+            @if (!string.IsNullOrEmpty(Model.ImagePath))
+            {
+                <div class="mb-2">
+                    <img src="@Model.ImagePath" alt="Current photo" width="120" height="120" />
+                </div>
+            }
+
             <div class="form-group">
-                <label asp-for="Photo" class="control-label"></label>
-                <input asp-for="Photo" class="form-control" />
-                <span asp-validation-for="Photo" class="text-danger"></span>
+                <label asp-for="ImageFile">Replace Photo (optional)</label>
+                <input asp-for="ImageFile" type="file" class="form-control" />
+                <span asp-validation-for="ImageFile" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Specialization" class="control-label"></label>

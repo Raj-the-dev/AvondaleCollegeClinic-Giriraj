@@ -145,16 +145,16 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
         );
 
         modelBuilder.Entity<Doctor>().HasData(
-            new Doctor { DoctorID = "acd-250001", FirstName = "Anna", LastName = "Roberts", Photo = "", Specialization = SpecializationType.General, Email = "anna.roberts@avondaleclinic.com", Phone = "021-111-2345" },
-            new Doctor { DoctorID = "acd-250002", FirstName = "Ben", LastName = "Morris", Photo = "", Specialization = SpecializationType.Pediatric, Email = "ben.morris@avondaleclinic.com", Phone = "021-222-3456" },
-            new Doctor { DoctorID = "acd-250003", FirstName = "Claire", LastName = "Nguyen", Photo = "", Specialization = SpecializationType.MentalHealth, Email = "claire.nguyen@avondaleclinic.com", Phone = "021-333-4567" },
-            new Doctor { DoctorID = "acd-250004", FirstName = "David", LastName = "Chen", Photo = "", Specialization = SpecializationType.SportsMedicine, Email = "david.chen@avondaleclinic.com", Phone = "021-444-5678" },
-            new Doctor { DoctorID = "acd-250005", FirstName = "Ella", LastName = "Turner", Photo = "", Specialization = SpecializationType.Dermatology, Email = "ella.turner@avondaleclinic.com", Phone = "021-555-6789" },
-            new Doctor { DoctorID = "acd-250006", FirstName = "Frank", LastName = "White", Photo = "", Specialization = SpecializationType.General, Email = "frank.white@avondaleclinic.com", Phone = "021-666-7890" },
-            new Doctor { DoctorID = "acd-250007", FirstName = "Grace", LastName = "Lee", Photo = "", Specialization = SpecializationType.Pediatric, Email = "grace.lee@avondaleclinic.com", Phone = "021-777-8901" },
-            new Doctor { DoctorID = "acd-250008", FirstName = "Harry", LastName = "Singh", Photo = "", Specialization = SpecializationType.MentalHealth, Email = "harry.singh@avondaleclinic.com", Phone = "021-888-9012" },
-            new Doctor { DoctorID = "acd-250009", FirstName = "Isla", LastName = "Walker", Photo = "", Specialization = SpecializationType.SportsMedicine, Email = "isla.walker@avondaleclinic.com", Phone = "021-999-0123" },
-            new Doctor { DoctorID = "acd-250010", FirstName = "Jack", LastName = "Patel", Photo = "", Specialization = SpecializationType.Dermatology, Email = "jack.patel@avondaleclinic.com", Phone = "021-000-1234" }
+            new Doctor { DoctorID = "acd-250001", FirstName = "Anna", LastName = "Roberts", Specialization = SpecializationType.General, Email = "anna.roberts@avondaleclinic.com", Phone = "021-111-2345" },
+            new Doctor { DoctorID = "acd-250002", FirstName = "Ben", LastName = "Morris", Specialization = SpecializationType.Pediatric, Email = "ben.morris@avondaleclinic.com", Phone = "021-222-3456" },
+            new Doctor { DoctorID = "acd-250003", FirstName = "Claire", LastName = "Nguyen", Specialization = SpecializationType.MentalHealth, Email = "claire.nguyen@avondaleclinic.com", Phone = "021-333-4567" },
+            new Doctor { DoctorID = "acd-250004", FirstName = "David", LastName = "Chen", Specialization = SpecializationType.SportsMedicine, Email = "david.chen@avondaleclinic.com", Phone = "021-444-5678" },
+            new Doctor { DoctorID = "acd-250005", FirstName = "Ella", LastName = "Turner", Specialization = SpecializationType.Dermatology, Email = "ella.turner@avondaleclinic.com", Phone = "021-555-6789" },
+            new Doctor { DoctorID = "acd-250006", FirstName = "Frank", LastName = "White", Specialization = SpecializationType.General, Email = "frank.white@avondaleclinic.com", Phone = "021-666-7890" },
+            new Doctor { DoctorID = "acd-250007", FirstName = "Grace", LastName = "Lee", Specialization = SpecializationType.Pediatric, Email = "grace.lee@avondaleclinic.com", Phone = "021-777-8901" },
+            new Doctor { DoctorID = "acd-250008", FirstName = "Harry", LastName = "Singh", Specialization = SpecializationType.MentalHealth, Email = "harry.singh@avondaleclinic.com", Phone = "021-888-9012" },
+            new Doctor { DoctorID = "acd-250009", FirstName = "Isla", LastName = "Walker", Specialization = SpecializationType.SportsMedicine, Email = "isla.walker@avondaleclinic.com", Phone = "021-999-0123" },
+            new Doctor { DoctorID = "acd-250010", FirstName = "Jack", LastName = "Patel", Specialization = SpecializationType.Dermatology, Email = "jack.patel@avondaleclinic.com", Phone = "021-000-1234" }
         );
 
         modelBuilder.Entity<DoctorAvailability>().HasData(

@@ -54,14 +54,29 @@ namespace AvondaleCollegeClinic.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CaregiverID,FirstName,LastName,DOB,Email,Phone,Relationship")] Caregiver caregiver)
+        public async Task<IActionResult> Create([Bind("CaregiverID,FirstName,LastName,DOB,Email,Phone,Relationship,ImageFile,ImagePath")] Caregiver caregiver)
         {
             if (!ModelState.IsValid)
             {
+                if (caregiver.ImageFile != null && caregiver.ImageFile.Length > 0)
+                {
+                    string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/caregivers");
+                    Directory.CreateDirectory(uploadsFolder);
+
+                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(caregiver.ImageFile.FileName);
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using (var fs = new FileStream(filePath, FileMode.Create))
+                        await caregiver.ImageFile.CopyToAsync(fs);
+
+                    caregiver.ImagePath = "/images/caregivers/" + uniqueFileName;
+                }
+
                 _context.Add(caregiver);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
             return View(caregiver);
         }
 
@@ -86,34 +101,42 @@ namespace AvondaleCollegeClinic.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CaregiverID,FirstName,LastName,DOB,Email,Phone,Relationship")] Caregiver caregiver)
+        public async Task<IActionResult> Edit(int id, [Bind("CaregiverID,FirstName,LastName,DOB,Email,Phone,Relationship,ImageFile")] Caregiver form)
         {
-            if (id != caregiver.CaregiverID)
-            {
-                return NotFound();
-            }
+            if (id != form.CaregiverID) return NotFound();
 
             if (!ModelState.IsValid)
             {
-                try
+                var caregiver = await _context.Caregivers.FirstOrDefaultAsync(c => c.CaregiverID == id);
+                if (caregiver == null) return NotFound();
+
+                caregiver.FirstName = form.FirstName;
+                caregiver.LastName = form.LastName;
+                caregiver.DOB = form.DOB;
+                caregiver.Email = form.Email;
+                caregiver.Phone = form.Phone;
+                caregiver.Relationship = form.Relationship;
+
+                if (form.ImageFile != null && form.ImageFile.Length > 0)
                 {
-                    _context.Update(caregiver);
-                    await _context.SaveChangesAsync();
+                    string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/caregivers");
+                    Directory.CreateDirectory(uploadsFolder);
+
+                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(form.ImageFile.FileName);
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using (var fs = new FileStream(filePath, FileMode.Create))
+                        await form.ImageFile.CopyToAsync(fs);
+
+                    caregiver.ImagePath = "/images/caregivers/" + uniqueFileName;
+                    // (optional) delete old file here
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CaregiverExists(caregiver.CaregiverID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(caregiver);
+
+            return View(form);
         }
 
         // GET: Caregivers/Delete/5

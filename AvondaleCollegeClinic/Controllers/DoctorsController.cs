@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AvondaleCollegeClinic.Areas.Identity.Data;
 using AvondaleCollegeClinic.Models;
+using System.IO;
 
 namespace AvondaleCollegeClinic.Controllers
 {
@@ -61,14 +62,31 @@ namespace AvondaleCollegeClinic.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("DoctorID,FirstName,LastName,Photo,Specialization,Email,Phone")] Doctor doctor)
+        public async Task<IActionResult> Create([Bind("DoctorID,FirstName,LastName,Specialization,Email,Phone,ImageFile,ImagePath")] Doctor doctor)
         {
             if (!ModelState.IsValid)
             {
+                if (doctor.ImageFile != null && doctor.ImageFile.Length > 0)
+                {
+                    string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/doctors");
+                    Directory.CreateDirectory(uploadsFolder);
+
+                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(doctor.ImageFile.FileName);
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await doctor.ImageFile.CopyToAsync(fileStream);
+                    }
+
+                    doctor.ImagePath = "/images/doctors/" + uniqueFileName;
+                }
+
                 _context.Add(doctor);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
             return View(doctor);
         }
 
@@ -86,25 +104,47 @@ namespace AvondaleCollegeClinic.Controllers
         // POST: Doctors/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("DoctorID,FirstName,LastName,Photo,Specialization,Email,Phone")] Doctor doctor)
+        public async Task<IActionResult> Edit(string id, [Bind("DoctorID,FirstName,LastName,Specialization,Email,Phone,ImageFile")] Doctor form)
         {
-            if (id != doctor.DoctorID) return NotFound();
+            if (id != form.DoctorID) return NotFound();
 
             if (!ModelState.IsValid)
             {
-                try
+                // Load existing row so we don't lose current ImagePath
+                var doctor = await _context.Doctors.FirstOrDefaultAsync(d => d.DoctorID == id);
+                if (doctor == null) return NotFound();
+
+                // Update simple fields
+                doctor.FirstName = form.FirstName;
+                doctor.LastName = form.LastName;    
+                doctor.Specialization = form.Specialization;
+                doctor.Email = form.Email;
+                doctor.Phone = form.Phone;
+
+                // Handle new image (optional)
+                if (form.ImageFile != null && form.ImageFile.Length > 0)
                 {
-                    _context.Update(doctor);
-                    await _context.SaveChangesAsync();
+                    string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/doctors");
+                    Directory.CreateDirectory(uploadsFolder);
+
+                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(form.ImageFile.FileName);
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await form.ImageFile.CopyToAsync(fileStream);
+                    }
+
+                    doctor.ImagePath = "/images/doctors/" + uniqueFileName;
+                    
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!DoctorExists(doctor.DoctorID)) return NotFound();
-                    else throw;
-                }
+               
+
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(doctor);
+
+            return View(form);
         }
 
         // GET: Doctors/Delete/5
