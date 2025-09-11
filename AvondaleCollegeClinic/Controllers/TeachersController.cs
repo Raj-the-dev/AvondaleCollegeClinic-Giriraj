@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using AvondaleCollegeClinic.Areas.Identity.Data;
 using AvondaleCollegeClinic.Models;
 using System.IO;
+using AvondaleCollegeClinic.Helpers;
 
 namespace AvondaleCollegeClinic.Controllers
 {
@@ -21,18 +22,52 @@ namespace AvondaleCollegeClinic.Controllers
         }
 
         // GET: Teachers
-        public async Task<IActionResult> Index( string searchString)
+        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
-            var teachers = from s in _context.Teachers
-                           select s;
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["CodeSortParm"] = sortOrder == "Code" ? "code_desc" : "Code";
+
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewData["CurrentFilter"] = searchString;
+
+            var teachers = from t in _context.Teachers select t;
 
             if (!String.IsNullOrEmpty(searchString))
             {
-                teachers = teachers.Where(s => s.LastName.Contains(searchString)
-                                           || s.FirstName.Contains(searchString));
+                teachers = teachers.Where(t =>
+                    t.LastName.Contains(searchString) ||
+                    t.FirstName.Contains(searchString) ||
+                    t.TeacherCode.Contains(searchString));
             }
 
-            return View(await teachers.ToListAsync());
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    teachers = teachers.OrderByDescending(t => t.LastName);
+                    break;
+                case "Code":
+                    teachers = teachers.OrderBy(t => t.TeacherCode);
+                    break;
+                case "code_desc":
+                    teachers = teachers.OrderByDescending(t => t.TeacherCode);
+                    break;
+                default:
+                    teachers = teachers.OrderBy(t => t.LastName);
+                    break;
+            }
+
+            int pageSize = 10;
+            return View(await PaginatedList<Teacher>.CreateAsync(
+                teachers.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
         // GET: Teachers/Details/5

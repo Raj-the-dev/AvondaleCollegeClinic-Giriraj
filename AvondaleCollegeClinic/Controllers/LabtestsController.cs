@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AvondaleCollegeClinic.Areas.Identity.Data;
 using AvondaleCollegeClinic.Models;
+using AvondaleCollegeClinic.Helpers;
 
 namespace AvondaleCollegeClinic.Controllers
 {
@@ -20,11 +21,43 @@ namespace AvondaleCollegeClinic.Controllers
         }
 
         // GET: Labtests
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
-            var avondaleCollegeClinicContext = _context.LabTests.Include(l => l.MedicalRecord);
-            return View(await avondaleCollegeClinicContext.ToListAsync());
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["TestSortParm"] = String.IsNullOrEmpty(sortOrder) ? "test_desc" : "";
+            ViewData["CurrentFilter"] = searchString;
+
+            var labtests = await _context.LabTests
+                .Include(l => l.MedicalRecord)
+                .AsNoTracking()
+                .ToListAsync();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                searchString = searchString.ToLower();
+                labtests = labtests.Where(l =>
+                    l.TestType.ToLower().Contains(searchString)
+                ).ToList();
+            }
+
+            switch (sortOrder)
+            {
+                case "test_desc":
+                    labtests = labtests.OrderByDescending(l => l.TestType).ToList();
+                    break;
+                default:
+                    labtests = labtests.OrderBy(l => l.TestType).ToList();
+                    break;
+            }
+
+            int pageSize = 10;
+            int page = pageNumber ?? 1;
+            return View(new PaginatedList<Labtest>(
+                labtests.Skip((page - 1) * pageSize).Take(pageSize).ToList(),
+                labtests.Count, page, pageSize
+            ));
         }
+
 
         // GET: Labtests/Details/5
         public async Task<IActionResult> Details(int? id)

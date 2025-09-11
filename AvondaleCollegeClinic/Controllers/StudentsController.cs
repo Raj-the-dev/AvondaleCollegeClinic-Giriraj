@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using AvondaleCollegeClinic.Areas.Identity.Data;
 using AvondaleCollegeClinic.Models;
 using Microsoft.Data.SqlClient;
+using AvondaleCollegeClinic.Helpers;
 
 namespace AvondaleCollegeClinic.Controllers
 {
@@ -22,25 +23,56 @@ namespace AvondaleCollegeClinic.Controllers
 
         // GET: Students
 
-        public async Task<IActionResult> Index(string searchString)
+        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
-            // Start with all students, and also load their caregiver and homeroom (and teacher info).
-            IQueryable<Student> students = _context.Students
-                .Include(s => s.Caregiver)
-                .Include(s => s.Homeroom)
-                    .ThenInclude(h => h.Teacher)
-                .AsNoTracking();
-            // If the user typed something to search,
-            // only keep students whose first or last name has that text.
-            if (!string.IsNullOrWhiteSpace(searchString))
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
+
+            if (searchString != null)
             {
-                students = students.Where(s =>
-                    s.LastName.Contains(searchString) ||
-                    s.FirstName.Contains(searchString));
+                pageNumber = 1;
             }
-            // Turn the results into a list and send it to the page (the View) to show them.
-            return View(await students.ToListAsync());
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewData["CurrentFilter"] = searchString;
+
+            var students = from s in _context.Students
+                           .Include(s => s.Caregiver)
+                           .Include(s => s.Homeroom)
+                               .ThenInclude(h => h.Teacher)
+                           select s;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                students = students.Where(s => s.LastName.Contains(searchString)
+                                           || s.FirstName.Contains(searchString));
+            }
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    students = students.OrderByDescending(s => s.LastName);
+                    break;
+                case "Date":
+                    students = students.OrderBy(s => s.DOB);
+                    break;
+                case "date_desc":
+                    students = students.OrderByDescending(s => s.DOB);
+                    break;
+                default:
+                    students = students.OrderBy(s => s.LastName);
+                    break;
+            }
+
+            int pageSize = 10;
+            return View(await PaginatedList<Student>.CreateAsync(
+                students.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
+
 
         // GET: Students/Details/5
         public async Task<IActionResult> Details(string id)

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AvondaleCollegeClinic.Areas.Identity.Data;
 using AvondaleCollegeClinic.Models;
+using AvondaleCollegeClinic.Helpers;
 
 namespace AvondaleCollegeClinic.Controllers
 {
@@ -20,10 +21,58 @@ namespace AvondaleCollegeClinic.Controllers
         }
 
         // GET: Appointments
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
-            var avondaleCollegeClinicContext = _context.Appointments.Include(a => a.Doctor).Include(a => a.Student);
-            return View(await avondaleCollegeClinicContext.ToListAsync());
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["DateSortParm"] = String.IsNullOrEmpty(sortOrder) ? "date_desc" : "";
+            ViewData["StatusSortParm"] = sortOrder == "Status" ? "status_desc" : "Status";
+            ViewData["CurrentFilter"] = searchString;
+
+            var appointments = await _context.Appointments
+                .Include(a => a.Student)
+                .Include(a => a.Doctor)
+                .AsNoTracking()
+                .ToListAsync();
+
+            // 🔍 Filter
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                searchString = searchString.ToLower();
+                appointments = appointments.Where(a =>
+                    a.Student.FirstName.ToLower().Contains(searchString) ||
+                    a.Student.LastName.ToLower().Contains(searchString) ||
+                    a.Doctor.FirstName.ToLower().Contains(searchString) ||
+                    a.Doctor.LastName.ToLower().Contains(searchString) ||
+                    a.Reason.ToLower().Contains(searchString) ||
+                    a.Status.ToString().ToLower().Contains(searchString)
+                ).ToList();
+            }
+
+            // ↕ Sort
+            switch (sortOrder)
+            {
+                case "date_desc":
+                    appointments = appointments.OrderByDescending(a => a.AppointmentDateTime).ToList();
+                    break;
+                case "Status":
+                    appointments = appointments.OrderBy(a => a.Status).ToList();
+                    break;
+                case "status_desc":
+                    appointments = appointments.OrderByDescending(a => a.Status).ToList();
+                    break;
+                default:
+                    appointments = appointments.OrderBy(a => a.AppointmentDateTime).ToList();
+                    break;
+            }
+
+            // 📄 Pagination
+            int pageSize = 10;
+            int page = pageNumber ?? 1;
+            var totalCount = appointments.Count;
+            var pagedAppointments = appointments.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            var paginatedList = new PaginatedList<Appointment>(pagedAppointments, totalCount, page, pageSize);
+            return View(paginatedList);
         }
 
         // GET: Appointments/Details/5

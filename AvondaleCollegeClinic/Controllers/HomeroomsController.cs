@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AvondaleCollegeClinic.Areas.Identity.Data;
 using AvondaleCollegeClinic.Models;
+using AvondaleCollegeClinic.Helpers;
 
 namespace AvondaleCollegeClinic.Controllers
 {
@@ -20,10 +21,54 @@ namespace AvondaleCollegeClinic.Controllers
         }
 
         // GET: Homerooms
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
-            var avondaleCollegeClinicContext = _context.Homerooms.Include(h => h.Teacher);
-            return View(await avondaleCollegeClinicContext.ToListAsync());
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["BlockSortParm"] = String.IsNullOrEmpty(sortOrder) ? "block_desc" : "";
+            ViewData["TeacherSortParm"] = sortOrder == "Teacher" ? "teacher_desc" : "Teacher";
+            ViewData["CurrentFilter"] = searchString;
+
+            var homerooms = await _context.Homerooms
+                .Include(h => h.Teacher)
+                .AsNoTracking()
+                .ToListAsync();
+
+            // 🔍 Filter
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                searchString = searchString.ToLower();
+                homerooms = homerooms.Where(h =>
+                    h.Teacher.FirstName.ToLower().Contains(searchString) ||
+                    h.Teacher.LastName.ToLower().Contains(searchString) ||
+                    h.Block.ToString().ToLower().Contains(searchString)
+                ).ToList();
+            }
+
+            // ↕ Sort
+            switch (sortOrder)
+            {
+                case "block_desc":
+                    homerooms = homerooms.OrderByDescending(h => h.Block).ToList();
+                    break;
+                case "Teacher":
+                    homerooms = homerooms.OrderBy(h => h.Teacher.LastName).ToList();
+                    break;
+                case "teacher_desc":
+                    homerooms = homerooms.OrderByDescending(h => h.Teacher.LastName).ToList();
+                    break;
+                default:
+                    homerooms = homerooms.OrderBy(h => h.Block).ToList();
+                    break;
+            }
+
+            // 📄 Pagination
+            int pageSize = 10;
+            int page = pageNumber ?? 1;
+            var totalCount = homerooms.Count;
+            var pagedHomerooms = homerooms.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            var paginatedList = new PaginatedList<Homeroom>(pagedHomerooms, totalCount, page, pageSize);
+            return View(paginatedList);
         }
 
         // GET: Homerooms/Details/5

@@ -1,4 +1,5 @@
-﻿@model IEnumerable<AvondaleCollegeClinic.Models.Doctor>
+﻿@model AvondaleCollegeClinic.Helpers.PaginatedList<AvondaleCollegeClinic.Models.Doctor>
+
 
 @{
     ViewData["Title"] = "Index";
@@ -6,12 +7,13 @@
 
 <h1>Index</h1>
 
-<form asp-controller="Doctors" asp-action="Index" method="get">
+<form asp-action="Index" method="get">
     <p>
-        Find by name: <input type="text" name="searchString" />
+        Find by name or specialization: <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" />
         <input type="submit" value="Search" />
     </p>
-</form> 
+</form>
+
 
 
 <p>
@@ -20,65 +22,84 @@
 <table class="table">
     <thead>
         <tr>
+            <th>@Html.DisplayNameFor(model => model[0].DoctorID)</th>
+            <th>@Html.DisplayNameFor(model => model[0].FirstName)</th>
             <th>
-                @Html.DisplayNameFor(model => model.DoctorID)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FirstName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.LastName)
+                <a asp-action="Index"
+                   asp-route-sortOrder="@ViewData["NameSortParm"]"
+                   asp-route-searchString="@ViewData["CurrentFilter"]">Last Name</a>
             </th>
             <th>Profile Image</th>
             <th>
-                @Html.DisplayNameFor(model => model.Specialization)
+                <a asp-action="Index"
+                   asp-route-sortOrder="@ViewData["SpecSortParm"]"
+                   asp-route-searchString="@ViewData["CurrentFilter"]">Specialization</a>
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Phone)
-            </th>
+            <th>@Html.DisplayNameFor(model => model[0].Email)</th>
+            <th>@Html.DisplayNameFor(model => model[0].Phone)</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
+        @foreach (var item in Model)
+        {
+            <tr>
                 <td>
                     @Html.DisplayFor(modelItem => item.DoctorID)
                 </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FirstName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LastName)
-            </td>
-            <td>
-                @if (!string.IsNullOrEmpty(item.ImagePath))
-                {
-                    <img src="@item.ImagePath" alt="Doctor Photo" width="100" height="100" />
-                }
-                else
-                {
-                    <span>No image uploaded</span>
-                }
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Specialization)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Phone)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.DoctorID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.DoctorID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.DoctorID">Delete</a>
-            </td>
-        </tr>
-}
+                <td>
+                    @Html.DisplayFor(modelItem => item.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastName)
+                </td>
+                <td>
+                    @if (!string.IsNullOrEmpty(item.ImagePath))
+                    {
+                        <img src="@item.ImagePath" alt="Doctor Photo" width="100" height="100" />
+                    }
+                    else
+                    {
+                        <span>No image uploaded</span>
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Specialization)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Phone)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.DoctorID">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.DoctorID">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.DoctorID">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+<div>
+    Page @Model.PageIndex of @Model.TotalPages
+    @if (Model.HasPreviousPage)
+    {
+        <a asp-action="Index"
+           asp-route-pageNumber="@(Model.PageIndex - 1)"
+           asp-route-sortOrder="@ViewData["CurrentSort"]"
+           asp-route-searchString="@ViewData["CurrentFilter"]">
+            Previous
+        </a>
+    }
+
+    @if (Model.HasNextPage)
+    {
+        <a asp-action="Index"
+           asp-route-pageNumber="@(Model.PageIndex + 1)"
+           asp-route-sortOrder="@ViewData["CurrentSort"]"
+           asp-route-searchString="@ViewData["CurrentFilter"]">
+            Next
+        </a>
+    }
+</div>

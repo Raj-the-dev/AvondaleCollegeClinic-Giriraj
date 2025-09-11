@@ -1,11 +1,17 @@
-﻿@model IEnumerable<AvondaleCollegeClinic.Models.Prescription>
+﻿@model AvondaleCollegeClinic.Helpers.PaginatedList<AvondaleCollegeClinic.Models.Prescription>
 
 @{
     ViewData["Title"] = "Index";
 }
 
 <h1>Index</h1>
-
+<form asp-action="Index" method="get">
+    <p>
+        Search student, medication, or dosage:
+        <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" />
+        <input type="submit" value="Search" />
+    </p>
+</form>
 <p>
     <a asp-action="Create">Create New</a>
 </p>
@@ -13,47 +19,63 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Medication)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["PrescriptionSortParm"]" asp-route-searchString="@ViewData["CurrentFilter"]">Medication</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Dosage)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["DosageSortParm"]" asp-route-searchString="@ViewData["CurrentFilter"]">Dosage</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.StartDate)
+                @Html.DisplayNameFor(model => model[0].StartDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.EndDate)
+                @Html.DisplayNameFor(model => model[0].EndDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Diagnosis)
+                @Html.DisplayNameFor(model => model[0].Diagnosis)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Medication)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Dosage)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StartDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EndDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Diagnosis.DiagnosisID)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.PrescriptionID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.PrescriptionID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.PrescriptionID">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.Medication
+                </td>
+                <td>
+                    @item.Dosage
+                </td>
+                <td>
+                    @item.StartDate.ToShortDateString()
+                </td>
+                <td>
+                    @item.EndDate.ToShortDateString()
+                </td>
+                <td>
+                    @(item.Diagnosis?.Appointment?.Student?.FirstName + " " + item.Diagnosis?.Appointment?.Student?.LastName)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.PrescriptionID">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.PrescriptionID">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.PrescriptionID">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+<div>
+    Page @Model.PageIndex of @Model.TotalPages
+    @if (Model.HasPreviousPage)
+    {
+        <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex - 1)"
+           asp-route-sortOrder="@ViewData["CurrentSort"]"
+           asp-route-searchString="@ViewData["CurrentFilter"]">Previous</a>
+    }
+    @if (Model.HasNextPage)
+    {
+        <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 1)"
+           asp-route-sortOrder="@ViewData["CurrentSort"]"
+           asp-route-searchString="@ViewData["CurrentFilter"]">Next</a>
+    }
+</div>

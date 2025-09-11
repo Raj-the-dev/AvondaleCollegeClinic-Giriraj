@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using AvondaleCollegeClinic.Areas.Identity.Data;
 using AvondaleCollegeClinic.Models;
 using System.IO;
+using AvondaleCollegeClinic.Helpers;
 
 namespace AvondaleCollegeClinic.Controllers
 {
@@ -21,19 +22,54 @@ namespace AvondaleCollegeClinic.Controllers
         }
 
         // GET: Doctors
-        public async Task<IActionResult> Index(string searchString)
+        public async Task<IActionResult> Index(string sortOrder, string searchString, int? pageNumber)
         {
-            var doctors = from s in _context.Doctors
-                           select s;
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["SpecSortParm"] = sortOrder == "Spec" ? "spec_desc" : "Spec";
+            ViewData["CurrentFilter"] = searchString;
 
-            if (!String.IsNullOrEmpty(searchString))
+            var doctors = await _context.Doctors.AsNoTracking().ToListAsync();
+
+            // Filter (searchString applies to FirstName, LastName, Specialization enum)
+            if (!string.IsNullOrEmpty(searchString))
             {
-                doctors = doctors.Where(s => s.LastName.Contains(searchString)
-                                           || s.FirstName.Contains(searchString));
+                string search = searchString.ToLower();
+                doctors = doctors.Where(d =>
+                    d.FirstName.ToLower().Contains(search) ||
+                    d.LastName.ToLower().Contains(search) ||
+                    d.Specialization.ToString().ToLower().Contains(search)
+                ).ToList();
             }
 
-            return View(await doctors.ToListAsync());
+            // Sort
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    doctors = doctors.OrderByDescending(d => d.LastName).ToList();
+                    break;
+                case "Spec":
+                    doctors = doctors.OrderBy(d => d.Specialization).ToList();
+                    break;
+                case "spec_desc":
+                    doctors = doctors.OrderByDescending(d => d.Specialization).ToList();
+                    break;
+                default:
+                    doctors = doctors.OrderBy(d => d.LastName).ToList();
+                    break;
+            }
+
+            // Pagination
+            int pageSize = 10;
+            int page = pageNumber ?? 1;
+            var totalDoctors = doctors.Count;
+            var pagedDoctors = doctors.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            var paginatedList = new PaginatedList<Doctor>(pagedDoctors, totalDoctors, page, pageSize);
+            return View(paginatedList);
         }
+
+
 
         // GET: Doctors/Details/5
         public async Task<IActionResult> Details(string id)

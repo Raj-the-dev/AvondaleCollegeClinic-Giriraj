@@ -1,4 +1,5 @@
-﻿@model IEnumerable<AvondaleCollegeClinic.Models.Labtest>
+﻿@model AvondaleCollegeClinic.Helpers.PaginatedList<AvondaleCollegeClinic.Models.Labtest>
+
 
 @{
     ViewData["Title"] = "Index";
@@ -6,6 +7,13 @@
 
 <h1>Index</h1>
 
+<form asp-action="Index" method="get">
+    <p>
+        Search test type:
+        <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" />
+        <input type="submit" value="Search" />
+    </p>
+</form>
 <p>
     <a asp-action="Create">Create New</a>
 </p>
@@ -13,48 +21,60 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.TestType)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["TestSortParm"]" asp-route-searchString="@ViewData["CurrentFilter"]">Test Type</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.File)
+                @Html.DisplayNameFor(model => model[0].File)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ResultDate)
+                @Html.DisplayNameFor(model => model[0].ResultDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.MedicalRecord)
+                @Html.DisplayNameFor(model => model[0].MedicalRecord)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.TestType)
-            </td>
-            <td>
-                @if (!string.IsNullOrEmpty(item.File))
-                {
-                  <a href="@item.File" target="_blank" rel="noopener">Open PDF</a>
-                }
-                else
-                {
-                  <span>No PDF</span>
-                }
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ResultDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MedicalRecord.MedicalRecordID)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.LabtestID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.LabtestID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.LabtestID">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TestType)
+                </td>
+                <td>
+                    @if (!string.IsNullOrEmpty(item.File))
+                    {
+                        <a href="@item.File" target="_blank" rel="noopener">Open PDF</a>
+                    }
+                    else
+                    {
+                        <span>No PDF</span>
+                    }
+                </td>
+                <td>
+                    @item.ResultDate.ToShortDateString()
+                </td>
+                <td>
+                    @item.MedicalRecord.MedicalRecordID
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.LabtestID">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.LabtestID">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.LabtestID">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+<div>
+    Page @Model.PageIndex of @Model.TotalPages
+    @if (Model.HasPreviousPage)
+    {
+        <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex - 1)" asp-route-sortOrder="@ViewData["CurrentSort"]" asp-route-searchString="@ViewData["CurrentFilter"]">Previous</a>
+    }
+    @if (Model.HasNextPage)
+    {
+        <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 1)" asp-route-sortOrder="@ViewData["CurrentSort"]" asp-route-searchString="@ViewData["CurrentFilter"]">Next</a>
+    }
+</div>

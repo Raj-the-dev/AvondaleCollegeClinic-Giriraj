@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AvondaleCollegeClinic.Areas.Identity.Data;
 using AvondaleCollegeClinic.Models;
+using AvondaleCollegeClinic.Helpers;
 
 namespace AvondaleCollegeClinic.Controllers
 {
@@ -20,9 +21,52 @@ namespace AvondaleCollegeClinic.Controllers
         }
 
         // GET: Caregivers
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
-            return View(await _context.Caregivers.ToListAsync());
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
+            ViewData["CurrentFilter"] = searchString;
+
+            var caregivers = await _context.Caregivers.AsNoTracking().ToListAsync();
+
+            // Search / Filter
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                searchString = searchString.ToLower();
+                caregivers = caregivers.Where(c =>
+                    c.FirstName.ToLower().Contains(searchString) ||
+                    c.LastName.ToLower().Contains(searchString) ||
+                    c.Email.ToLower().Contains(searchString) ||
+                    c.Relationship.ToString().ToLower().Contains(searchString)
+                ).ToList();
+            }
+
+            // Sort
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    caregivers = caregivers.OrderByDescending(c => c.LastName).ToList();
+                    break;
+                case "Date":
+                    caregivers = caregivers.OrderBy(c => c.DOB).ToList();
+                    break;
+                case "date_desc":
+                    caregivers = caregivers.OrderByDescending(c => c.DOB).ToList();
+                    break;
+                default:
+                    caregivers = caregivers.OrderBy(c => c.LastName).ToList();
+                    break;
+            }
+
+            // Pagination
+            int pageSize = 10;
+            int page = pageNumber ?? 1;
+            var totalCount = caregivers.Count;
+            var pagedCaregivers = caregivers.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            var paginatedList = new PaginatedList<Caregiver>(pagedCaregivers, totalCount, page, pageSize);
+            return View(paginatedList);
         }
 
         // GET: Caregivers/Details/5

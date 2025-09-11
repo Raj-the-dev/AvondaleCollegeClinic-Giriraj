@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AvondaleCollegeClinic.Areas.Identity.Data;
 using AvondaleCollegeClinic.Models;
+using AvondaleCollegeClinic.Helpers;
 
 namespace AvondaleCollegeClinic.Controllers
 {
@@ -20,11 +21,55 @@ namespace AvondaleCollegeClinic.Controllers
         }
 
         // GET: Prescriptions
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
-            var avondaleCollegeClinicContext = _context.Prescriptions.Include(p => p.Diagnosis);
-            return View(await avondaleCollegeClinicContext.ToListAsync());
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["PrescriptionSortParm"] = String.IsNullOrEmpty(sortOrder) ? "presc_desc" : "";
+            ViewData["DosageSortParm"] = sortOrder == "Dosage" ? "dosage_desc" : "Dosage";
+            ViewData["CurrentFilter"] = searchString;
+
+            var prescriptions = await _context.Prescriptions
+                .Include(p => p.Diagnosis)
+                    .ThenInclude(d => d.Appointment)
+                        .ThenInclude(a => a.Student)
+                .AsNoTracking()
+                .ToListAsync();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                searchString = searchString.ToLower();
+                prescriptions = prescriptions.Where(p =>
+                    p.Medication.ToLower().Contains(searchString) ||
+                    p.Dosage.ToLower().Contains(searchString) ||
+                    p.Diagnosis.Appointment.Student.FirstName.ToLower().Contains(searchString) ||
+                    p.Diagnosis.Appointment.Student.LastName.ToLower().Contains(searchString)
+                ).ToList();
+            }
+
+            switch (sortOrder)
+            {
+                case "presc_desc":
+                    prescriptions = prescriptions.OrderByDescending(p => p.Medication).ToList();
+                    break;
+                case "Dosage":
+                    prescriptions = prescriptions.OrderBy(p => p.Dosage).ToList();
+                    break;
+                case "dosage_desc":
+                    prescriptions = prescriptions.OrderByDescending(p => p.Dosage).ToList();
+                    break;
+                default:
+                    prescriptions = prescriptions.OrderBy(p => p.Medication).ToList();
+                    break;
+            }
+
+            int pageSize = 10;
+            int page = pageNumber ?? 1;
+            return View(new PaginatedList<Prescription>(
+                prescriptions.Skip((page - 1) * pageSize).Take(pageSize).ToList(),
+                prescriptions.Count, page, pageSize
+            ));
         }
+
 
         // GET: Prescriptions/Details/5
         public async Task<IActionResult> Details(int? id)

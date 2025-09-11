@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AvondaleCollegeClinic.Areas.Identity.Data;
 using AvondaleCollegeClinic.Models;
+using AvondaleCollegeClinic.Helpers;
 
 namespace AvondaleCollegeClinic.Controllers
 {
@@ -20,10 +21,46 @@ namespace AvondaleCollegeClinic.Controllers
         }
 
         // GET: DoctorAvailabilities
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
-            var avondaleCollegeClinicContext = _context.DoctorAvailabilities.Include(d => d.Doctor);
-            return View(await avondaleCollegeClinicContext.ToListAsync());
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["DateSortParm"] = String.IsNullOrEmpty(sortOrder) ? "date_desc" : "Date";
+            ViewData["CurrentFilter"] = searchString;
+
+            var availabilities = await _context.DoctorAvailabilities
+                .Include(a => a.Doctor)
+                .AsNoTracking()
+                .ToListAsync();
+
+            // 🔍 Filter
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                searchString = searchString.ToLower();
+                availabilities = availabilities.Where(a =>
+                    a.Doctor.FirstName.ToLower().Contains(searchString) ||
+                    a.Doctor.LastName.ToLower().Contains(searchString)
+                ).ToList();
+            }
+
+            // ↕ Sort
+            switch (sortOrder)
+            {
+                case "date_desc":
+                    availabilities = availabilities.OrderByDescending(a => a.AvailableDate).ToList();
+                    break;
+                default:
+                    availabilities = availabilities.OrderBy(a => a.AvailableDate).ToList();
+                    break;
+            }
+
+            // 📄 Pagination
+            int pageSize = 10;
+            int page = pageNumber ?? 1;
+            var totalCount = availabilities.Count;
+            var pagedAvailabilities = availabilities.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            var paginatedList = new PaginatedList<DoctorAvailability>(pagedAvailabilities, totalCount, page, pageSize);
+            return View(paginatedList);
         }
 
         // GET: DoctorAvailabilities/Details/5

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AvondaleCollegeClinic.Areas.Identity.Data;
 using AvondaleCollegeClinic.Models;
+using AvondaleCollegeClinic.Helpers;
 
 namespace AvondaleCollegeClinic.Controllers
 {
@@ -20,11 +21,47 @@ namespace AvondaleCollegeClinic.Controllers
         }
 
         // GET: MedicalRecords
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
-            var avondaleCollegeClinicContext = _context.MedicalRecords.Include(m => m.Doctor).Include(m => m.Student);
-            return View(await avondaleCollegeClinicContext.ToListAsync());
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["DateSortParm"] = String.IsNullOrEmpty(sortOrder) ? "date_desc" : "Date";
+            ViewData["CurrentFilter"] = searchString;
+
+            var records = await _context.MedicalRecords
+                .Include(m => m.Student)
+                .Include(m => m.Doctor)
+                .AsNoTracking()
+                .ToListAsync();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                searchString = searchString.ToLower();
+                records = records.Where(m =>
+                    m.Student.FirstName.ToLower().Contains(searchString) ||
+                    m.Student.LastName.ToLower().Contains(searchString) ||
+                    m.Doctor.FirstName.ToLower().Contains(searchString) ||
+                    m.Doctor.LastName.ToLower().Contains(searchString)
+                ).ToList();
+            }
+
+            switch (sortOrder)
+            {
+                case "date_desc":
+                    records = records.OrderByDescending(m => m.Date).ToList();
+                    break;
+                default:
+                    records = records.OrderBy(m => m.Date).ToList();
+                    break;
+            }
+
+            int pageSize = 10;
+            int page = pageNumber ?? 1;
+            return View(new PaginatedList<MedicalRecord>(
+                records.Skip((page - 1) * pageSize).Take(pageSize).ToList(),
+                records.Count, page, pageSize
+            ));
         }
+
 
         // GET: MedicalRecords/Details/5
         public async Task<IActionResult> Details(int? id)

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AvondaleCollegeClinic.Areas.Identity.Data;
 using AvondaleCollegeClinic.Models;
+using AvondaleCollegeClinic.Helpers;
 
 namespace AvondaleCollegeClinic.Controllers
 {
@@ -20,10 +21,51 @@ namespace AvondaleCollegeClinic.Controllers
         }
 
         // GET: Diagnoses
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
-            var avondaleCollegeClinicContext = _context.Diagnoses.Include(d => d.Appointment);
-            return View(await avondaleCollegeClinicContext.ToListAsync());
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["DateSortParm"] = String.IsNullOrEmpty(sortOrder) ? "date_desc" : "Date";
+            ViewData["CurrentFilter"] = searchString;
+
+            var diagnoses = await _context.Diagnoses
+                .Include(d => d.Appointment)
+                    .ThenInclude(a => a.Student)
+                .Include(d => d.Appointment.Doctor)
+                .AsNoTracking()
+                .ToListAsync();
+
+            // 🔍 Filter
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                searchString = searchString.ToLower();
+                diagnoses = diagnoses.Where(d =>
+                    d.Description.ToLower().Contains(searchString) ||
+                    d.Appointment.Student.FirstName.ToLower().Contains(searchString) ||
+                    d.Appointment.Student.LastName.ToLower().Contains(searchString) ||
+                    d.Appointment.Doctor.FirstName.ToLower().Contains(searchString) ||
+                    d.Appointment.Doctor.LastName.ToLower().Contains(searchString)
+                ).ToList();
+            }
+
+            // ↕ Sort
+            switch (sortOrder)
+            {
+                case "date_desc":
+                    diagnoses = diagnoses.OrderByDescending(d => d.DateDiagnosed).ToList();
+                    break;
+                default:
+                    diagnoses = diagnoses.OrderBy(d => d.DateDiagnosed).ToList();
+                    break;
+            }
+
+            // 📄 Pagination
+            int pageSize = 10;
+            int page = pageNumber ?? 1;
+            var totalCount = diagnoses.Count;
+            var pagedDiagnoses = diagnoses.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            var paginatedList = new PaginatedList<Diagnosis>(pagedDiagnoses, totalCount, page, pageSize);
+            return View(paginatedList);
         }
 
         // GET: Diagnoses/Details/5

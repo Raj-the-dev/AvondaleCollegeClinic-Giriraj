@@ -23,6 +23,10 @@
   <ItemGroup>
     <Folder Include="wwwroot\files\labtests\" />
     <Folder Include="wwwroot\images\teachers\" />
+    <Folder Include="Helpers\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="Helpers\" />
+  </ItemGroup>
 </Project>
