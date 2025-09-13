@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using AvondaleCollegeClinic.Areas.Identity.Data;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AvondaleCollegeClinic.Models
@@ -12,7 +13,7 @@ namespace AvondaleCollegeClinic.Models
         [StringLength(50)]
         [Display(Name = "First Name")]
         [RegularExpression(@"^[A-Za-z\s]+$", ErrorMessage = "Only letters and spaces are allowed.")]
-        public string FirstName { get; set; } 
+        public string FirstName { get; set; }
 
         [Required]
         [StringLength(50)]
@@ -36,6 +37,10 @@ namespace AvondaleCollegeClinic.Models
         [Display(Name = "Teacher Code")]
         [RegularExpression(@"^[A-Za-z\s]+$", ErrorMessage = "Only letters and spaces are allowed.")]
         public string TeacherCode { get; set; } // User-entered code
+        public string? IdentityUserId { get; set; }
+
+        [ForeignKey("IdentityUserId")]
+        public AvondaleCollegeClinicUser? AvondaleCollegeClinicUserAccount { get; set; }
 
         public ICollection<Homeroom> Homerooms { get; set; } // link to teacher homeroom
     }

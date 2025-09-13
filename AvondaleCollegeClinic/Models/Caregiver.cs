@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using AvondaleCollegeClinic.Areas.Identity.Data;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AvondaleCollegeClinic.Models
@@ -52,6 +53,10 @@ namespace AvondaleCollegeClinic.Models
         [Required]
         [Display(Name = "Relationship to Student")]
         public RelationshipType Relationship { get; set; } // Enum for relationship
+        public string? IdentityUserId { get; set; }
+
+        [ForeignKey("IdentityUserId")]
+        public AvondaleCollegeClinicUser? AvondaleCollegeClinicUserAccount { get; set; }
 
         public ICollection<Student> Students { get; set; } // Linked students
     }

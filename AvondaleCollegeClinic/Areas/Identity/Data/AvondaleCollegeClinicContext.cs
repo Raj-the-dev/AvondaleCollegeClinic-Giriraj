@@ -12,21 +12,91 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
     public AvondaleCollegeClinicContext(DbContextOptions<AvondaleCollegeClinicContext> options)
         : base(options)
     { }
-        public DbSet<Doctor> Doctors { get; set; }
-        public DbSet<DoctorAvailability> DoctorAvailabilities { get; set; }
-        public DbSet<Appointment> Appointments { get; set; }
-        public DbSet<Diagnosis> Diagnoses { get; set; }
-        public DbSet<Prescription> Prescriptions { get; set; }
-        public DbSet<Student> Students { get; set; }
-        public DbSet<MedicalRecord> MedicalRecords { get; set; }
-        public DbSet<Labtest> LabTests { get; set; }
-        public DbSet<Homeroom> Homerooms { get; set; }
-        public DbSet<Teacher> Teachers { get; set; }
-        public DbSet<Caregiver> Caregivers { get; set; }
-    
+    public DbSet<Doctor> Doctors { get; set; }
+    public DbSet<DoctorAvailability> DoctorAvailabilities { get; set; }
+    public DbSet<Appointment> Appointments { get; set; }
+    public DbSet<Diagnosis> Diagnoses { get; set; }
+    public DbSet<Prescription> Prescriptions { get; set; }
+    public DbSet<Student> Students { get; set; }
+    public DbSet<MedicalRecord> MedicalRecords { get; set; }
+    public DbSet<Labtest> LabTests { get; set; }
+    public DbSet<Homeroom> Homerooms { get; set; }
+    public DbSet<Teacher> Teachers { get; set; }
+    public DbSet<Caregiver> Caregivers { get; set; }
+
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<Student>()
+            .HasOne(s => s.AvondaleCollegeClinicUserAccount)                  // a student has one user
+            .WithOne(u => u.StudentProfile)       // a user can only match one student
+            .HasForeignKey<Student>(s => s.IdentityUserId)// connect using UserId column
+            .OnDelete(DeleteBehavior.SetNull);    // if user deleted, keep student but remove link
+                                                  // Same setup for Teacher, Doctor, Caregiver
+                                                  // So all of them can be linked to login accounts
+        modelBuilder.Entity<Teacher>()
+            .HasOne(t => t.AvondaleCollegeClinicUserAccount)
+            .WithOne(u => u.TeacherProfile)
+            .HasForeignKey<Teacher>(t => t.IdentityUserId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<Doctor>()
+            .HasOne(d => d.AvondaleCollegeClinicUserAccount)
+            .WithOne(u => u.DoctorProfile)
+            .HasForeignKey<Doctor>(d => d.IdentityUserId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<Caregiver>()
+            .HasOne(c => c.AvondaleCollegeClinicUserAccount)
+            .WithOne(u => u.CaregiverProfile)
+            .HasForeignKey<Caregiver>(c => c.IdentityUserId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        // ---------------------------
+        // Seed Admin role + user
+        // ---------------------------
+        // We use fixed IDs (0000...) so we can always refer to them reliably
+        const string ADMIN_ROLE_ID = "00000000-0000-0000-0000-000000000010"; // role ID
+        const string ADMIN_USER_ID = "00000000-0000-0000-0000-000000000001"; // user ID
+
+        // Create the Admin role so the system knows what "Admin" means
+        modelBuilder.Entity<IdentityRole>().HasData(new IdentityRole
+        {
+            Id = ADMIN_ROLE_ID,
+            Name = "Admin",
+            NormalizedName = "ADMIN"
+        });
+
+        // Create a default Admin user account with a safe hashed password
+        var hasher = new PasswordHasher<AvondaleCollegeClinicUser>();
+        var admin = new AvondaleCollegeClinicUser
+        {
+            Id = ADMIN_USER_ID,
+            UserName = "admin@avondaleclinic.com",
+            NormalizedUserName = "ADMIN@AVONDALECLINIC.COM",
+            Email = "admin@avondaleclinic.com",
+            NormalizedEmail = "ADMIN@AVONDALECLINIC.COM",
+            EmailConfirmed = true, // no need to confirm email manually
+            FirstName = "System",  // just labels so we know this is Admin
+            LastName = "Admin",
+            UserKind = UserKind.Admin,
+            MustSetPassword = false // admin doesn’t have to reset on first login
+        };
+        // Hash the password before saving (never store plain text passwords!)
+        admin.PasswordHash = hasher.HashPassword(admin, "Admin@123");
+        modelBuilder.Entity<AvondaleCollegeClinicUser>().HasData(admin);
+
+        // Finally, link the Admin user to the Admin role
+        // so this account actually has permission to act as Admin
+        modelBuilder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
+        {
+            RoleId = ADMIN_ROLE_ID,
+            UserId = ADMIN_USER_ID
+        });
+
         base.OnModelCreating(modelBuilder);
         modelBuilder.Entity<Student>().HasData(
             new Student { StudentID = "ac250001", FirstName = "Sam", LastName = "Hill", ImagePath = "", DOB = new DateTime(2007, 10, 14), Email = "sam.hill@school.com", HomeroomID = "hr250001", CaregiverID = 3 },
@@ -893,3 +963,4 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
 
     }
 }
+

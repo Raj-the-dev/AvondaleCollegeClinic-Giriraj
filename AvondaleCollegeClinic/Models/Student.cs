@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using AvondaleCollegeClinic.Areas.Identity.Data;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AvondaleCollegeClinic.Models
@@ -46,6 +47,10 @@ namespace AvondaleCollegeClinic.Models
 
         public Homeroom Homeroom { get; set; }
         public Caregiver Caregiver { get; set; }
+        public string? IdentityUserId { get; set; }
+
+        [ForeignKey("IdentityUserId")]
+        public AvondaleCollegeClinicUser? AvondaleCollegeClinicUserAccount { get; set; }
 
         public ICollection<Appointment> Appointments { get; set; }
         public ICollection<MedicalRecord> MedicalRecords { get; set; }

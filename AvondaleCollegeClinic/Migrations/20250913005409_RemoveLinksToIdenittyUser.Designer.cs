@@ -4,6 +4,7 @@ using AvondaleCollegeClinic.Areas.Identity.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AvondaleCollegeClinic.Migrations
 {
     [DbContext(typeof(AvondaleCollegeClinicContext))]
-    partial class AvondaleCollegeClinicContextModelSnapshot : ModelSnapshot
+    [Migration("20250913005409_RemoveLinksToIdenittyUser")]
+    partial class RemoveLinksToIdenittyUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,14 +33,6 @@ namespace AvondaleCollegeClinic.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<string>("AvatarPath")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("CityOfBirth")
-                        .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)");
-
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -49,24 +44,11 @@ namespace AvondaleCollegeClinic.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
-
-                    b.Property<bool>("MustSetPassword")
-                        .HasColumnType("bit");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
@@ -91,9 +73,6 @@ namespace AvondaleCollegeClinic.Migrations
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
-                    b.Property<int>("UserKind")
-                        .HasColumnType("int");
-
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -109,28 +88,6 @@ namespace AvondaleCollegeClinic.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "00000000-0000-0000-0000-000000000001",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "374f3635-75bf-4f8f-b36c-c0c151803b07",
-                            Email = "admin@avondaleclinic.com",
-                            EmailConfirmed = true,
-                            FirstName = "System",
-                            LastName = "Admin",
-                            LockoutEnabled = false,
-                            MustSetPassword = false,
-                            NormalizedEmail = "ADMIN@AVONDALECLINIC.COM",
-                            NormalizedUserName = "ADMIN@AVONDALECLINIC.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEB7P3Dn4v/lfW4Jjdj9DAoM20fhc2jOLnTZO0/HHiAvSulDqQA+sLN4yMWrKNBX3GA==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "d9ab70bd-ed24-44e8-8d6b-dcfce06ae9b8",
-                            TwoFactorEnabled = false,
-                            UserKind = 0,
-                            UserName = "admin@avondaleclinic.com"
-                        });
                 });
 
             modelBuilder.Entity("AvondaleCollegeClinic.Models.Appointment", b =>
@@ -281,9 +238,6 @@ namespace AvondaleCollegeClinic.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("IdentityUserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("ImagePath")
                         .HasColumnType("nvarchar(max)");
 
@@ -300,10 +254,6 @@ namespace AvondaleCollegeClinic.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("CaregiverID");
-
-                    b.HasIndex("IdentityUserId")
-                        .IsUnique()
-                        .HasFilter("[IdentityUserId] IS NOT NULL");
 
                     b.ToTable("Caregivers");
 
@@ -524,9 +474,6 @@ namespace AvondaleCollegeClinic.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("IdentityUserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("ImagePath")
                         .HasColumnType("nvarchar(max)");
 
@@ -543,10 +490,6 @@ namespace AvondaleCollegeClinic.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("DoctorID");
-
-                    b.HasIndex("IdentityUserId")
-                        .IsUnique()
-                        .HasFilter("[IdentityUserId] IS NOT NULL");
 
                     b.ToTable("Doctors");
 
@@ -1237,9 +1180,6 @@ namespace AvondaleCollegeClinic.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("IdentityUserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("ImagePath")
                         .HasColumnType("nvarchar(max)");
 
@@ -1253,10 +1193,6 @@ namespace AvondaleCollegeClinic.Migrations
                     b.HasIndex("CaregiverID");
 
                     b.HasIndex("HomeroomID");
-
-                    b.HasIndex("IdentityUserId")
-                        .IsUnique()
-                        .HasFilter("[IdentityUserId] IS NOT NULL");
 
                     b.ToTable("Students");
 
@@ -1387,9 +1323,6 @@ namespace AvondaleCollegeClinic.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("IdentityUserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("ImagePath")
                         .HasColumnType("nvarchar(max)");
 
@@ -1404,10 +1337,6 @@ namespace AvondaleCollegeClinic.Migrations
                         .HasColumnType("nvarchar(3)");
 
                     b.HasKey("TeacherID");
-
-                    b.HasIndex("IdentityUserId")
-                        .IsUnique()
-                        .HasFilter("[IdentityUserId] IS NOT NULL");
 
                     b.ToTable("Teachers");
 
@@ -1519,14 +1448,6 @@ namespace AvondaleCollegeClinic.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "00000000-0000-0000-0000-000000000010",
-                            Name = "Admin",
-                            NormalizedName = "ADMIN"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -1616,13 +1537,6 @@ namespace AvondaleCollegeClinic.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = "00000000-0000-0000-0000-000000000001",
-                            RoleId = "00000000-0000-0000-0000-000000000010"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -1665,16 +1579,6 @@ namespace AvondaleCollegeClinic.Migrations
                     b.Navigation("Student");
                 });
 
-            modelBuilder.Entity("AvondaleCollegeClinic.Models.Caregiver", b =>
-                {
-                    b.HasOne("AvondaleCollegeClinic.Areas.Identity.Data.AvondaleCollegeClinicUser", "AvondaleCollegeClinicUserAccount")
-                        .WithOne("CaregiverProfile")
-                        .HasForeignKey("AvondaleCollegeClinic.Models.Caregiver", "IdentityUserId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("AvondaleCollegeClinicUserAccount");
-                });
-
             modelBuilder.Entity("AvondaleCollegeClinic.Models.Diagnosis", b =>
                 {
                     b.HasOne("AvondaleCollegeClinic.Models.Appointment", "Appointment")
@@ -1684,16 +1588,6 @@ namespace AvondaleCollegeClinic.Migrations
                         .IsRequired();
 
                     b.Navigation("Appointment");
-                });
-
-            modelBuilder.Entity("AvondaleCollegeClinic.Models.Doctor", b =>
-                {
-                    b.HasOne("AvondaleCollegeClinic.Areas.Identity.Data.AvondaleCollegeClinicUser", "AvondaleCollegeClinicUserAccount")
-                        .WithOne("DoctorProfile")
-                        .HasForeignKey("AvondaleCollegeClinic.Models.Doctor", "IdentityUserId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("AvondaleCollegeClinicUserAccount");
                 });
 
             modelBuilder.Entity("AvondaleCollegeClinic.Models.DoctorAvailability", b =>
@@ -1773,26 +1667,9 @@ namespace AvondaleCollegeClinic.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("AvondaleCollegeClinic.Areas.Identity.Data.AvondaleCollegeClinicUser", "AvondaleCollegeClinicUserAccount")
-                        .WithOne("StudentProfile")
-                        .HasForeignKey("AvondaleCollegeClinic.Models.Student", "IdentityUserId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("AvondaleCollegeClinicUserAccount");
-
                     b.Navigation("Caregiver");
 
                     b.Navigation("Homeroom");
-                });
-
-            modelBuilder.Entity("AvondaleCollegeClinic.Models.Teacher", b =>
-                {
-                    b.HasOne("AvondaleCollegeClinic.Areas.Identity.Data.AvondaleCollegeClinicUser", "AvondaleCollegeClinicUserAccount")
-                        .WithOne("TeacherProfile")
-                        .HasForeignKey("AvondaleCollegeClinic.Models.Teacher", "IdentityUserId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("AvondaleCollegeClinicUserAccount");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -1844,17 +1721,6 @@ namespace AvondaleCollegeClinic.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("AvondaleCollegeClinic.Areas.Identity.Data.AvondaleCollegeClinicUser", b =>
-                {
-                    b.Navigation("CaregiverProfile");
-
-                    b.Navigation("DoctorProfile");
-
-                    b.Navigation("StudentProfile");
-
-                    b.Navigation("TeacherProfile");
                 });
 
             modelBuilder.Entity("AvondaleCollegeClinic.Models.Appointment", b =>

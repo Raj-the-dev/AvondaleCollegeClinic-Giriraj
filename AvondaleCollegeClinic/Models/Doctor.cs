@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using AvondaleCollegeClinic.Areas.Identity.Data;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AvondaleCollegeClinic.Models
@@ -54,6 +55,10 @@ namespace AvondaleCollegeClinic.Models
         [RegularExpression(@"^02\d{1}[- ]?\d{3}[- ]?\d{4}$",
     ErrorMessage = "Please enter a valid NZ mobile number (e.g., 021-123-4567).")]
         public string Phone { get; set; } // Contact number for the doctor
+        public string? IdentityUserId { get; set; }
+
+        [ForeignKey("IdentityUserId")]
+        public AvondaleCollegeClinicUser? AvondaleCollegeClinicUserAccount { get; set; }
 
         public ICollection<DoctorAvailability> Availabilities { get; set; } // Linked availability slots
         public ICollection<Appointment> Appointments { get; set; } // Appointments assigned
