@@ -99,22 +99,22 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
 
         base.OnModelCreating(modelBuilder);
         modelBuilder.Entity<Student>().HasData(
-            new Student { StudentID = "ac250001", FirstName = "Sam", LastName = "Hill", ImagePath = "", DOB = new DateTime(2007, 10, 14), Email = "sam.hill@school.com", HomeroomID = "hr250001", CaregiverID = 3 },
-            new Student { StudentID = "ac250002", FirstName = "Lily", LastName = "Evans", ImagePath = "", DOB = new DateTime(2008, 12, 26), Email = "lily.evans@school.com", HomeroomID = "hr250003", CaregiverID = 3 },
-            new Student { StudentID = "ac250003", FirstName = "Jake", LastName = "Smith", ImagePath = "", DOB = new DateTime(2009, 11, 28), Email = "jake.smith@school.com", HomeroomID = "hr250003", CaregiverID = 3 },
-            new Student { StudentID = "ac250004", FirstName = "Emma", LastName = "Johnson", ImagePath = "", DOB = new DateTime(2007, 9, 4), Email = "emma.johnson@school.com", HomeroomID = "hr250001", CaregiverID = 3 },
-            new Student { StudentID = "ac250005", FirstName = "Mia", LastName = "Brown", ImagePath = "", DOB = new DateTime(2008, 1, 7), Email = "mia.brown@school.com", HomeroomID = "hr250003", CaregiverID = 4 },
-            new Student { StudentID = "ac250006", FirstName = "Noah", LastName = "Taylor", ImagePath = "", DOB = new DateTime(2009, 1, 22), Email = "noah.taylor@school.com", HomeroomID = "hr250002", CaregiverID = 2 },
-            new Student { StudentID = "ac250007", FirstName = "Olivia", LastName = "Anderson", ImagePath = "", DOB = new DateTime(2007, 12, 23), Email = "olivia.anderson@school.com", HomeroomID = "hr250001", CaregiverID = 1 },
-            new Student { StudentID = "ac250008", FirstName = "Liam", LastName = "Thomas", ImagePath = "", DOB = new DateTime(2008, 12, 7), Email = "liam.thomas@school.com", HomeroomID = "hr250001", CaregiverID = 3 },
-            new Student { StudentID = "ac250009", FirstName = "Ava", LastName = "Jackson", ImagePath = "", DOB = new DateTime(2009, 4, 26), Email = "ava.jackson@school.com", HomeroomID = "hr250002", CaregiverID = 5 },
-            new Student { StudentID = "ac250010", FirstName = "Ethan", LastName = "White", ImagePath = "", DOB = new DateTime(2007, 7, 4), Email = "ethan.white@school.com", HomeroomID = "hr250002", CaregiverID = 1 }
+            new Student {  FirstName = "Sam", LastName = "Hill", ImagePath = "", DOB = new DateTime(2007, 10, 14), Email = "sam.hill@school.com", HomeroomID = "hr250001", CaregiverID = "acc250001", StudentID = "ac250001" },
+            new Student {  FirstName = "Lily", LastName = "Evans", ImagePath = "", DOB = new DateTime(2008, 12, 26), Email = "lily.evans@school.com", HomeroomID = "hr250003", CaregiverID = "acc250001", StudentID = "ac250002" },
+            new Student {  FirstName = "Jake", LastName = "Smith", ImagePath = "", DOB = new DateTime(2009, 11, 28), Email = "jake.smith@school.com", HomeroomID = "hr250003", CaregiverID = "acc250001", StudentID = "ac250003" },
+            new Student {  FirstName = "Emma", LastName = "Johnson", ImagePath = "", DOB = new DateTime(2007, 9, 4), Email = "emma.johnson@school.com", HomeroomID = "hr250001", CaregiverID = "acc250001", StudentID = "ac250004" },
+            new Student {  FirstName = "Mia", LastName = "Brown", ImagePath = "", DOB = new DateTime(2008, 1, 7), Email = "mia.brown@school.com", HomeroomID = "hr250003", CaregiverID = "acc250004", StudentID = "ac250005" },
+            new Student {  FirstName = "Noah", LastName = "Taylor", ImagePath = "", DOB = new DateTime(2009, 1, 22), Email = "noah.taylor@school.com", HomeroomID = "hr250002", CaregiverID = "acc250002", StudentID = "ac250006" },
+            new Student {  FirstName = "Olivia", LastName = "Anderson", ImagePath = "", DOB = new DateTime(2007, 12, 23), Email = "olivia.anderson@school.com", HomeroomID = "hr250001", CaregiverID = "acc250001", StudentID = "ac250007" },
+            new Student {  FirstName = "Liam", LastName = "Thomas", ImagePath = "", DOB = new DateTime(2008, 12, 7), Email = "liam.thomas@school.com", HomeroomID = "hr250001", CaregiverID = "acc250001", StudentID = "ac250008" },
+            new Student {  FirstName = "Ava", LastName = "Jackson", ImagePath = "", DOB = new DateTime(2009, 4, 26), Email = "ava.jackson@school.com", HomeroomID = "hr250002", CaregiverID = "acc250005", StudentID = "ac250009" },
+            new Student {  FirstName = "Ethan", LastName = "White", ImagePath = "", DOB = new DateTime(2007, 7, 4), Email = "ethan.white@school.com", HomeroomID = "hr250002", CaregiverID = "acc250001", StudentID = "ac250010" }
         );
 
         modelBuilder.Entity<Caregiver>().HasData(
             new Caregiver
             {
-                CaregiverID = 1,
+                CaregiverID = "acc250001",
                 FirstName = "Emma",
                 LastName = "Wilson",
                 DOB = new DateTime(1980, 6, 12),
@@ -124,7 +124,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             },
             new Caregiver
             {
-                CaregiverID = 2,
+                CaregiverID = "acc250002",
                 FirstName = "John",
                 LastName = "Evans",
                 DOB = new DateTime(1975, 3, 8),
@@ -134,7 +134,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             },
             new Caregiver
             {
-                CaregiverID = 3,
+                CaregiverID = "acc250003",
                 FirstName = "Maya",
                 LastName = "Singh",
                 DOB = new DateTime(1985, 9, 20),
@@ -144,7 +144,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             },
             new Caregiver
             {
-                CaregiverID = 4,
+                CaregiverID = "acc250004",
                 FirstName = "Chris",
                 LastName = "Brown",
                 DOB = new DateTime(1979, 12, 4),
@@ -154,7 +154,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             },
             new Caregiver
             {
-                CaregiverID = 5,
+                CaregiverID = "acc250005",
                 FirstName = "Sophie",
                 LastName = "Nguyen",
                 DOB = new DateTime(1982, 7, 17),
@@ -164,7 +164,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             },
             new Caregiver
             {
-                CaregiverID = 6,
+                CaregiverID = "acc250006",
                 FirstName = "Liam",
                 LastName = "King",
                 DOB = new DateTime(1973, 11, 25),
@@ -174,7 +174,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             },
             new Caregiver
             {
-                CaregiverID = 7,
+                CaregiverID = "acc250007",
                 FirstName = "Olivia",
                 LastName = "Rao",
                 DOB = new DateTime(1988, 2, 14),
@@ -184,7 +184,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             },
             new Caregiver
             {
-                CaregiverID = 8,
+                CaregiverID = "acc250008",
                 FirstName = "Ethan",
                 LastName = "Lee",
                 DOB = new DateTime(1981, 5, 5),
@@ -194,7 +194,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             },
             new Caregiver
             {
-                CaregiverID = 9,
+                CaregiverID = "acc250009",
                 FirstName = "Grace",
                 LastName = "Taylor",
                 DOB = new DateTime(1986, 10, 30),
@@ -204,7 +204,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             },
             new Caregiver
             {
-                CaregiverID = 10,
+                CaregiverID = "acc250010",
                 FirstName = "Raj",
                 LastName = "Patel",
                 DOB = new DateTime(1977, 8, 22),
@@ -215,23 +215,23 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
         );
 
         modelBuilder.Entity<Doctor>().HasData(
-            new Doctor { DoctorID = "acd-250001", FirstName = "Anna", LastName = "Roberts", Specialization = SpecializationType.General, Email = "anna.roberts@avondaleclinic.com", Phone = "021-111-2345" },
-            new Doctor { DoctorID = "acd-250002", FirstName = "Ben", LastName = "Morris", Specialization = SpecializationType.Pediatric, Email = "ben.morris@avondaleclinic.com", Phone = "021-222-3456" },
-            new Doctor { DoctorID = "acd-250003", FirstName = "Claire", LastName = "Nguyen", Specialization = SpecializationType.MentalHealth, Email = "claire.nguyen@avondaleclinic.com", Phone = "021-333-4567" },
-            new Doctor { DoctorID = "acd-250004", FirstName = "David", LastName = "Chen", Specialization = SpecializationType.SportsMedicine, Email = "david.chen@avondaleclinic.com", Phone = "021-444-5678" },
-            new Doctor { DoctorID = "acd-250005", FirstName = "Ella", LastName = "Turner", Specialization = SpecializationType.Dermatology, Email = "ella.turner@avondaleclinic.com", Phone = "021-555-6789" },
-            new Doctor { DoctorID = "acd-250006", FirstName = "Frank", LastName = "White", Specialization = SpecializationType.General, Email = "frank.white@avondaleclinic.com", Phone = "021-666-7890" },
-            new Doctor { DoctorID = "acd-250007", FirstName = "Grace", LastName = "Lee", Specialization = SpecializationType.Pediatric, Email = "grace.lee@avondaleclinic.com", Phone = "021-777-8901" },
-            new Doctor { DoctorID = "acd-250008", FirstName = "Harry", LastName = "Singh", Specialization = SpecializationType.MentalHealth, Email = "harry.singh@avondaleclinic.com", Phone = "021-888-9012" },
-            new Doctor { DoctorID = "acd-250009", FirstName = "Isla", LastName = "Walker", Specialization = SpecializationType.SportsMedicine, Email = "isla.walker@avondaleclinic.com", Phone = "021-999-0123" },
-            new Doctor { DoctorID = "acd-250010", FirstName = "Jack", LastName = "Patel", Specialization = SpecializationType.Dermatology, Email = "jack.patel@avondaleclinic.com", Phone = "021-000-1234" }
+            new Doctor { DoctorID = "acd250001", FirstName = "Anna", LastName = "Roberts", Specialization = SpecializationType.General, Email = "anna.roberts@avondaleclinic.com", Phone = "021-111-2345" },
+            new Doctor { DoctorID = "acd250002", FirstName = "Ben", LastName = "Morris", Specialization = SpecializationType.Pediatric, Email = "ben.morris@avondaleclinic.com", Phone = "021-222-3456" },
+            new Doctor { DoctorID = "acd250003", FirstName = "Claire", LastName = "Nguyen", Specialization = SpecializationType.MentalHealth, Email = "claire.nguyen@avondaleclinic.com", Phone = "021-333-4567" },
+            new Doctor { DoctorID = "acd250004", FirstName = "David", LastName = "Chen", Specialization = SpecializationType.SportsMedicine, Email = "david.chen@avondaleclinic.com", Phone = "021-444-5678" },
+            new Doctor { DoctorID = "acd250005", FirstName = "Ella", LastName = "Turner", Specialization = SpecializationType.Dermatology, Email = "ella.turner@avondaleclinic.com", Phone = "021-555-6789" },
+            new Doctor { DoctorID = "acd250006", FirstName = "Frank", LastName = "White", Specialization = SpecializationType.General, Email = "frank.white@avondaleclinic.com", Phone = "021-666-7890" },
+            new Doctor { DoctorID = "acd250007", FirstName = "Grace", LastName = "Lee", Specialization = SpecializationType.Pediatric, Email = "grace.lee@avondaleclinic.com", Phone = "021-777-8901" },
+            new Doctor { DoctorID = "acd250008", FirstName = "Harry", LastName = "Singh", Specialization = SpecializationType.MentalHealth, Email = "harry.singh@avondaleclinic.com", Phone = "021-888-9012" },
+            new Doctor { DoctorID = "acd250009", FirstName = "Isla", LastName = "Walker", Specialization = SpecializationType.SportsMedicine, Email = "isla.walker@avondaleclinic.com", Phone = "021-999-0123" },
+            new Doctor { DoctorID = "acd250010", FirstName = "Jack", LastName = "Patel", Specialization = SpecializationType.Dermatology, Email = "jack.patel@avondaleclinic.com", Phone = "021-000-1234" }
         );
 
         modelBuilder.Entity<DoctorAvailability>().HasData(
             new DoctorAvailability
             {
                 DoctorAvailabilityID = 1,
-                DoctorID = "acd-250001",
+                DoctorID = "acd250001",
                 AvailableDate = new DateTime(2025, 4, 15),
                 StartTime = new DateTime(2025, 4, 15, 9, 0, 0),
                 EndTime = new DateTime(2025, 4, 15, 12, 0, 0)
@@ -239,7 +239,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             new DoctorAvailability
             {
                 DoctorAvailabilityID = 2,
-                DoctorID = "acd-250002",
+                DoctorID = "acd250002",
                 AvailableDate = new DateTime(2025, 4, 16),
                 StartTime = new DateTime(2025, 4, 16, 10, 0, 0),
                 EndTime = new DateTime(2025, 4, 16, 13, 0, 0)
@@ -247,7 +247,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             new DoctorAvailability
             {
                 DoctorAvailabilityID = 3,
-                DoctorID = "acd-250003",
+                DoctorID = "acd250003",
                 AvailableDate = new DateTime(2025, 4, 17),
                 StartTime = new DateTime(2025, 4, 17, 8, 30, 0),
                 EndTime = new DateTime(2025, 4, 17, 11, 30, 0)
@@ -255,7 +255,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             new DoctorAvailability
             {
                 DoctorAvailabilityID = 4,
-                DoctorID = "acd-250004",
+                DoctorID = "acd250004",
                 AvailableDate = new DateTime(2025, 4, 18),
                 StartTime = new DateTime(2025, 4, 18, 13, 0, 0),
                 EndTime = new DateTime(2025, 4, 18, 16, 0, 0)
@@ -263,7 +263,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             new DoctorAvailability
             {
                 DoctorAvailabilityID = 5,
-                DoctorID = "acd-250005",
+                DoctorID = "acd250005",
                 AvailableDate = new DateTime(2025, 4, 19),
                 StartTime = new DateTime(2025, 4, 19, 9, 30, 0),
                 EndTime = new DateTime(2025, 4, 19, 12, 30, 0)
@@ -271,7 +271,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             new DoctorAvailability
             {
                 DoctorAvailabilityID = 6,
-                DoctorID = "acd-250006",
+                DoctorID = "acd250006",
                 AvailableDate = new DateTime(2025, 4, 20),
                 StartTime = new DateTime(2025, 4, 20, 14, 0, 0),
                 EndTime = new DateTime(2025, 4, 20, 17, 0, 0)
@@ -279,7 +279,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             new DoctorAvailability
             {
                 DoctorAvailabilityID = 7,
-                DoctorID = "acd-250007",
+                DoctorID = "acd250007",
                 AvailableDate = new DateTime(2025, 4, 21),
                 StartTime = new DateTime(2025, 4, 21, 11, 0, 0),
                 EndTime = new DateTime(2025, 4, 21, 14, 0, 0)
@@ -287,7 +287,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             new DoctorAvailability
             {
                 DoctorAvailabilityID = 8,
-                DoctorID = "acd-250008",
+                DoctorID = "acd250008",
                 AvailableDate = new DateTime(2025, 4, 22),
                 StartTime = new DateTime(2025, 4, 22, 15, 0, 0),
                 EndTime = new DateTime(2025, 4, 22, 18, 0, 0)
@@ -295,7 +295,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             new DoctorAvailability
             {
                 DoctorAvailabilityID = 9,
-                DoctorID = "acd-250009",
+                DoctorID = "acd250009",
                 AvailableDate = new DateTime(2025, 4, 23),
                 StartTime = new DateTime(2025, 4, 23, 8, 0, 0),
                 EndTime = new DateTime(2025, 4, 23, 11, 0, 0)
@@ -303,7 +303,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             new DoctorAvailability
             {
                 DoctorAvailabilityID = 10,
-                DoctorID = "acd-250010",
+                DoctorID = "acd250010",
                 AvailableDate = new DateTime(2025, 4, 24),
                 StartTime = new DateTime(2025, 4, 24, 12, 0, 0),
                 EndTime = new DateTime(2025, 4, 24, 15, 0, 0)
@@ -315,7 +315,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             {
                 AppointmentID = 1,
                 StudentID = "ac250001",
-                DoctorID = "acd-250001",
+                DoctorID = "acd250001",
                 AppointmentDateTime = new DateTime(2025, 4, 15, 10, 30, 0),
                 Status = AppointmentStatus.Confirmed,
                 Reason = "General check-up"
@@ -324,7 +324,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             {
                 AppointmentID = 2,
                 StudentID = "ac250002",
-                DoctorID = "acd-250002",
+                DoctorID = "acd250002",
                 AppointmentDateTime = new DateTime(2025, 4, 16, 11, 0, 0),
                 Status = AppointmentStatus.Pending,
                 Reason = "Follow-up on injury"
@@ -333,7 +333,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             {
                 AppointmentID = 3,
                 StudentID = "ac250003",
-                DoctorID = "acd-250003",
+                DoctorID = "acd250003",
                 AppointmentDateTime = new DateTime(2025, 4, 17, 9, 15, 0),
                 Status = AppointmentStatus.Completed,
                 Reason = "Routine blood test"
@@ -342,7 +342,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             {
                 AppointmentID = 4,
                 StudentID = "ac250004",
-                DoctorID = "acd-250004",
+                DoctorID = "acd250004",
                 AppointmentDateTime = new DateTime(2025, 4, 18, 14, 0, 0),
                 Status = AppointmentStatus.Confirmed,
                 Reason = "Skin allergy consultation"
@@ -351,7 +351,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             {
                 AppointmentID = 5,
                 StudentID = "ac250005",
-                DoctorID = "acd-250005",
+                DoctorID = "acd250005",
                 AppointmentDateTime = new DateTime(2025, 4, 19, 15, 30, 0),
                 Status = AppointmentStatus.Cancelled,
                 Reason = "Sore throat"
@@ -360,7 +360,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             {
                 AppointmentID = 6,
                 StudentID = "ac250006",
-                DoctorID = "acd-250006",
+                DoctorID = "acd250006",
                 AppointmentDateTime = new DateTime(2025, 4, 20, 13, 0, 0),
                 Status = AppointmentStatus.Pending,
                 Reason = "Mental health support"
@@ -369,7 +369,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             {
                 AppointmentID = 7,
                 StudentID = "ac250007",
-                DoctorID = "acd-250007",
+                DoctorID = "acd250007",
                 AppointmentDateTime = new DateTime(2025, 4, 21, 10, 45, 0),
                 Status = AppointmentStatus.Confirmed,
                 Reason = "Back pain evaluation"
@@ -378,7 +378,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             {
                 AppointmentID = 8,
                 StudentID = "ac250008",
-                DoctorID = "acd-250008",
+                DoctorID = "acd250008",
                 AppointmentDateTime = new DateTime(2025, 4, 22, 9, 0, 0),
                 Status = AppointmentStatus.Confirmed,
                 Reason = "Yearly physical"
@@ -387,7 +387,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             {
                 AppointmentID = 9,
                 StudentID = "ac250009",
-                DoctorID = "acd-250009",
+                DoctorID = "acd250009",
                 AppointmentDateTime = new DateTime(2025, 4, 23, 11, 30, 0),
                 Status = AppointmentStatus.Completed,
                 Reason = "Follow-up on flu"
@@ -396,7 +396,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             {
                 AppointmentID = 10,
                 StudentID = "ac250010",
-                DoctorID = "acd-250010",
+                DoctorID = "acd250010",
                 AppointmentDateTime = new DateTime(2025, 4, 24, 12, 15, 0),
                 Status = AppointmentStatus.Pending,
                 Reason = "Foot injury assessment"
@@ -407,7 +407,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             {
                 MedicalRecordID = 1,
                 StudentID = "ac250001",
-                DoctorID = "acd-250001",
+                DoctorID = "acd250001",
                 Notes = "Routine annual check-up. No issues found.",
                 Date = new DateTime(2025, 3, 1)
             },
@@ -415,7 +415,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             {
                 MedicalRecordID = 2,
                 StudentID = "ac250002",
-                DoctorID = "acd-250002",
+                DoctorID = "acd250002",
                 Notes = "Reviewed knee sprain. Advised rest and light exercises.",
                 Date = new DateTime(2025, 3, 3)
             },
@@ -423,7 +423,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             {
                 MedicalRecordID = 3,
                 StudentID = "ac250003",
-                DoctorID = "acd-250003",
+                DoctorID = "acd250003",
                 Notes = "Blood test completed. Results within normal range.",
                 Date = new DateTime(2025, 3, 5)
             },
@@ -431,7 +431,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             {
                 MedicalRecordID = 4,
                 StudentID = "ac250004",
-                DoctorID = "acd-250004",
+                DoctorID = "acd250004",
                 Notes = "Observed rash on arms. Prescribed topical cream.",
                 Date = new DateTime(2025, 3, 6)
             },
@@ -439,7 +439,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             {
                 MedicalRecordID = 5,
                 StudentID = "ac250005",
-                DoctorID = "acd-250005",
+                DoctorID = "acd250005",
                 Notes = "Reported headache and fatigue. Referred for lab tests.",
                 Date = new DateTime(2025, 3, 8)
             },
@@ -447,7 +447,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             {
                 MedicalRecordID = 6,
                 StudentID = "ac250006",
-                DoctorID = "acd-250006",
+                DoctorID = "acd250006",
                 Notes = "Initial consultation for anxiety symptoms. Scheduled follow-up.",
                 Date = new DateTime(2025, 3, 10)
             },
@@ -455,7 +455,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             {
                 MedicalRecordID = 7,
                 StudentID = "ac250007",
-                DoctorID = "acd-250007",
+                DoctorID = "acd250007",
                 Notes = "Complaints of lower back pain. Stretching advised.",
                 Date = new DateTime(2025, 3, 11)
             },
@@ -463,7 +463,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             {
                 MedicalRecordID = 8,
                 StudentID = "ac250008",
-                DoctorID = "acd-250008",
+                DoctorID = "acd250008",
                 Notes = "Regular check-up completed. Advised hydration.",
                 Date = new DateTime(2025, 3, 12)
             },
@@ -471,7 +471,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             {
                 MedicalRecordID = 9,
                 StudentID = "ac250009",
-                DoctorID = "acd-250009",
+                DoctorID = "acd250009",
                 Notes = "Follow-up after flu recovery. Patient doing well.",
                 Date = new DateTime(2025, 3, 13)
             },
@@ -479,7 +479,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             {
                 MedicalRecordID = 10,
                 StudentID = "ac250010",
-                DoctorID = "acd-250010",
+                DoctorID = "acd250010",
                 Notes = "Foot strain reviewed. Rest and ice recommended.",
                 Date = new DateTime(2025, 3, 14)
             }
@@ -488,7 +488,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
         modelBuilder.Entity<Teacher>().HasData(
             new Teacher
             {
-                TeacherID = "act-250001",
+                TeacherID = "act250001",
                 FirstName = "Olivia",
                 LastName = "Park",
                 Email = "olivia.park@avondale.school.nz",
@@ -496,7 +496,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             },
             new Teacher
             {
-                TeacherID = "act-250002",
+                TeacherID = "act250002",
                 FirstName = "James",
                 LastName = "Ngata",
                 Email = "james.ngata@avondale.school.nz",
@@ -504,7 +504,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             },
             new Teacher
             {
-                TeacherID = "act-250003",
+                TeacherID = "act250003",
                 FirstName = "Sophia",
                 LastName = "Lee",
                 Email = "sophia.lee@avondale.school.nz",
@@ -512,7 +512,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             },
             new Teacher
             {
-                TeacherID = "act-250004",
+                TeacherID = "act250004",
                 FirstName = "Ethan",
                 LastName = "White",
                 Email = "ethan.white@avondale.school.nz",
@@ -520,7 +520,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             },
             new Teacher
             {
-                TeacherID = "act-250005",
+                TeacherID = "act250005",
                 FirstName = "Ava",
                 LastName = "Singh",
                 Email = "ava.singh@avondale.school.nz",
@@ -528,7 +528,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             },
             new Teacher
             {
-                TeacherID = "act-250006",
+                TeacherID = "act250006",
                 FirstName = "William",
                 LastName = "Morris",
                 Email = "william.morris@avondale.school.nz",
@@ -536,7 +536,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             },
             new Teacher
             {
-                TeacherID = "act-250007",
+                TeacherID = "act250007",
                 FirstName = "Isabella",
                 LastName = "Tao",
                 Email = "isabella.tao@avondale.school.nz",
@@ -544,7 +544,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             },
             new Teacher
             {
-                TeacherID = "act-250008",
+                TeacherID = "act250008",
                 FirstName = "Lucas",
                 LastName = "Patel",
                 Email = "lucas.patel@avondale.school.nz",
@@ -552,7 +552,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             },
             new Teacher
             {
-                TeacherID = "act-250009",
+                TeacherID = "act250009",
                 FirstName = "Emily",
                 LastName = "Brown",
                 Email = "emily.brown@avondale.school.nz",
@@ -560,7 +560,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             },
             new Teacher
             {
-                TeacherID = "act-250010",
+                TeacherID = "act250010",
                 FirstName = "Daniel",
                 LastName = "King",
                 Email = "daniel.king@avondale.school.nz",
@@ -572,7 +572,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             {
                 HomeroomID = "hr250001",
                 YearLevel = YearLevel._9,
-                TeacherID = "act-250001",
+                TeacherID = "act250001",
                 Block = Block.A,
                 ClassNumber = ClassNumber._1
             },
@@ -580,7 +580,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             {
                 HomeroomID = "hr250002",
                 YearLevel = YearLevel._10,
-                TeacherID = "act-250002",
+                TeacherID = "act250002",
                 Block = Block.B,
                 ClassNumber = ClassNumber._2
             },
@@ -588,7 +588,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             {
                 HomeroomID = "hr250003",
                 YearLevel = YearLevel._11,
-                TeacherID = "act-250003",
+                TeacherID = "act250003",
                 Block = Block.C,
                 ClassNumber = ClassNumber._3
             },
@@ -596,7 +596,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             {
                 HomeroomID = "hr250004",
                 YearLevel = YearLevel._12,
-                TeacherID = "act-250004",
+                TeacherID = "act250004",
                 Block = Block.D,
                 ClassNumber = ClassNumber._4
             },
@@ -604,7 +604,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             {
                 HomeroomID = "hr250005",
                 YearLevel = YearLevel._13,
-                TeacherID = "act-250005",
+                TeacherID = "act250005",
                 Block = Block.E,
                 ClassNumber = ClassNumber._5
             },
@@ -612,7 +612,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             {
                 HomeroomID = "hr250006",
                 YearLevel = YearLevel._9,
-                TeacherID = "act-250006",
+                TeacherID = "act250006",
                 Block = Block.F,
                 ClassNumber = ClassNumber._6
             },
@@ -620,7 +620,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             {
                 HomeroomID = "hr250007",
                 YearLevel = YearLevel._10,
-                TeacherID = "act-250007",
+                TeacherID = "act250007",
                 Block = Block.A,
                 ClassNumber = ClassNumber._7
             },
@@ -628,7 +628,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             {
                 HomeroomID = "hr250008",
                 YearLevel = YearLevel._11,
-                TeacherID = "act-250008",
+                TeacherID = "act250008",
                 Block = Block.B,
                 ClassNumber = ClassNumber._8
             },
@@ -636,7 +636,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             {
                 HomeroomID = "hr250009",
                 YearLevel = YearLevel._12,
-                TeacherID = "act-250009",
+                TeacherID = "act250009",
                 Block = Block.C,
                 ClassNumber = ClassNumber._9
             },
@@ -644,7 +644,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             {
                 HomeroomID = "hr250010",
                 YearLevel = YearLevel._13,
-                TeacherID = "act-250010",
+                TeacherID = "act250010",
                 Block = Block.D,
                 ClassNumber = ClassNumber._10
             }

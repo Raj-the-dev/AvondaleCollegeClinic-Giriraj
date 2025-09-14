@@ -102,6 +102,19 @@ namespace AvondaleCollegeClinic.Controllers
         {
             if (!ModelState.IsValid)
             {
+                // Check email
+                if (await _context.Doctors.AnyAsync(d => d.Email == doctor.Email))
+                {
+                    ModelState.AddModelError("Email", "This email is already in use by another doctor.");
+                    return View(doctor);
+                }
+
+                // Check full name
+                if (await _context.Doctors.AnyAsync(d => d.FirstName == doctor.FirstName && d.LastName == doctor.LastName))
+                {
+                    ModelState.AddModelError("", "A doctor with the same name already exists.");
+                    return View(doctor);
+                }
                 if (doctor.ImageFile != null && doctor.ImageFile.Length > 0)
                 {
                     string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/doctors");
@@ -156,6 +169,19 @@ namespace AvondaleCollegeClinic.Controllers
                 doctor.Specialization = form.Specialization;
                 doctor.Email = form.Email;
                 doctor.Phone = form.Phone;
+                // Check email
+                if (await _context.Doctors.AnyAsync(d => d.Email == doctor.Email))
+                {
+                    ModelState.AddModelError("Email", "This email is already in use by another doctor.");
+                    return View(doctor);
+                }
+
+                // Check full name
+                if (await _context.Doctors.AnyAsync(d => d.FirstName == doctor.FirstName && d.LastName == doctor.LastName))
+                {
+                    ModelState.AddModelError("", "A doctor with the same name already exists.");
+                    return View(doctor);
+                }
 
                 // Handle new image (optional)
                 if (form.ImageFile != null && form.ImageFile.Length > 0)
@@ -224,7 +250,7 @@ namespace AvondaleCollegeClinic.Controllers
             do
             {
                 int num = random.Next(1000, 9999);
-                newId = $"acd-{year}{num}";
+                newId = $"acd{year}{num}";
             }
             while (_context.Doctors.Any(d => d.DoctorID == newId));
 

@@ -1,4 +1,5 @@
 ﻿using AvondaleCollegeClinic.Areas.Identity.Data;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -11,10 +12,12 @@ namespace AvondaleCollegeClinic.Models
         Sibling,
         Other
     }
+
     public class Caregiver
     {
         [Key]
-        public int CaregiverID { get; set; } // Unique ID
+        [StringLength(9)]
+        public string CaregiverID { get; set; } // Unique ID
 
         [Required]
         [StringLength(50)]

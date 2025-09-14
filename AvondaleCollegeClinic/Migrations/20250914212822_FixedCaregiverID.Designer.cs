@@ -4,6 +4,7 @@ using AvondaleCollegeClinic.Areas.Identity.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AvondaleCollegeClinic.Migrations
 {
     [DbContext(typeof(AvondaleCollegeClinicContext))]
-    partial class AvondaleCollegeClinicContextModelSnapshot : ModelSnapshot
+    [Migration("20250914212822_FixedCaregiverID")]
+    partial class FixedCaregiverID
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -115,7 +118,7 @@ namespace AvondaleCollegeClinic.Migrations
                         {
                             Id = "00000000-0000-0000-0000-000000000001",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "31ebd866-54d3-466f-a5d1-32af6be8b690",
+                            ConcurrencyStamp = "f288b714-2311-4b04-940d-4f45bb2abc3e",
                             Email = "admin@avondaleclinic.com",
                             EmailConfirmed = true,
                             FirstName = "System",
@@ -124,9 +127,9 @@ namespace AvondaleCollegeClinic.Migrations
                             MustSetPassword = false,
                             NormalizedEmail = "ADMIN@AVONDALECLINIC.COM",
                             NormalizedUserName = "ADMIN@AVONDALECLINIC.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEKY/5FGGJmSepnOoHDNDqe/MyXIDg86v4edc3wZZ9dt/HTyyxC+qcVuIzi3U97l6+A==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEM9asEIHXk4OcNzyD3ToZlkgzjB4h8ygTHZ470PU1IEcfiaDI/Zm/qilOvMrkpbSCw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "63ed24d9-979d-4d4d-99e0-060936df3a99",
+                            SecurityStamp = "7e33a2f8-2d86-498e-8490-0fc4129dc874",
                             TwoFactorEnabled = false,
                             UserKind = 0,
                             UserName = "admin@avondaleclinic.com"
@@ -304,108 +307,6 @@ namespace AvondaleCollegeClinic.Migrations
                         .HasFilter("[IdentityUserId] IS NOT NULL");
 
                     b.ToTable("Caregivers");
-
-                    b.HasData(
-                        new
-                        {
-                            CaregiverID = "acc250001",
-                            DOB = new DateTime(1980, 6, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "emma.wilson@email.com",
-                            FirstName = "Emma",
-                            LastName = "Wilson",
-                            Phone = "021-123-4567",
-                            Relationship = 0
-                        },
-                        new
-                        {
-                            CaregiverID = "acc250002",
-                            DOB = new DateTime(1975, 3, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "john.evans@email.com",
-                            FirstName = "John",
-                            LastName = "Evans",
-                            Phone = "022-987-6543",
-                            Relationship = 0
-                        },
-                        new
-                        {
-                            CaregiverID = "acc250003",
-                            DOB = new DateTime(1985, 9, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "maya.singh@email.com",
-                            FirstName = "Maya",
-                            LastName = "Singh",
-                            Phone = "021-555-8899",
-                            Relationship = 1
-                        },
-                        new
-                        {
-                            CaregiverID = "acc250004",
-                            DOB = new DateTime(1979, 12, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "chris.brown@email.com",
-                            FirstName = "Chris",
-                            LastName = "Brown",
-                            Phone = "021-333-2222",
-                            Relationship = 2
-                        },
-                        new
-                        {
-                            CaregiverID = "acc250005",
-                            DOB = new DateTime(1982, 7, 17, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "sophie.nguyen@email.com",
-                            FirstName = "Sophie",
-                            LastName = "Nguyen",
-                            Phone = "022-111-5555",
-                            Relationship = 0
-                        },
-                        new
-                        {
-                            CaregiverID = "acc250006",
-                            DOB = new DateTime(1973, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "liam.king@email.com",
-                            FirstName = "Liam",
-                            LastName = "King",
-                            Phone = "021-456-7890",
-                            Relationship = 3
-                        },
-                        new
-                        {
-                            CaregiverID = "acc250007",
-                            DOB = new DateTime(1988, 2, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "olivia.rao@email.com",
-                            FirstName = "Olivia",
-                            LastName = "Rao",
-                            Phone = "021-999-8888",
-                            Relationship = 0
-                        },
-                        new
-                        {
-                            CaregiverID = "acc250008",
-                            DOB = new DateTime(1981, 5, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "ethan.lee@email.com",
-                            FirstName = "Ethan",
-                            LastName = "Lee",
-                            Phone = "022-123-9999",
-                            Relationship = 1
-                        },
-                        new
-                        {
-                            CaregiverID = "acc250009",
-                            DOB = new DateTime(1986, 10, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "grace.taylor@email.com",
-                            FirstName = "Grace",
-                            LastName = "Taylor",
-                            Phone = "021-234-5678",
-                            Relationship = 0
-                        },
-                        new
-                        {
-                            CaregiverID = "acc250010",
-                            DOB = new DateTime(1977, 8, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "raj.patel@email.com",
-                            FirstName = "Raj",
-                            LastName = "Patel",
-                            Phone = "022-777-3333",
-                            Relationship = 3
-                        });
                 });
 
             modelBuilder.Entity("AvondaleCollegeClinic.Models.Diagnosis", b =>
@@ -1258,118 +1159,6 @@ namespace AvondaleCollegeClinic.Migrations
                         .HasFilter("[IdentityUserId] IS NOT NULL");
 
                     b.ToTable("Students");
-
-                    b.HasData(
-                        new
-                        {
-                            StudentID = "ac250001",
-                            CaregiverID = "acc250001",
-                            DOB = new DateTime(2007, 10, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "sam.hill@school.com",
-                            FirstName = "Sam",
-                            HomeroomID = "hr250001",
-                            ImagePath = "",
-                            LastName = "Hill"
-                        },
-                        new
-                        {
-                            StudentID = "ac250002",
-                            CaregiverID = "acc250001",
-                            DOB = new DateTime(2008, 12, 26, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "lily.evans@school.com",
-                            FirstName = "Lily",
-                            HomeroomID = "hr250003",
-                            ImagePath = "",
-                            LastName = "Evans"
-                        },
-                        new
-                        {
-                            StudentID = "ac250003",
-                            CaregiverID = "acc250001",
-                            DOB = new DateTime(2009, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "jake.smith@school.com",
-                            FirstName = "Jake",
-                            HomeroomID = "hr250003",
-                            ImagePath = "",
-                            LastName = "Smith"
-                        },
-                        new
-                        {
-                            StudentID = "ac250004",
-                            CaregiverID = "acc250001",
-                            DOB = new DateTime(2007, 9, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "emma.johnson@school.com",
-                            FirstName = "Emma",
-                            HomeroomID = "hr250001",
-                            ImagePath = "",
-                            LastName = "Johnson"
-                        },
-                        new
-                        {
-                            StudentID = "ac250005",
-                            CaregiverID = "acc250004",
-                            DOB = new DateTime(2008, 1, 7, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "mia.brown@school.com",
-                            FirstName = "Mia",
-                            HomeroomID = "hr250003",
-                            ImagePath = "",
-                            LastName = "Brown"
-                        },
-                        new
-                        {
-                            StudentID = "ac250006",
-                            CaregiverID = "acc250002",
-                            DOB = new DateTime(2009, 1, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "noah.taylor@school.com",
-                            FirstName = "Noah",
-                            HomeroomID = "hr250002",
-                            ImagePath = "",
-                            LastName = "Taylor"
-                        },
-                        new
-                        {
-                            StudentID = "ac250007",
-                            CaregiverID = "acc250001",
-                            DOB = new DateTime(2007, 12, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "olivia.anderson@school.com",
-                            FirstName = "Olivia",
-                            HomeroomID = "hr250001",
-                            ImagePath = "",
-                            LastName = "Anderson"
-                        },
-                        new
-                        {
-                            StudentID = "ac250008",
-                            CaregiverID = "acc250001",
-                            DOB = new DateTime(2008, 12, 7, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "liam.thomas@school.com",
-                            FirstName = "Liam",
-                            HomeroomID = "hr250001",
-                            ImagePath = "",
-                            LastName = "Thomas"
-                        },
-                        new
-                        {
-                            StudentID = "ac250009",
-                            CaregiverID = "acc250005",
-                            DOB = new DateTime(2009, 4, 26, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "ava.jackson@school.com",
-                            FirstName = "Ava",
-                            HomeroomID = "hr250002",
-                            ImagePath = "",
-                            LastName = "Jackson"
-                        },
-                        new
-                        {
-                            StudentID = "ac250010",
-                            CaregiverID = "acc250001",
-                            DOB = new DateTime(2007, 7, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "ethan.white@school.com",
-                            FirstName = "Ethan",
-                            HomeroomID = "hr250002",
-                            ImagePath = "",
-                            LastName = "White"
-                        });
                 });
 
             modelBuilder.Entity("AvondaleCollegeClinic.Models.Teacher", b =>

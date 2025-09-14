@@ -9,6 +9,7 @@ using AvondaleCollegeClinic.Areas.Identity.Data;
 using AvondaleCollegeClinic.Models;
 using Microsoft.Data.SqlClient;
 using AvondaleCollegeClinic.Helpers;
+using NuGet.DependencyResolver;
 
 namespace AvondaleCollegeClinic.Controllers
 {
@@ -139,6 +140,20 @@ namespace AvondaleCollegeClinic.Controllers
             {
                 string uniqueFileName = null;
 
+                // Check email
+                if (await _context.Students.AnyAsync(s => s.Email == student.Email))
+                {
+                    ModelState.AddModelError("Email", "This email is already in use by another student.");
+                    return View(student);
+                }
+
+                // Check full name
+                if (await _context.Students.AnyAsync(s => s.FirstName == student.FirstName && s.LastName == student.LastName))
+                {
+                    ModelState.AddModelError("", "A student with the same name already exists.");
+                    return View(student);
+                }
+
                 if (student.ImageFile != null)
                 {
                     // Ensure directory exists
@@ -250,6 +265,19 @@ namespace AvondaleCollegeClinic.Controllers
                 student.Email = form.Email;
                 student.HomeroomID = form.HomeroomID;
                 student.CaregiverID = form.CaregiverID;
+
+                if (await _context.Students.AnyAsync(s => s.Email == student.Email))
+                {
+                    ModelState.AddModelError("Email", "This email is already in use by another student.");
+                    return View(student);
+                }
+
+                // Check full name
+                if (await _context.Students.AnyAsync(s => s.FirstName == student.FirstName && s.LastName == student.LastName))
+                {
+                    ModelState.AddModelError("", "A student with the same name already exists.");
+                    return View(student);
+                }
 
                 // If a new image was uploaded, save it and update ImagePath
                 if (form.ImageFile != null && form.ImageFile.Length > 0)

@@ -114,6 +114,20 @@ namespace AvondaleCollegeClinic.Controllers
             // keep your pattern: save when !ModelState.IsValid
             if (!ModelState.IsValid)
             {
+                // Check email
+                if (await _context.Teachers.AnyAsync(t => t.Email == teacher.Email))
+                {
+                    ModelState.AddModelError("Email", "This email is already in use by another teacher.");
+                    return View(teacher);
+                }
+
+                // Check full name
+                if (await _context.Teachers.AnyAsync(t => t.FirstName == teacher.FirstName && t.LastName == teacher.LastName))
+                {
+                    ModelState.AddModelError("", "A teacher with the same name already exists.");
+                    return View(teacher);
+                }
+
                 if (teacher.ImageFile != null && teacher.ImageFile.Length > 0)
                 {
                     string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/teachers");
@@ -184,6 +198,21 @@ namespace AvondaleCollegeClinic.Controllers
                 teacher.LastName = form.LastName;
                 teacher.Email = form.Email;
                 teacher.TeacherCode = form.TeacherCode;
+
+                // Check email
+                if (await _context.Teachers.AnyAsync(t => t.Email == teacher.Email))
+                {
+                    ModelState.AddModelError("Email", "This email is already in use by another teacher.");
+                    return View(teacher);
+                }
+
+                // Check full name
+                if (await _context.Teachers.AnyAsync(t => t.FirstName == teacher.FirstName && t.LastName == teacher.LastName))
+                {
+                    ModelState.AddModelError("", "A teacher with the same name already exists.");
+                    return View(teacher);
+                }
+
 
                 // handle new upload (optional)
                 if (form.ImageFile != null && form.ImageFile.Length > 0)
@@ -258,7 +287,7 @@ namespace AvondaleCollegeClinic.Controllers
             do
             {
                 int num = random.Next(1000, 9999);
-                newId = $"act-{year}{num}";
+                newId = $"act{year}{num}";
             }
             while (_context.Teachers.Any(t => t.TeacherID == newId));
 

@@ -4,6 +4,7 @@ using AvondaleCollegeClinic.Areas.Identity.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AvondaleCollegeClinic.Migrations
 {
     [DbContext(typeof(AvondaleCollegeClinicContext))]
-    partial class AvondaleCollegeClinicContextModelSnapshot : ModelSnapshot
+    [Migration("20250914060008_AddingduplicateValidationToModels")]
+    partial class AddingduplicateValidationToModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -115,7 +118,7 @@ namespace AvondaleCollegeClinic.Migrations
                         {
                             Id = "00000000-0000-0000-0000-000000000001",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "31ebd866-54d3-466f-a5d1-32af6be8b690",
+                            ConcurrencyStamp = "41828aba-241f-4de5-ae76-808493b64791",
                             Email = "admin@avondaleclinic.com",
                             EmailConfirmed = true,
                             FirstName = "System",
@@ -124,9 +127,9 @@ namespace AvondaleCollegeClinic.Migrations
                             MustSetPassword = false,
                             NormalizedEmail = "ADMIN@AVONDALECLINIC.COM",
                             NormalizedUserName = "ADMIN@AVONDALECLINIC.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEKY/5FGGJmSepnOoHDNDqe/MyXIDg86v4edc3wZZ9dt/HTyyxC+qcVuIzi3U97l6+A==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEH2SkbEuFEfrtvtIhEf0dFHKG8O51pXrlMHD6uMCGp08GCsX1/b1Dl2HcGijY4FfkA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "63ed24d9-979d-4d4d-99e0-060936df3a99",
+                            SecurityStamp = "1f8a62ae-4049-497c-aa87-0d5b5a5fb45f",
                             TwoFactorEnabled = false,
                             UserKind = 0,
                             UserName = "admin@avondaleclinic.com"
@@ -173,7 +176,7 @@ namespace AvondaleCollegeClinic.Migrations
                         {
                             AppointmentID = 1,
                             AppointmentDateTime = new DateTime(2025, 4, 15, 10, 30, 0, 0, DateTimeKind.Unspecified),
-                            DoctorID = "acd250001",
+                            DoctorID = "acd-250001",
                             Reason = "General check-up",
                             Status = 1,
                             StudentID = "ac250001"
@@ -182,7 +185,7 @@ namespace AvondaleCollegeClinic.Migrations
                         {
                             AppointmentID = 2,
                             AppointmentDateTime = new DateTime(2025, 4, 16, 11, 0, 0, 0, DateTimeKind.Unspecified),
-                            DoctorID = "acd250002",
+                            DoctorID = "acd-250002",
                             Reason = "Follow-up on injury",
                             Status = 0,
                             StudentID = "ac250002"
@@ -191,7 +194,7 @@ namespace AvondaleCollegeClinic.Migrations
                         {
                             AppointmentID = 3,
                             AppointmentDateTime = new DateTime(2025, 4, 17, 9, 15, 0, 0, DateTimeKind.Unspecified),
-                            DoctorID = "acd250003",
+                            DoctorID = "acd-250003",
                             Reason = "Routine blood test",
                             Status = 3,
                             StudentID = "ac250003"
@@ -200,7 +203,7 @@ namespace AvondaleCollegeClinic.Migrations
                         {
                             AppointmentID = 4,
                             AppointmentDateTime = new DateTime(2025, 4, 18, 14, 0, 0, 0, DateTimeKind.Unspecified),
-                            DoctorID = "acd250004",
+                            DoctorID = "acd-250004",
                             Reason = "Skin allergy consultation",
                             Status = 1,
                             StudentID = "ac250004"
@@ -209,7 +212,7 @@ namespace AvondaleCollegeClinic.Migrations
                         {
                             AppointmentID = 5,
                             AppointmentDateTime = new DateTime(2025, 4, 19, 15, 30, 0, 0, DateTimeKind.Unspecified),
-                            DoctorID = "acd250005",
+                            DoctorID = "acd-250005",
                             Reason = "Sore throat",
                             Status = 2,
                             StudentID = "ac250005"
@@ -218,7 +221,7 @@ namespace AvondaleCollegeClinic.Migrations
                         {
                             AppointmentID = 6,
                             AppointmentDateTime = new DateTime(2025, 4, 20, 13, 0, 0, 0, DateTimeKind.Unspecified),
-                            DoctorID = "acd250006",
+                            DoctorID = "acd-250006",
                             Reason = "Mental health support",
                             Status = 0,
                             StudentID = "ac250006"
@@ -227,7 +230,7 @@ namespace AvondaleCollegeClinic.Migrations
                         {
                             AppointmentID = 7,
                             AppointmentDateTime = new DateTime(2025, 4, 21, 10, 45, 0, 0, DateTimeKind.Unspecified),
-                            DoctorID = "acd250007",
+                            DoctorID = "acd-250007",
                             Reason = "Back pain evaluation",
                             Status = 1,
                             StudentID = "ac250007"
@@ -236,7 +239,7 @@ namespace AvondaleCollegeClinic.Migrations
                         {
                             AppointmentID = 8,
                             AppointmentDateTime = new DateTime(2025, 4, 22, 9, 0, 0, 0, DateTimeKind.Unspecified),
-                            DoctorID = "acd250008",
+                            DoctorID = "acd-250008",
                             Reason = "Yearly physical",
                             Status = 1,
                             StudentID = "ac250008"
@@ -245,7 +248,7 @@ namespace AvondaleCollegeClinic.Migrations
                         {
                             AppointmentID = 9,
                             AppointmentDateTime = new DateTime(2025, 4, 23, 11, 30, 0, 0, DateTimeKind.Unspecified),
-                            DoctorID = "acd250009",
+                            DoctorID = "acd-250009",
                             Reason = "Follow-up on flu",
                             Status = 3,
                             StudentID = "ac250009"
@@ -254,7 +257,7 @@ namespace AvondaleCollegeClinic.Migrations
                         {
                             AppointmentID = 10,
                             AppointmentDateTime = new DateTime(2025, 4, 24, 12, 15, 0, 0, DateTimeKind.Unspecified),
-                            DoctorID = "acd250010",
+                            DoctorID = "acd-250010",
                             Reason = "Foot injury assessment",
                             Status = 0,
                             StudentID = "ac250010"
@@ -263,16 +266,18 @@ namespace AvondaleCollegeClinic.Migrations
 
             modelBuilder.Entity("AvondaleCollegeClinic.Models.Caregiver", b =>
                 {
-                    b.Property<string>("CaregiverID")
-                        .HasMaxLength(9)
-                        .HasColumnType("nvarchar(9)");
+                    b.Property<int>("CaregiverID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CaregiverID"));
 
                     b.Property<DateTime>("DOB")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -303,12 +308,18 @@ namespace AvondaleCollegeClinic.Migrations
                         .IsUnique()
                         .HasFilter("[IdentityUserId] IS NOT NULL");
 
+                    b.HasIndex(new[] { "Email" }, "IX_Caregiver_Email")
+                        .IsUnique();
+
+                    b.HasIndex(new[] { "FirstName", "LastName" }, "IX_Caregiver_FullName")
+                        .IsUnique();
+
                     b.ToTable("Caregivers");
 
                     b.HasData(
                         new
                         {
-                            CaregiverID = "acc250001",
+                            CaregiverID = 1,
                             DOB = new DateTime(1980, 6, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "emma.wilson@email.com",
                             FirstName = "Emma",
@@ -318,7 +329,7 @@ namespace AvondaleCollegeClinic.Migrations
                         },
                         new
                         {
-                            CaregiverID = "acc250002",
+                            CaregiverID = 2,
                             DOB = new DateTime(1975, 3, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "john.evans@email.com",
                             FirstName = "John",
@@ -328,7 +339,7 @@ namespace AvondaleCollegeClinic.Migrations
                         },
                         new
                         {
-                            CaregiverID = "acc250003",
+                            CaregiverID = 3,
                             DOB = new DateTime(1985, 9, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "maya.singh@email.com",
                             FirstName = "Maya",
@@ -338,7 +349,7 @@ namespace AvondaleCollegeClinic.Migrations
                         },
                         new
                         {
-                            CaregiverID = "acc250004",
+                            CaregiverID = 4,
                             DOB = new DateTime(1979, 12, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "chris.brown@email.com",
                             FirstName = "Chris",
@@ -348,7 +359,7 @@ namespace AvondaleCollegeClinic.Migrations
                         },
                         new
                         {
-                            CaregiverID = "acc250005",
+                            CaregiverID = 5,
                             DOB = new DateTime(1982, 7, 17, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "sophie.nguyen@email.com",
                             FirstName = "Sophie",
@@ -358,7 +369,7 @@ namespace AvondaleCollegeClinic.Migrations
                         },
                         new
                         {
-                            CaregiverID = "acc250006",
+                            CaregiverID = 6,
                             DOB = new DateTime(1973, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "liam.king@email.com",
                             FirstName = "Liam",
@@ -368,7 +379,7 @@ namespace AvondaleCollegeClinic.Migrations
                         },
                         new
                         {
-                            CaregiverID = "acc250007",
+                            CaregiverID = 7,
                             DOB = new DateTime(1988, 2, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "olivia.rao@email.com",
                             FirstName = "Olivia",
@@ -378,7 +389,7 @@ namespace AvondaleCollegeClinic.Migrations
                         },
                         new
                         {
-                            CaregiverID = "acc250008",
+                            CaregiverID = 8,
                             DOB = new DateTime(1981, 5, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "ethan.lee@email.com",
                             FirstName = "Ethan",
@@ -388,7 +399,7 @@ namespace AvondaleCollegeClinic.Migrations
                         },
                         new
                         {
-                            CaregiverID = "acc250009",
+                            CaregiverID = 9,
                             DOB = new DateTime(1986, 10, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "grace.taylor@email.com",
                             FirstName = "Grace",
@@ -398,7 +409,7 @@ namespace AvondaleCollegeClinic.Migrations
                         },
                         new
                         {
-                            CaregiverID = "acc250010",
+                            CaregiverID = 10,
                             DOB = new DateTime(1977, 8, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "raj.patel@email.com",
                             FirstName = "Raj",
@@ -515,7 +526,7 @@ namespace AvondaleCollegeClinic.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -546,12 +557,18 @@ namespace AvondaleCollegeClinic.Migrations
                         .IsUnique()
                         .HasFilter("[IdentityUserId] IS NOT NULL");
 
+                    b.HasIndex(new[] { "Email" }, "IX_Doctor_Email")
+                        .IsUnique();
+
+                    b.HasIndex(new[] { "FirstName", "LastName" }, "IX_Doctor_FullName")
+                        .IsUnique();
+
                     b.ToTable("Doctors");
 
                     b.HasData(
                         new
                         {
-                            DoctorID = "acd250001",
+                            DoctorID = "acd-250001",
                             Email = "anna.roberts@avondaleclinic.com",
                             FirstName = "Anna",
                             LastName = "Roberts",
@@ -560,7 +577,7 @@ namespace AvondaleCollegeClinic.Migrations
                         },
                         new
                         {
-                            DoctorID = "acd250002",
+                            DoctorID = "acd-250002",
                             Email = "ben.morris@avondaleclinic.com",
                             FirstName = "Ben",
                             LastName = "Morris",
@@ -569,7 +586,7 @@ namespace AvondaleCollegeClinic.Migrations
                         },
                         new
                         {
-                            DoctorID = "acd250003",
+                            DoctorID = "acd-250003",
                             Email = "claire.nguyen@avondaleclinic.com",
                             FirstName = "Claire",
                             LastName = "Nguyen",
@@ -578,7 +595,7 @@ namespace AvondaleCollegeClinic.Migrations
                         },
                         new
                         {
-                            DoctorID = "acd250004",
+                            DoctorID = "acd-250004",
                             Email = "david.chen@avondaleclinic.com",
                             FirstName = "David",
                             LastName = "Chen",
@@ -587,7 +604,7 @@ namespace AvondaleCollegeClinic.Migrations
                         },
                         new
                         {
-                            DoctorID = "acd250005",
+                            DoctorID = "acd-250005",
                             Email = "ella.turner@avondaleclinic.com",
                             FirstName = "Ella",
                             LastName = "Turner",
@@ -596,7 +613,7 @@ namespace AvondaleCollegeClinic.Migrations
                         },
                         new
                         {
-                            DoctorID = "acd250006",
+                            DoctorID = "acd-250006",
                             Email = "frank.white@avondaleclinic.com",
                             FirstName = "Frank",
                             LastName = "White",
@@ -605,7 +622,7 @@ namespace AvondaleCollegeClinic.Migrations
                         },
                         new
                         {
-                            DoctorID = "acd250007",
+                            DoctorID = "acd-250007",
                             Email = "grace.lee@avondaleclinic.com",
                             FirstName = "Grace",
                             LastName = "Lee",
@@ -614,7 +631,7 @@ namespace AvondaleCollegeClinic.Migrations
                         },
                         new
                         {
-                            DoctorID = "acd250008",
+                            DoctorID = "acd-250008",
                             Email = "harry.singh@avondaleclinic.com",
                             FirstName = "Harry",
                             LastName = "Singh",
@@ -623,7 +640,7 @@ namespace AvondaleCollegeClinic.Migrations
                         },
                         new
                         {
-                            DoctorID = "acd250009",
+                            DoctorID = "acd-250009",
                             Email = "isla.walker@avondaleclinic.com",
                             FirstName = "Isla",
                             LastName = "Walker",
@@ -632,7 +649,7 @@ namespace AvondaleCollegeClinic.Migrations
                         },
                         new
                         {
-                            DoctorID = "acd250010",
+                            DoctorID = "acd-250010",
                             Email = "jack.patel@avondaleclinic.com",
                             FirstName = "Jack",
                             LastName = "Patel",
@@ -673,7 +690,7 @@ namespace AvondaleCollegeClinic.Migrations
                         {
                             DoctorAvailabilityID = 1,
                             AvailableDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DoctorID = "acd250001",
+                            DoctorID = "acd-250001",
                             EndTime = new DateTime(2025, 4, 15, 12, 0, 0, 0, DateTimeKind.Unspecified),
                             StartTime = new DateTime(2025, 4, 15, 9, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -681,7 +698,7 @@ namespace AvondaleCollegeClinic.Migrations
                         {
                             DoctorAvailabilityID = 2,
                             AvailableDate = new DateTime(2025, 4, 16, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DoctorID = "acd250002",
+                            DoctorID = "acd-250002",
                             EndTime = new DateTime(2025, 4, 16, 13, 0, 0, 0, DateTimeKind.Unspecified),
                             StartTime = new DateTime(2025, 4, 16, 10, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -689,7 +706,7 @@ namespace AvondaleCollegeClinic.Migrations
                         {
                             DoctorAvailabilityID = 3,
                             AvailableDate = new DateTime(2025, 4, 17, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DoctorID = "acd250003",
+                            DoctorID = "acd-250003",
                             EndTime = new DateTime(2025, 4, 17, 11, 30, 0, 0, DateTimeKind.Unspecified),
                             StartTime = new DateTime(2025, 4, 17, 8, 30, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -697,7 +714,7 @@ namespace AvondaleCollegeClinic.Migrations
                         {
                             DoctorAvailabilityID = 4,
                             AvailableDate = new DateTime(2025, 4, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DoctorID = "acd250004",
+                            DoctorID = "acd-250004",
                             EndTime = new DateTime(2025, 4, 18, 16, 0, 0, 0, DateTimeKind.Unspecified),
                             StartTime = new DateTime(2025, 4, 18, 13, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -705,7 +722,7 @@ namespace AvondaleCollegeClinic.Migrations
                         {
                             DoctorAvailabilityID = 5,
                             AvailableDate = new DateTime(2025, 4, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DoctorID = "acd250005",
+                            DoctorID = "acd-250005",
                             EndTime = new DateTime(2025, 4, 19, 12, 30, 0, 0, DateTimeKind.Unspecified),
                             StartTime = new DateTime(2025, 4, 19, 9, 30, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -713,7 +730,7 @@ namespace AvondaleCollegeClinic.Migrations
                         {
                             DoctorAvailabilityID = 6,
                             AvailableDate = new DateTime(2025, 4, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DoctorID = "acd250006",
+                            DoctorID = "acd-250006",
                             EndTime = new DateTime(2025, 4, 20, 17, 0, 0, 0, DateTimeKind.Unspecified),
                             StartTime = new DateTime(2025, 4, 20, 14, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -721,7 +738,7 @@ namespace AvondaleCollegeClinic.Migrations
                         {
                             DoctorAvailabilityID = 7,
                             AvailableDate = new DateTime(2025, 4, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DoctorID = "acd250007",
+                            DoctorID = "acd-250007",
                             EndTime = new DateTime(2025, 4, 21, 14, 0, 0, 0, DateTimeKind.Unspecified),
                             StartTime = new DateTime(2025, 4, 21, 11, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -729,7 +746,7 @@ namespace AvondaleCollegeClinic.Migrations
                         {
                             DoctorAvailabilityID = 8,
                             AvailableDate = new DateTime(2025, 4, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DoctorID = "acd250008",
+                            DoctorID = "acd-250008",
                             EndTime = new DateTime(2025, 4, 22, 18, 0, 0, 0, DateTimeKind.Unspecified),
                             StartTime = new DateTime(2025, 4, 22, 15, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -737,7 +754,7 @@ namespace AvondaleCollegeClinic.Migrations
                         {
                             DoctorAvailabilityID = 9,
                             AvailableDate = new DateTime(2025, 4, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DoctorID = "acd250009",
+                            DoctorID = "acd-250009",
                             EndTime = new DateTime(2025, 4, 23, 11, 0, 0, 0, DateTimeKind.Unspecified),
                             StartTime = new DateTime(2025, 4, 23, 8, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -745,7 +762,7 @@ namespace AvondaleCollegeClinic.Migrations
                         {
                             DoctorAvailabilityID = 10,
                             AvailableDate = new DateTime(2025, 4, 24, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DoctorID = "acd250010",
+                            DoctorID = "acd-250010",
                             EndTime = new DateTime(2025, 4, 24, 15, 0, 0, 0, DateTimeKind.Unspecified),
                             StartTime = new DateTime(2025, 4, 24, 12, 0, 0, 0, DateTimeKind.Unspecified)
                         });
@@ -781,7 +798,7 @@ namespace AvondaleCollegeClinic.Migrations
                             HomeroomID = "hr250001",
                             Block = 0,
                             ClassNumber = 1,
-                            TeacherID = "act250001",
+                            TeacherID = "act-250001",
                             YearLevel = 9
                         },
                         new
@@ -789,7 +806,7 @@ namespace AvondaleCollegeClinic.Migrations
                             HomeroomID = "hr250002",
                             Block = 1,
                             ClassNumber = 2,
-                            TeacherID = "act250002",
+                            TeacherID = "act-250002",
                             YearLevel = 10
                         },
                         new
@@ -797,7 +814,7 @@ namespace AvondaleCollegeClinic.Migrations
                             HomeroomID = "hr250003",
                             Block = 2,
                             ClassNumber = 3,
-                            TeacherID = "act250003",
+                            TeacherID = "act-250003",
                             YearLevel = 11
                         },
                         new
@@ -805,7 +822,7 @@ namespace AvondaleCollegeClinic.Migrations
                             HomeroomID = "hr250004",
                             Block = 3,
                             ClassNumber = 4,
-                            TeacherID = "act250004",
+                            TeacherID = "act-250004",
                             YearLevel = 12
                         },
                         new
@@ -813,7 +830,7 @@ namespace AvondaleCollegeClinic.Migrations
                             HomeroomID = "hr250005",
                             Block = 4,
                             ClassNumber = 5,
-                            TeacherID = "act250005",
+                            TeacherID = "act-250005",
                             YearLevel = 13
                         },
                         new
@@ -821,7 +838,7 @@ namespace AvondaleCollegeClinic.Migrations
                             HomeroomID = "hr250006",
                             Block = 5,
                             ClassNumber = 6,
-                            TeacherID = "act250006",
+                            TeacherID = "act-250006",
                             YearLevel = 9
                         },
                         new
@@ -829,7 +846,7 @@ namespace AvondaleCollegeClinic.Migrations
                             HomeroomID = "hr250007",
                             Block = 0,
                             ClassNumber = 7,
-                            TeacherID = "act250007",
+                            TeacherID = "act-250007",
                             YearLevel = 10
                         },
                         new
@@ -837,7 +854,7 @@ namespace AvondaleCollegeClinic.Migrations
                             HomeroomID = "hr250008",
                             Block = 1,
                             ClassNumber = 8,
-                            TeacherID = "act250008",
+                            TeacherID = "act-250008",
                             YearLevel = 11
                         },
                         new
@@ -845,7 +862,7 @@ namespace AvondaleCollegeClinic.Migrations
                             HomeroomID = "hr250009",
                             Block = 2,
                             ClassNumber = 9,
-                            TeacherID = "act250009",
+                            TeacherID = "act-250009",
                             YearLevel = 12
                         },
                         new
@@ -853,7 +870,7 @@ namespace AvondaleCollegeClinic.Migrations
                             HomeroomID = "hr250010",
                             Block = 3,
                             ClassNumber = 10,
-                            TeacherID = "act250010",
+                            TeacherID = "act-250010",
                             YearLevel = 13
                         });
                 });
@@ -1007,7 +1024,7 @@ namespace AvondaleCollegeClinic.Migrations
                         {
                             MedicalRecordID = 1,
                             Date = new DateTime(2025, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DoctorID = "acd250001",
+                            DoctorID = "acd-250001",
                             Notes = "Routine annual check-up. No issues found.",
                             StudentID = "ac250001"
                         },
@@ -1015,7 +1032,7 @@ namespace AvondaleCollegeClinic.Migrations
                         {
                             MedicalRecordID = 2,
                             Date = new DateTime(2025, 3, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DoctorID = "acd250002",
+                            DoctorID = "acd-250002",
                             Notes = "Reviewed knee sprain. Advised rest and light exercises.",
                             StudentID = "ac250002"
                         },
@@ -1023,7 +1040,7 @@ namespace AvondaleCollegeClinic.Migrations
                         {
                             MedicalRecordID = 3,
                             Date = new DateTime(2025, 3, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DoctorID = "acd250003",
+                            DoctorID = "acd-250003",
                             Notes = "Blood test completed. Results within normal range.",
                             StudentID = "ac250003"
                         },
@@ -1031,7 +1048,7 @@ namespace AvondaleCollegeClinic.Migrations
                         {
                             MedicalRecordID = 4,
                             Date = new DateTime(2025, 3, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DoctorID = "acd250004",
+                            DoctorID = "acd-250004",
                             Notes = "Observed rash on arms. Prescribed topical cream.",
                             StudentID = "ac250004"
                         },
@@ -1039,7 +1056,7 @@ namespace AvondaleCollegeClinic.Migrations
                         {
                             MedicalRecordID = 5,
                             Date = new DateTime(2025, 3, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DoctorID = "acd250005",
+                            DoctorID = "acd-250005",
                             Notes = "Reported headache and fatigue. Referred for lab tests.",
                             StudentID = "ac250005"
                         },
@@ -1047,7 +1064,7 @@ namespace AvondaleCollegeClinic.Migrations
                         {
                             MedicalRecordID = 6,
                             Date = new DateTime(2025, 3, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DoctorID = "acd250006",
+                            DoctorID = "acd-250006",
                             Notes = "Initial consultation for anxiety symptoms. Scheduled follow-up.",
                             StudentID = "ac250006"
                         },
@@ -1055,7 +1072,7 @@ namespace AvondaleCollegeClinic.Migrations
                         {
                             MedicalRecordID = 7,
                             Date = new DateTime(2025, 3, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DoctorID = "acd250007",
+                            DoctorID = "acd-250007",
                             Notes = "Complaints of lower back pain. Stretching advised.",
                             StudentID = "ac250007"
                         },
@@ -1063,7 +1080,7 @@ namespace AvondaleCollegeClinic.Migrations
                         {
                             MedicalRecordID = 8,
                             Date = new DateTime(2025, 3, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DoctorID = "acd250008",
+                            DoctorID = "acd-250008",
                             Notes = "Regular check-up completed. Advised hydration.",
                             StudentID = "ac250008"
                         },
@@ -1071,7 +1088,7 @@ namespace AvondaleCollegeClinic.Migrations
                         {
                             MedicalRecordID = 9,
                             Date = new DateTime(2025, 3, 13, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DoctorID = "acd250009",
+                            DoctorID = "acd-250009",
                             Notes = "Follow-up after flu recovery. Patient doing well.",
                             StudentID = "ac250009"
                         },
@@ -1079,7 +1096,7 @@ namespace AvondaleCollegeClinic.Migrations
                         {
                             MedicalRecordID = 10,
                             Date = new DateTime(2025, 3, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DoctorID = "acd250010",
+                            DoctorID = "acd-250010",
                             Notes = "Foot strain reviewed. Rest and ice recommended.",
                             StudentID = "ac250010"
                         });
@@ -1216,16 +1233,15 @@ namespace AvondaleCollegeClinic.Migrations
                     b.Property<string>("StudentID")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("CaregiverID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(9)");
+                    b.Property<int>("CaregiverID")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("DOB")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -1257,13 +1273,19 @@ namespace AvondaleCollegeClinic.Migrations
                         .IsUnique()
                         .HasFilter("[IdentityUserId] IS NOT NULL");
 
+                    b.HasIndex(new[] { "Email" }, "IX_Student_Email")
+                        .IsUnique();
+
+                    b.HasIndex(new[] { "FirstName", "LastName" }, "IX_Student_FullName")
+                        .IsUnique();
+
                     b.ToTable("Students");
 
                     b.HasData(
                         new
                         {
                             StudentID = "ac250001",
-                            CaregiverID = "acc250001",
+                            CaregiverID = 3,
                             DOB = new DateTime(2007, 10, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "sam.hill@school.com",
                             FirstName = "Sam",
@@ -1274,7 +1296,7 @@ namespace AvondaleCollegeClinic.Migrations
                         new
                         {
                             StudentID = "ac250002",
-                            CaregiverID = "acc250001",
+                            CaregiverID = 3,
                             DOB = new DateTime(2008, 12, 26, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "lily.evans@school.com",
                             FirstName = "Lily",
@@ -1285,7 +1307,7 @@ namespace AvondaleCollegeClinic.Migrations
                         new
                         {
                             StudentID = "ac250003",
-                            CaregiverID = "acc250001",
+                            CaregiverID = 3,
                             DOB = new DateTime(2009, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "jake.smith@school.com",
                             FirstName = "Jake",
@@ -1296,7 +1318,7 @@ namespace AvondaleCollegeClinic.Migrations
                         new
                         {
                             StudentID = "ac250004",
-                            CaregiverID = "acc250001",
+                            CaregiverID = 3,
                             DOB = new DateTime(2007, 9, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "emma.johnson@school.com",
                             FirstName = "Emma",
@@ -1307,7 +1329,7 @@ namespace AvondaleCollegeClinic.Migrations
                         new
                         {
                             StudentID = "ac250005",
-                            CaregiverID = "acc250004",
+                            CaregiverID = 4,
                             DOB = new DateTime(2008, 1, 7, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "mia.brown@school.com",
                             FirstName = "Mia",
@@ -1318,7 +1340,7 @@ namespace AvondaleCollegeClinic.Migrations
                         new
                         {
                             StudentID = "ac250006",
-                            CaregiverID = "acc250002",
+                            CaregiverID = 2,
                             DOB = new DateTime(2009, 1, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "noah.taylor@school.com",
                             FirstName = "Noah",
@@ -1329,7 +1351,7 @@ namespace AvondaleCollegeClinic.Migrations
                         new
                         {
                             StudentID = "ac250007",
-                            CaregiverID = "acc250001",
+                            CaregiverID = 1,
                             DOB = new DateTime(2007, 12, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "olivia.anderson@school.com",
                             FirstName = "Olivia",
@@ -1340,7 +1362,7 @@ namespace AvondaleCollegeClinic.Migrations
                         new
                         {
                             StudentID = "ac250008",
-                            CaregiverID = "acc250001",
+                            CaregiverID = 3,
                             DOB = new DateTime(2008, 12, 7, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "liam.thomas@school.com",
                             FirstName = "Liam",
@@ -1351,7 +1373,7 @@ namespace AvondaleCollegeClinic.Migrations
                         new
                         {
                             StudentID = "ac250009",
-                            CaregiverID = "acc250005",
+                            CaregiverID = 5,
                             DOB = new DateTime(2009, 4, 26, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "ava.jackson@school.com",
                             FirstName = "Ava",
@@ -1362,7 +1384,7 @@ namespace AvondaleCollegeClinic.Migrations
                         new
                         {
                             StudentID = "ac250010",
-                            CaregiverID = "acc250001",
+                            CaregiverID = 1,
                             DOB = new DateTime(2007, 7, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "ethan.white@school.com",
                             FirstName = "Ethan",
@@ -1379,7 +1401,7 @@ namespace AvondaleCollegeClinic.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -1408,12 +1430,18 @@ namespace AvondaleCollegeClinic.Migrations
                         .IsUnique()
                         .HasFilter("[IdentityUserId] IS NOT NULL");
 
+                    b.HasIndex(new[] { "Email" }, "IX_Teacher_Email")
+                        .IsUnique();
+
+                    b.HasIndex(new[] { "FirstName", "LastName" }, "IX_Teacher_FullName")
+                        .IsUnique();
+
                     b.ToTable("Teachers");
 
                     b.HasData(
                         new
                         {
-                            TeacherID = "act250001",
+                            TeacherID = "act-250001",
                             Email = "olivia.park@avondale.school.nz",
                             FirstName = "Olivia",
                             LastName = "Park",
@@ -1421,7 +1449,7 @@ namespace AvondaleCollegeClinic.Migrations
                         },
                         new
                         {
-                            TeacherID = "act250002",
+                            TeacherID = "act-250002",
                             Email = "james.ngata@avondale.school.nz",
                             FirstName = "James",
                             LastName = "Ngata",
@@ -1429,7 +1457,7 @@ namespace AvondaleCollegeClinic.Migrations
                         },
                         new
                         {
-                            TeacherID = "act250003",
+                            TeacherID = "act-250003",
                             Email = "sophia.lee@avondale.school.nz",
                             FirstName = "Sophia",
                             LastName = "Lee",
@@ -1437,7 +1465,7 @@ namespace AvondaleCollegeClinic.Migrations
                         },
                         new
                         {
-                            TeacherID = "act250004",
+                            TeacherID = "act-250004",
                             Email = "ethan.white@avondale.school.nz",
                             FirstName = "Ethan",
                             LastName = "White",
@@ -1445,7 +1473,7 @@ namespace AvondaleCollegeClinic.Migrations
                         },
                         new
                         {
-                            TeacherID = "act250005",
+                            TeacherID = "act-250005",
                             Email = "ava.singh@avondale.school.nz",
                             FirstName = "Ava",
                             LastName = "Singh",
@@ -1453,7 +1481,7 @@ namespace AvondaleCollegeClinic.Migrations
                         },
                         new
                         {
-                            TeacherID = "act250006",
+                            TeacherID = "act-250006",
                             Email = "william.morris@avondale.school.nz",
                             FirstName = "William",
                             LastName = "Morris",
@@ -1461,7 +1489,7 @@ namespace AvondaleCollegeClinic.Migrations
                         },
                         new
                         {
-                            TeacherID = "act250007",
+                            TeacherID = "act-250007",
                             Email = "isabella.tao@avondale.school.nz",
                             FirstName = "Isabella",
                             LastName = "Tao",
@@ -1469,7 +1497,7 @@ namespace AvondaleCollegeClinic.Migrations
                         },
                         new
                         {
-                            TeacherID = "act250008",
+                            TeacherID = "act-250008",
                             Email = "lucas.patel@avondale.school.nz",
                             FirstName = "Lucas",
                             LastName = "Patel",
@@ -1477,7 +1505,7 @@ namespace AvondaleCollegeClinic.Migrations
                         },
                         new
                         {
-                            TeacherID = "act250009",
+                            TeacherID = "act-250009",
                             Email = "emily.brown@avondale.school.nz",
                             FirstName = "Emily",
                             LastName = "Brown",
@@ -1485,7 +1513,7 @@ namespace AvondaleCollegeClinic.Migrations
                         },
                         new
                         {
-                            TeacherID = "act250010",
+                            TeacherID = "act-250010",
                             Email = "daniel.king@avondale.school.nz",
                             FirstName = "Daniel",
                             LastName = "King",

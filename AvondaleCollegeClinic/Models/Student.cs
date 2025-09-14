@@ -1,9 +1,11 @@
 ﻿using AvondaleCollegeClinic.Areas.Identity.Data;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AvondaleCollegeClinic.Models
 {
+
     public class Student
     {
         [Key]
@@ -43,7 +45,7 @@ namespace AvondaleCollegeClinic.Models
 
         [Required]
         [Display(Name = "Caregiver")]
-        public int CaregiverID { get; set; }
+        public string CaregiverID { get; set; }
 
         public Homeroom Homeroom { get; set; }
         public Caregiver Caregiver { get; set; }

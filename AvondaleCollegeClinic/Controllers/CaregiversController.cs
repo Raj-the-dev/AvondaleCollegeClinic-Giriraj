@@ -70,7 +70,7 @@ namespace AvondaleCollegeClinic.Controllers
         }
 
         // GET: Caregivers/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(string? id)
         {
             if (id == null)
             {
@@ -90,18 +90,37 @@ namespace AvondaleCollegeClinic.Controllers
         // GET: Caregivers/Create
         public IActionResult Create()
         {
-            return View();
+            var caregiver = new Caregiver
+            {
+                CaregiverID = GenerateCaregiverID(), // auto-generate the Caregiver ID
+                DOB = DateTime.Now                   // pre-fill DOB with today (user can change)
+            };
+
+            return View(caregiver);
         }
 
         // POST: Caregivers/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("CaregiverID,FirstName,LastName,DOB,Email,Phone,Relationship,ImageFile,ImagePath")] Caregiver caregiver)
         {
             if (!ModelState.IsValid)
             {
+                // Check email uniqueness
+                if (await _context.Caregivers.AnyAsync(c => c.Email == caregiver.Email))
+                {
+                    ModelState.AddModelError("Email", "This email is already in use by another caregiver.");
+                    return View(caregiver);
+                }
+
+                // Check full name uniqueness
+                if (await _context.Caregivers.AnyAsync(c => c.FirstName == caregiver.FirstName && c.LastName == caregiver.LastName))
+                {
+                    ModelState.AddModelError("", "A caregiver with the same name already exists.");
+                    return View(caregiver);
+                }
+
+                // Handle image upload
                 if (caregiver.ImageFile != null && caregiver.ImageFile.Length > 0)
                 {
                     string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/caregivers");
@@ -125,7 +144,7 @@ namespace AvondaleCollegeClinic.Controllers
         }
 
         // GET: Caregivers/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(string? id)
         {
             if (id == null)
             {
@@ -145,7 +164,7 @@ namespace AvondaleCollegeClinic.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CaregiverID,FirstName,LastName,DOB,Email,Phone,Relationship,ImageFile")] Caregiver form)
+        public async Task<IActionResult> Edit(string id, [Bind("CaregiverID,FirstName,LastName,DOB,Email,Phone,Relationship,ImageFile")] Caregiver form)
         {
             if (id != form.CaregiverID) return NotFound();
 
@@ -160,6 +179,20 @@ namespace AvondaleCollegeClinic.Controllers
                 caregiver.Email = form.Email;
                 caregiver.Phone = form.Phone;
                 caregiver.Relationship = form.Relationship;
+
+                // Check email
+                if (await _context.Caregivers.AnyAsync(c => c.Email == caregiver.Email))
+                {
+                    ModelState.AddModelError("Email", "This email is already in use by another caregiver.");
+                    return View(caregiver);
+                }
+
+                // Check full name
+                if (await _context.Caregivers.AnyAsync(c => c.FirstName == caregiver.FirstName && c.LastName == caregiver.LastName))
+                {
+                    ModelState.AddModelError("", "A caregiver with the same name already exists.");
+                    return View(caregiver);
+                }
 
                 if (form.ImageFile != null && form.ImageFile.Length > 0)
                 {
@@ -183,8 +216,8 @@ namespace AvondaleCollegeClinic.Controllers
             return View(form);
         }
 
-        // GET: Caregivers/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        //GET: Caregivers/Delete/5
+        public async Task<IActionResult> Delete(string? id)
         {
             if (id == null)
             {
@@ -204,7 +237,7 @@ namespace AvondaleCollegeClinic.Controllers
         // POST: Caregivers/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(string? id)
         {
             var caregiver = await _context.Caregivers.FindAsync(id);
             if (caregiver != null)
@@ -216,9 +249,32 @@ namespace AvondaleCollegeClinic.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CaregiverExists(int id)
+        private bool CaregiverExists(string id)
         {
             return _context.Caregivers.Any(e => e.CaregiverID == id);
+        }
+        private string GenerateCaregiverID()
+        {
+            // Start the ID with "acc" + current year's last two digits (e.g., "acc25" for 2025)
+            string yearPrefix = "acc" + DateTime.Now.ToString("yy");
+
+            // Find the most recent caregiver ID that starts with that prefix
+            var latestId = _context.Caregivers
+                .Where(c => c.CaregiverID.StartsWith(yearPrefix))
+                .OrderByDescending(c => c.CaregiverID)
+                .Select(c => c.CaregiverID)
+                .FirstOrDefault();
+
+            // Figure out what the next number should be
+            int nextNumber = 1;
+            if (!string.IsNullOrEmpty(latestId) && latestId.Length == 9) // "acc25" + 4 digits = 9 chars
+            {
+                int.TryParse(latestId.Substring(5), out nextNumber);
+                nextNumber++; // Increment for the new ID
+            }
+
+            // Return something like "acc250001", "acc250002", etc.
+            return $"{yearPrefix}{nextNumber:D4}";
         }
     }
 }

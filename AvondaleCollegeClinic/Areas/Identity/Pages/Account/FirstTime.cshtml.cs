@@ -120,8 +120,7 @@ namespace AvondaleCollegeClinic.Areas.Identity.Pages.Account
             if (await _db.Students.AsNoTracking().AnyAsync(s => s.StudentID == id)) return "Student";
             if (await _db.Teachers.AsNoTracking().AnyAsync(t => t.TeacherID == id)) return "Teacher";
             if (await _db.Doctors.AsNoTracking().AnyAsync(d => d.DoctorID == id)) return "Doctor";
-            if (int.TryParse(id, out var cgId) &&
-                await _db.Caregivers.AsNoTracking().AnyAsync(c => c.CaregiverID == cgId)) return "Caregiver";
+            if (await _db.Caregivers.AsNoTracking().AnyAsync(c => c.CaregiverID == id)) return "Caregiver";
 
             return null;
         }
