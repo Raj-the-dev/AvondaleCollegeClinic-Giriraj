@@ -1,0 +1,42 @@
+﻿@page
+@model AvondaleCollegeClinic.Areas.Identity.Pages.Account.FirstTimeModel
+@{
+    ViewData["Title"] = "First-time setup";
+}
+<h1>First-time setup</h1>
+<p class="text-muted">Use this once to create your login with your school/clinic ID.</p>
+
+<div class="row">
+    <div class="col-md-6">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Identifier" class="form-control" placeholder="ID" />
+                <label asp-for="Input.Identifier"></label>
+                <span asp-validation-for="Input.Identifier" class="text-danger"></span>
+            </div>
+
+
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Password" class="form-control" />
+                <label asp-for="Input.Password"></label>
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.ConfirmPassword" class="form-control" />
+                <label asp-for="Input.ConfirmPassword"></label>
+            </div>
+            <div class="form-floating mb-3">
+                <input asp-for="Input.CityOfBirth" class="form-control" />
+                <label asp-for="Input.CityOfBirth"></label>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Complete Setup</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

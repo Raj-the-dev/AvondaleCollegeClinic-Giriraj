@@ -1,0 +1,33 @@
+﻿@page
+@model AvondaleCollegeClinic.Areas.Identity.Pages.Account.KeywordLoginModel
+@{
+    ViewData["Title"] = "Keyword login";
+}
+<h1>Keyword login</h1>
+<p class="text-muted">If you forgot your password, you can log in using your keyword (city of birth).</p>
+
+<div class="row">
+    <div class="col-md-5">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Identifier" class="form-control" />
+                <label asp-for="Input.Identifier"></label>
+                <span asp-validation-for="Input.Identifier" class="text-danger"></span>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Keyword" class="form-control" />
+                <label asp-for="Input.Keyword"></label>
+                <span asp-validation-for="Input.Keyword" class="text-danger"></span>
+            </div>
+
+            <button class="btn btn-primary w-100" type="submit">Login with keyword</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
