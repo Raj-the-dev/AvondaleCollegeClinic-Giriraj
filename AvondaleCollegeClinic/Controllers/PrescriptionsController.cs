@@ -8,16 +8,22 @@ using Microsoft.EntityFrameworkCore;
 using AvondaleCollegeClinic.Areas.Identity.Data;
 using AvondaleCollegeClinic.Models;
 using AvondaleCollegeClinic.Helpers;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace AvondaleCollegeClinic.Controllers
 {
+    [Authorize(Roles = "Admin, Student, Caregiver, Doctor")]
     public class PrescriptionsController : Controller
     {
         private readonly AvondaleCollegeClinicContext _context;
+        private readonly UserManager<AvondaleCollegeClinicUser> _userManager;
 
-        public PrescriptionsController(AvondaleCollegeClinicContext context)
+        public PrescriptionsController(AvondaleCollegeClinicContext context, UserManager<AvondaleCollegeClinicUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Prescriptions
@@ -28,12 +34,62 @@ namespace AvondaleCollegeClinic.Controllers
             ViewData["DosageSortParm"] = sortOrder == "Dosage" ? "dosage_desc" : "Dosage";
             ViewData["CurrentFilter"] = searchString;
 
-            var prescriptions = await _context.Prescriptions
+            // 1) Who is logged in?
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Challenge(); // not logged in
+
+            var userId = user.Id;                    // Identity PK (GUID)
+            var uname = user.UserName ?? "";        // e.g., ac250001 or acc250001
+            var email = user.Email ?? "";
+
+            // 2) Resolve domain IDs for Student OR Caregiver
+            var studentId = await _context.Students
+                .Where(s => s.IdentityUserId == userId || s.StudentID == uname || s.Email == email)
+                .Select(s => s.StudentID)
+                .FirstOrDefaultAsync();
+
+            var caregiverId = await _context.Caregivers
+                .Where(c => c.IdentityUserId == userId || c.CaregiverID == uname || c.Email == email)
+                .Select(c => c.CaregiverID)
+                .FirstOrDefaultAsync();
+
+            // 3) Safety: if neither studentId nor caregiverId, block
+            if (string.IsNullOrEmpty(studentId) && string.IsNullOrEmpty(caregiverId))
+            {
+                return Forbid();
+            }
+
+            // 4) Base query restricted to either Student OR Caregiver
+            var query = _context.Prescriptions
                 .Include(p => p.Diagnosis)
                     .ThenInclude(d => d.Appointment)
                         .ThenInclude(a => a.Student)
-                .AsNoTracking()
-                .ToListAsync();
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(studentId))
+            {
+                // Student → only their own prescriptions
+                query = query.Where(p => p.Diagnosis.Appointment.StudentID == studentId);
+            }
+            else if (!string.IsNullOrEmpty(caregiverId))
+            {
+                // Caregiver → prescriptions for ALL their students
+                query = query.Where(p => p.Diagnosis.Appointment.Student.CaregiverID == caregiverId);
+            }
+
+            // 5) Optional search (DB-level LIKE for speed)
+            if (!string.IsNullOrWhiteSpace(searchString))
+            {
+                var term = $"%{searchString.Trim()}%";
+                query = query.Where(p =>
+                    EF.Functions.Like(p.Medication, term) ||
+                    EF.Functions.Like(p.Dosage, term) ||
+                    EF.Functions.Like(p.Diagnosis.Appointment.Student.FirstName, term) ||
+                    EF.Functions.Like(p.Diagnosis.Appointment.Student.LastName, term)
+                );
+            }
+
+            var prescriptions = await query.AsNoTracking().ToListAsync();
 
             if (!string.IsNullOrEmpty(searchString))
             {
@@ -233,5 +289,6 @@ namespace AvondaleCollegeClinic.Controllers
         {
             return _context.Prescriptions.Any(e => e.PrescriptionID == id);
         }
+
     }
 }

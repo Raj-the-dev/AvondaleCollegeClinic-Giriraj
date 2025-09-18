@@ -99,16 +99,16 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
 
         base.OnModelCreating(modelBuilder);
         modelBuilder.Entity<Student>().HasData(
-            new Student {  FirstName = "Sam", LastName = "Hill", ImagePath = "", DOB = new DateTime(2007, 10, 14), Email = "sam.hill@school.com", HomeroomID = "hr250001", CaregiverID = "acc250001", StudentID = "ac250001" },
-            new Student {  FirstName = "Lily", LastName = "Evans", ImagePath = "", DOB = new DateTime(2008, 12, 26), Email = "lily.evans@school.com", HomeroomID = "hr250003", CaregiverID = "acc250001", StudentID = "ac250002" },
-            new Student {  FirstName = "Jake", LastName = "Smith", ImagePath = "", DOB = new DateTime(2009, 11, 28), Email = "jake.smith@school.com", HomeroomID = "hr250003", CaregiverID = "acc250001", StudentID = "ac250003" },
-            new Student {  FirstName = "Emma", LastName = "Johnson", ImagePath = "", DOB = new DateTime(2007, 9, 4), Email = "emma.johnson@school.com", HomeroomID = "hr250001", CaregiverID = "acc250001", StudentID = "ac250004" },
-            new Student {  FirstName = "Mia", LastName = "Brown", ImagePath = "", DOB = new DateTime(2008, 1, 7), Email = "mia.brown@school.com", HomeroomID = "hr250003", CaregiverID = "acc250004", StudentID = "ac250005" },
-            new Student {  FirstName = "Noah", LastName = "Taylor", ImagePath = "", DOB = new DateTime(2009, 1, 22), Email = "noah.taylor@school.com", HomeroomID = "hr250002", CaregiverID = "acc250002", StudentID = "ac250006" },
-            new Student {  FirstName = "Olivia", LastName = "Anderson", ImagePath = "", DOB = new DateTime(2007, 12, 23), Email = "olivia.anderson@school.com", HomeroomID = "hr250001", CaregiverID = "acc250001", StudentID = "ac250007" },
-            new Student {  FirstName = "Liam", LastName = "Thomas", ImagePath = "", DOB = new DateTime(2008, 12, 7), Email = "liam.thomas@school.com", HomeroomID = "hr250001", CaregiverID = "acc250001", StudentID = "ac250008" },
-            new Student {  FirstName = "Ava", LastName = "Jackson", ImagePath = "", DOB = new DateTime(2009, 4, 26), Email = "ava.jackson@school.com", HomeroomID = "hr250002", CaregiverID = "acc250005", StudentID = "ac250009" },
-            new Student {  FirstName = "Ethan", LastName = "White", ImagePath = "", DOB = new DateTime(2007, 7, 4), Email = "ethan.white@school.com", HomeroomID = "hr250002", CaregiverID = "acc250001", StudentID = "ac250010" }
+            new Student {  FirstName = "Sam", LastName = "Hill", ImagePath = "/images/students/1.jpg", DOB = new DateTime(2007, 10, 14), Email = "sam.hill@school.com", HomeroomID = "hr250001", CaregiverID = "acc250001", StudentID = "ac250001" },
+            new Student {  FirstName = "Lily", LastName = "Evans", ImagePath = "/images/students/1.jpg", DOB = new DateTime(2008, 12, 26), Email = "lily.evans@school.com", HomeroomID = "hr250003", CaregiverID = "acc250001", StudentID = "ac250002" },
+            new Student {  FirstName = "Jake", LastName = "Smith", ImagePath = "/images/students/1.jpg", DOB = new DateTime(2009, 11, 28), Email = "jake.smith@school.com", HomeroomID = "hr250003", CaregiverID = "acc250001", StudentID = "ac250003" },
+            new Student {  FirstName = "Emma", LastName = "Johnson", ImagePath = "/images/students/1.jpg", DOB = new DateTime(2007, 9, 4), Email = "emma.johnson@school.com", HomeroomID = "hr250001", CaregiverID = "acc250001", StudentID = "ac250004" },
+            new Student {  FirstName = "Mia", LastName = "Brown", ImagePath = "/images/students/1.jpg", DOB = new DateTime(2008, 1, 7), Email = "mia.brown@school.com", HomeroomID = "hr250003", CaregiverID = "acc250004", StudentID = "ac250005" },
+            new Student {  FirstName = "Noah", LastName = "Taylor", ImagePath = "/images/students/1.jpg", DOB = new DateTime(2009, 1, 22), Email = "noah.taylor@school.com", HomeroomID = "hr250002", CaregiverID = "acc250002", StudentID = "ac250006" },
+            new Student {  FirstName = "Olivia", LastName = "Anderson", ImagePath = "/images/students/1.jpg", DOB = new DateTime(2007, 12, 23), Email = "olivia.anderson@school.com", HomeroomID = "hr250001", CaregiverID = "acc250001", StudentID = "ac250007" },
+            new Student {  FirstName = "Liam", LastName = "Thomas", ImagePath = "/images/students/1.jpg", DOB = new DateTime(2008, 12, 7), Email = "liam.thomas@school.com", HomeroomID = "hr250001", CaregiverID = "acc250001", StudentID = "ac250008" },
+            new Student {  FirstName = "Ava", LastName = "Jackson", ImagePath = "/images/students/1.jpg", DOB = new DateTime(2009, 4, 26), Email = "ava.jackson@school.com", HomeroomID = "hr250002", CaregiverID = "acc250005", StudentID = "ac250009" },
+            new Student {  FirstName = "Ethan", LastName = "White", ImagePath = "/images/students/1.jpg", DOB = new DateTime(2007, 7, 4), Email = "ethan.white@school.com", HomeroomID = "hr250002", CaregiverID = "acc250001", StudentID = "ac250010" }
         );
 
         modelBuilder.Entity<Caregiver>().HasData(
@@ -120,7 +120,8 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 DOB = new DateTime(1980, 6, 12),
                 Email = "emma.wilson@email.com",
                 Phone = "021-123-4567",
-                Relationship = RelationshipType.Parent
+                Relationship = RelationshipType.Parent,
+                ImagePath = "/images/caregivers/1.jpeg"
             },
             new Caregiver
             {
@@ -130,7 +131,8 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 DOB = new DateTime(1975, 3, 8),
                 Email = "john.evans@email.com",
                 Phone = "022-987-6543",
-                Relationship = RelationshipType.Parent
+                Relationship = RelationshipType.Parent,
+                ImagePath = "/images/caregivers/2.jpeg"
             },
             new Caregiver
             {
@@ -140,7 +142,8 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 DOB = new DateTime(1985, 9, 20),
                 Email = "maya.singh@email.com",
                 Phone = "021-555-8899",
-                Relationship = RelationshipType.Guardian
+                Relationship = RelationshipType.Guardian,
+                ImagePath = "/images/caregivers/3.jpeg"
             },
             new Caregiver
             {
@@ -150,7 +153,8 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 DOB = new DateTime(1979, 12, 4),
                 Email = "chris.brown@email.com",
                 Phone = "021-333-2222",
-                Relationship = RelationshipType.Sibling
+                Relationship = RelationshipType.Sibling,
+                ImagePath = "/images/caregivers/5.jepg.jpg"
             },
             new Caregiver
             {
@@ -160,7 +164,8 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 DOB = new DateTime(1982, 7, 17),
                 Email = "sophie.nguyen@email.com",
                 Phone = "022-111-5555",
-                Relationship = RelationshipType.Parent
+                Relationship = RelationshipType.Parent,
+                ImagePath = "/images/caregivers/6.jpg"
             },
             new Caregiver
             {
@@ -170,7 +175,8 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 DOB = new DateTime(1973, 11, 25),
                 Email = "liam.king@email.com",
                 Phone = "021-456-7890",
-                Relationship = RelationshipType.Other
+                Relationship = RelationshipType.Other,
+                ImagePath = "/images/caregivers/7.jpg"
             },
             new Caregiver
             {
@@ -180,7 +186,8 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 DOB = new DateTime(1988, 2, 14),
                 Email = "olivia.rao@email.com",
                 Phone = "021-999-8888",
-                Relationship = RelationshipType.Parent
+                Relationship = RelationshipType.Parent,
+                ImagePath = "/images/caregivers/8.jpg"
             },
             new Caregiver
             {
@@ -190,7 +197,8 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 DOB = new DateTime(1981, 5, 5),
                 Email = "ethan.lee@email.com",
                 Phone = "022-123-9999",
-                Relationship = RelationshipType.Guardian
+                Relationship = RelationshipType.Guardian,
+                ImagePath = "/images/caregivers/9.jpg"
             },
             new Caregiver
             {
@@ -200,7 +208,8 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 DOB = new DateTime(1986, 10, 30),
                 Email = "grace.taylor@email.com",
                 Phone = "021-234-5678",
-                Relationship = RelationshipType.Parent
+                Relationship = RelationshipType.Parent,
+                ImagePath = "/images/caregivers/10.jpg"
             },
             new Caregiver
             {
@@ -210,21 +219,22 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 DOB = new DateTime(1977, 8, 22),
                 Email = "raj.patel@email.com",
                 Phone = "022-777-3333",
-                Relationship = RelationshipType.Other
+                Relationship = RelationshipType.Other,
+                ImagePath = "/images/caregivers/11.jpg"
             }
         );
 
         modelBuilder.Entity<Doctor>().HasData(
-            new Doctor { DoctorID = "acd250001", FirstName = "Anna", LastName = "Roberts", Specialization = SpecializationType.General, Email = "anna.roberts@avondaleclinic.com", Phone = "021-111-2345" },
-            new Doctor { DoctorID = "acd250002", FirstName = "Ben", LastName = "Morris", Specialization = SpecializationType.Pediatric, Email = "ben.morris@avondaleclinic.com", Phone = "021-222-3456" },
-            new Doctor { DoctorID = "acd250003", FirstName = "Claire", LastName = "Nguyen", Specialization = SpecializationType.MentalHealth, Email = "claire.nguyen@avondaleclinic.com", Phone = "021-333-4567" },
-            new Doctor { DoctorID = "acd250004", FirstName = "David", LastName = "Chen", Specialization = SpecializationType.SportsMedicine, Email = "david.chen@avondaleclinic.com", Phone = "021-444-5678" },
-            new Doctor { DoctorID = "acd250005", FirstName = "Ella", LastName = "Turner", Specialization = SpecializationType.Dermatology, Email = "ella.turner@avondaleclinic.com", Phone = "021-555-6789" },
-            new Doctor { DoctorID = "acd250006", FirstName = "Frank", LastName = "White", Specialization = SpecializationType.General, Email = "frank.white@avondaleclinic.com", Phone = "021-666-7890" },
-            new Doctor { DoctorID = "acd250007", FirstName = "Grace", LastName = "Lee", Specialization = SpecializationType.Pediatric, Email = "grace.lee@avondaleclinic.com", Phone = "021-777-8901" },
-            new Doctor { DoctorID = "acd250008", FirstName = "Harry", LastName = "Singh", Specialization = SpecializationType.MentalHealth, Email = "harry.singh@avondaleclinic.com", Phone = "021-888-9012" },
-            new Doctor { DoctorID = "acd250009", FirstName = "Isla", LastName = "Walker", Specialization = SpecializationType.SportsMedicine, Email = "isla.walker@avondaleclinic.com", Phone = "021-999-0123" },
-            new Doctor { DoctorID = "acd250010", FirstName = "Jack", LastName = "Patel", Specialization = SpecializationType.Dermatology, Email = "jack.patel@avondaleclinic.com", Phone = "021-000-1234" }
+            new Doctor { DoctorID = "acd250001", FirstName = "Anna", LastName = "Roberts", Specialization = SpecializationType.General, Email = "anna.roberts@avondaleclinic.com", Phone = "021-111-2345", ImagePath = "/images/doctors/1.jpg" },
+            new Doctor { DoctorID = "acd250002", FirstName = "Ben", LastName = "Morris", Specialization = SpecializationType.Pediatric, Email = "ben.morris@avondaleclinic.com", Phone = "021-222-3456", ImagePath = "/images/doctors/2.jpg" },
+            new Doctor { DoctorID = "acd250003", FirstName = "Claire", LastName = "Nguyen", Specialization = SpecializationType.MentalHealth, Email = "claire.nguyen@avondaleclinic.com", Phone = "021-333-4567", ImagePath = "/images/doctors/3.png" },
+            new Doctor { DoctorID = "acd250004", FirstName = "David", LastName = "Chen", Specialization = SpecializationType.SportsMedicine, Email = "david.chen@avondaleclinic.com", Phone = "021-444-5678" , ImagePath = "/images/doctors/4.png" },
+            new Doctor { DoctorID = "acd250005", FirstName = "Ella", LastName = "Turner", Specialization = SpecializationType.Dermatology, Email = "ella.turner@avondaleclinic.com", Phone = "021-555-6789", ImagePath = "/images/doctors/5.jpg" },
+            new Doctor { DoctorID = "acd250006", FirstName = "Frank", LastName = "White", Specialization = SpecializationType.General, Email = "frank.white@avondaleclinic.com", Phone = "021-666-7890" , ImagePath = "/images/doctors/6.png" },
+            new Doctor { DoctorID = "acd250007", FirstName = "Grace", LastName = "Lee", Specialization = SpecializationType.Pediatric, Email = "grace.lee@avondaleclinic.com", Phone = "021-777-8901", ImagePath = "/images/doctors/7.jpg" },
+            new Doctor { DoctorID = "acd250008", FirstName = "Harry", LastName = "Singh", Specialization = SpecializationType.MentalHealth, Email = "harry.singh@avondaleclinic.com", Phone = "021-888-9012" , ImagePath = "/images/doctors/8.jpg" },
+            new Doctor { DoctorID = "acd250009", FirstName = "Isla", LastName = "Walker", Specialization = SpecializationType.SportsMedicine, Email = "isla.walker@avondaleclinic.com", Phone = "021-999-0123" , ImagePath = "/images/doctors/9.jpg" },
+            new Doctor { DoctorID = "acd250010", FirstName = "Jack", LastName = "Patel", Specialization = SpecializationType.Dermatology, Email = "jack.patel@avondaleclinic.com", Phone = "021-000-1234" , ImagePath = "/images/doctors/10.jpg" }
         );
 
         modelBuilder.Entity<DoctorAvailability>().HasData(
@@ -489,10 +499,11 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             new Teacher
             {
                 TeacherID = "act250001",
-                FirstName = "Olivia",
-                LastName = "Park",
-                Email = "olivia.park@avondale.school.nz",
-                TeacherCode = "OPA"
+                FirstName = "Mr. Vijay",
+                LastName = "Prasad",
+                Email = "v.Prasad@avondale.school.nz",
+                TeacherCode = "OPA",
+                ImagePath = "/images/teachers/MrPrasad.jpg"
             },
             new Teacher
             {
@@ -500,7 +511,8 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 FirstName = "James",
                 LastName = "Ngata",
                 Email = "james.ngata@avondale.school.nz",
-                TeacherCode = "JNG"
+                TeacherCode = "JNG",
+                ImagePath = "/images/teachers/Principle.jpeg"
             },
             new Teacher
             {
@@ -508,7 +520,8 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 FirstName = "Sophia",
                 LastName = "Lee",
                 Email = "sophia.lee@avondale.school.nz",
-                TeacherCode = "SLE"
+                TeacherCode = "SLE",
+                ImagePath = "/images/teachers/5.jpg"
             },
             new Teacher
             {
@@ -516,7 +529,8 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 FirstName = "Ethan",
                 LastName = "White",
                 Email = "ethan.white@avondale.school.nz",
-                TeacherCode = "EWH"
+                TeacherCode = "EWH",
+                ImagePath = "/images/teachers/6.jpg"
             },
             new Teacher
             {
@@ -524,7 +538,8 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 FirstName = "Ava",
                 LastName = "Singh",
                 Email = "ava.singh@avondale.school.nz",
-                TeacherCode = "ASI"
+                TeacherCode = "ASI",
+                ImagePath = "/images/teachers/7.jpg"
             },
             new Teacher
             {
@@ -532,7 +547,8 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 FirstName = "William",
                 LastName = "Morris",
                 Email = "william.morris@avondale.school.nz",
-                TeacherCode = "WMO"
+                TeacherCode = "WMO",
+                ImagePath = "/images/teachers/8.jpg"
             },
             new Teacher
             {
@@ -540,7 +556,8 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 FirstName = "Isabella",
                 LastName = "Tao",
                 Email = "isabella.tao@avondale.school.nz",
-                TeacherCode = "ITA"
+                TeacherCode = "ITA",
+                ImagePath = "/images/teachers/9.jpg"
             },
             new Teacher
             {
@@ -548,7 +565,8 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 FirstName = "Lucas",
                 LastName = "Patel",
                 Email = "lucas.patel@avondale.school.nz",
-                TeacherCode = "LPA"
+                TeacherCode = "LPA",
+                ImagePath = "/images/teachers/10.jpg"
             },
             new Teacher
             {
@@ -556,7 +574,8 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 FirstName = "Emily",
                 LastName = "Brown",
                 Email = "emily.brown@avondale.school.nz",
-                TeacherCode = "EBR"
+                TeacherCode = "EBR",
+                ImagePath = "/images/teachers/2.jpg"
             },
             new Teacher
             {
@@ -564,7 +583,8 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 FirstName = "Daniel",
                 LastName = "King",
                 Email = "daniel.king@avondale.school.nz",
-                TeacherCode = "DKG"
+                TeacherCode = "DKG",
+                ImagePath = "/images/teachers/3.jpg"
             }
         );
         modelBuilder.Entity<Homeroom>().HasData(

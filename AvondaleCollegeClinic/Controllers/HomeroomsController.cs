@@ -8,9 +8,12 @@ using Microsoft.EntityFrameworkCore;
 using AvondaleCollegeClinic.Areas.Identity.Data;
 using AvondaleCollegeClinic.Models;
 using AvondaleCollegeClinic.Helpers;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace AvondaleCollegeClinic.Controllers
 {
+    [Authorize(Roles = "Admin, Teacher, Doctor, Caregiver")]
     public class HomeroomsController : Controller
     {
         private readonly AvondaleCollegeClinicContext _context;

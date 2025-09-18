@@ -8,16 +8,21 @@ using Microsoft.EntityFrameworkCore;
 using AvondaleCollegeClinic.Areas.Identity.Data;
 using AvondaleCollegeClinic.Models;
 using AvondaleCollegeClinic.Helpers;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace AvondaleCollegeClinic.Controllers
 {
+    [Authorize(Roles = "Admin, Student, Caregiver, Doctor")]
     public class LabtestsController : Controller
     {
         private readonly AvondaleCollegeClinicContext _context;
+        private readonly UserManager<AvondaleCollegeClinicUser> _userManager;
 
-        public LabtestsController(AvondaleCollegeClinicContext context)
+        public LabtestsController(AvondaleCollegeClinicContext context, UserManager<AvondaleCollegeClinicUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Labtests
@@ -27,10 +32,58 @@ namespace AvondaleCollegeClinic.Controllers
             ViewData["TestSortParm"] = String.IsNullOrEmpty(sortOrder) ? "test_desc" : "";
             ViewData["CurrentFilter"] = searchString;
 
-            var labtests = await _context.LabTests
+            // 1) Who is logged in?
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Challenge();
+
+            var userId = user.Id;
+            var uname = user.UserName ?? "";
+            var email = user.Email ?? "";
+
+            // 2) Resolve domain IDs
+            var studentId = await _context.Students
+                .Where(s => s.IdentityUserId == userId || s.StudentID == uname || s.Email == email)
+                .Select(s => s.StudentID)
+                .FirstOrDefaultAsync();
+
+            var caregiverId = await _context.Caregivers
+                .Where(c => c.IdentityUserId == userId || c.CaregiverID == uname || c.Email == email)
+                .Select(c => c.CaregiverID)
+                .FirstOrDefaultAsync();
+
+            if (string.IsNullOrEmpty(studentId) && string.IsNullOrEmpty(caregiverId))
+                return Forbid();
+
+            // 3) Query
+            var query = _context.LabTests
                 .Include(l => l.MedicalRecord)
-                .AsNoTracking()
-                .ToListAsync();
+                    .ThenInclude(m => m.Student)
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(studentId))
+                query = query.Where(l => l.MedicalRecord.StudentID == studentId);
+            else if (!string.IsNullOrEmpty(caregiverId))
+                query = query.Where(l => l.MedicalRecord.Student.CaregiverID == caregiverId);
+
+            // 4) Search
+            if (!string.IsNullOrWhiteSpace(searchString))
+            {
+                var term = $"%{searchString.Trim()}%";
+                query = query.Where(l =>
+                    EF.Functions.Like(l.TestType, term) ||
+                    EF.Functions.Like(l.MedicalRecord.Student.FirstName, term) ||
+                    EF.Functions.Like(l.MedicalRecord.Student.LastName, term)
+                );
+            }
+
+            // 5) Sort
+            query = sortOrder switch
+            {
+                "test_desc" => query.OrderByDescending(l => l.TestType),
+                _ => query.OrderBy(l => l.TestType)
+            };
+
+            var labtests = await query.AsNoTracking().ToListAsync();
 
             if (!string.IsNullOrEmpty(searchString))
             {

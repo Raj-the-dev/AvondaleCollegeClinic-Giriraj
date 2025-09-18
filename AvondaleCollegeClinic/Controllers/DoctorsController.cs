@@ -9,9 +9,12 @@ using AvondaleCollegeClinic.Areas.Identity.Data;
 using AvondaleCollegeClinic.Models;
 using System.IO;
 using AvondaleCollegeClinic.Helpers;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace AvondaleCollegeClinic.Controllers
 {
+
     public class DoctorsController : Controller
     {
         private readonly AvondaleCollegeClinicContext _context;

@@ -4,6 +4,7 @@ using AvondaleCollegeClinic.Areas.Identity.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AvondaleCollegeClinic.Migrations
 {
     [DbContext(typeof(AvondaleCollegeClinicContext))]
-    partial class AvondaleCollegeClinicContextModelSnapshot : ModelSnapshot
+    [Migration("20250916083538_addImagesToseededStudentsd")]
+    partial class addImagesToseededStudentsd
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -115,7 +118,7 @@ namespace AvondaleCollegeClinic.Migrations
                         {
                             Id = "00000000-0000-0000-0000-000000000001",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "60f6540c-cfe5-4d61-bc53-75f028dcfb40",
+                            ConcurrencyStamp = "eab28a37-1cd9-4696-942c-1aec6eaadc50",
                             Email = "admin@avondaleclinic.com",
                             EmailConfirmed = true,
                             FirstName = "System",
@@ -124,9 +127,9 @@ namespace AvondaleCollegeClinic.Migrations
                             MustSetPassword = false,
                             NormalizedEmail = "ADMIN@AVONDALECLINIC.COM",
                             NormalizedUserName = "ADMIN@AVONDALECLINIC.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEDfEj/0bc/qSrheZFUrJPc4x68Eqt5MwOIQKu2YieKBBM+HDtjQXU4tz2VbWS7rMBQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEAA9wzULS5mQxEgiz7+jv3lxPG62fY4pNs9JUjGL+1eo2/oiavrLaAD2MG7K1LUyNw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "c8ce2505-b8bb-4dcd-9719-2ce443d93f66",
+                            SecurityStamp = "2e6bb199-2f05-450a-98d6-43c34e62d2af",
                             TwoFactorEnabled = false,
                             UserKind = 0,
                             UserName = "admin@avondaleclinic.com"
@@ -312,7 +315,6 @@ namespace AvondaleCollegeClinic.Migrations
                             DOB = new DateTime(1980, 6, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "emma.wilson@email.com",
                             FirstName = "Emma",
-                            ImagePath = "/images/caregivers/1.jpeg",
                             LastName = "Wilson",
                             Phone = "021-123-4567",
                             Relationship = 0
@@ -323,7 +325,6 @@ namespace AvondaleCollegeClinic.Migrations
                             DOB = new DateTime(1975, 3, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "john.evans@email.com",
                             FirstName = "John",
-                            ImagePath = "/images/caregivers/2.jpeg",
                             LastName = "Evans",
                             Phone = "022-987-6543",
                             Relationship = 0
@@ -334,7 +335,6 @@ namespace AvondaleCollegeClinic.Migrations
                             DOB = new DateTime(1985, 9, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "maya.singh@email.com",
                             FirstName = "Maya",
-                            ImagePath = "/images/caregivers/3.jpeg",
                             LastName = "Singh",
                             Phone = "021-555-8899",
                             Relationship = 1
@@ -345,7 +345,6 @@ namespace AvondaleCollegeClinic.Migrations
                             DOB = new DateTime(1979, 12, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "chris.brown@email.com",
                             FirstName = "Chris",
-                            ImagePath = "/images/caregivers/5.jepg.jpg",
                             LastName = "Brown",
                             Phone = "021-333-2222",
                             Relationship = 2
@@ -356,7 +355,6 @@ namespace AvondaleCollegeClinic.Migrations
                             DOB = new DateTime(1982, 7, 17, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "sophie.nguyen@email.com",
                             FirstName = "Sophie",
-                            ImagePath = "/images/caregivers/6.jpg",
                             LastName = "Nguyen",
                             Phone = "022-111-5555",
                             Relationship = 0
@@ -367,7 +365,6 @@ namespace AvondaleCollegeClinic.Migrations
                             DOB = new DateTime(1973, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "liam.king@email.com",
                             FirstName = "Liam",
-                            ImagePath = "/images/caregivers/7.jpg",
                             LastName = "King",
                             Phone = "021-456-7890",
                             Relationship = 3
@@ -378,7 +375,6 @@ namespace AvondaleCollegeClinic.Migrations
                             DOB = new DateTime(1988, 2, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "olivia.rao@email.com",
                             FirstName = "Olivia",
-                            ImagePath = "/images/caregivers/8.jpg",
                             LastName = "Rao",
                             Phone = "021-999-8888",
                             Relationship = 0
@@ -389,7 +385,6 @@ namespace AvondaleCollegeClinic.Migrations
                             DOB = new DateTime(1981, 5, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "ethan.lee@email.com",
                             FirstName = "Ethan",
-                            ImagePath = "/images/caregivers/9.jpg",
                             LastName = "Lee",
                             Phone = "022-123-9999",
                             Relationship = 1
@@ -400,7 +395,6 @@ namespace AvondaleCollegeClinic.Migrations
                             DOB = new DateTime(1986, 10, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "grace.taylor@email.com",
                             FirstName = "Grace",
-                            ImagePath = "/images/caregivers/10.jpg",
                             LastName = "Taylor",
                             Phone = "021-234-5678",
                             Relationship = 0
@@ -411,7 +405,6 @@ namespace AvondaleCollegeClinic.Migrations
                             DOB = new DateTime(1977, 8, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "raj.patel@email.com",
                             FirstName = "Raj",
-                            ImagePath = "/images/caregivers/11.jpg",
                             LastName = "Patel",
                             Phone = "022-777-3333",
                             Relationship = 3
@@ -564,7 +557,6 @@ namespace AvondaleCollegeClinic.Migrations
                             DoctorID = "acd250001",
                             Email = "anna.roberts@avondaleclinic.com",
                             FirstName = "Anna",
-                            ImagePath = "/images/doctors/1.jpg",
                             LastName = "Roberts",
                             Phone = "021-111-2345",
                             Specialization = 0
@@ -574,7 +566,6 @@ namespace AvondaleCollegeClinic.Migrations
                             DoctorID = "acd250002",
                             Email = "ben.morris@avondaleclinic.com",
                             FirstName = "Ben",
-                            ImagePath = "/images/doctors/2.jpg",
                             LastName = "Morris",
                             Phone = "021-222-3456",
                             Specialization = 1
@@ -584,7 +575,6 @@ namespace AvondaleCollegeClinic.Migrations
                             DoctorID = "acd250003",
                             Email = "claire.nguyen@avondaleclinic.com",
                             FirstName = "Claire",
-                            ImagePath = "/images/doctors/3.png",
                             LastName = "Nguyen",
                             Phone = "021-333-4567",
                             Specialization = 2
@@ -594,7 +584,6 @@ namespace AvondaleCollegeClinic.Migrations
                             DoctorID = "acd250004",
                             Email = "david.chen@avondaleclinic.com",
                             FirstName = "David",
-                            ImagePath = "/images/doctors/4.png",
                             LastName = "Chen",
                             Phone = "021-444-5678",
                             Specialization = 3
@@ -604,7 +593,6 @@ namespace AvondaleCollegeClinic.Migrations
                             DoctorID = "acd250005",
                             Email = "ella.turner@avondaleclinic.com",
                             FirstName = "Ella",
-                            ImagePath = "/images/doctors/5.jpg",
                             LastName = "Turner",
                             Phone = "021-555-6789",
                             Specialization = 4
@@ -614,7 +602,6 @@ namespace AvondaleCollegeClinic.Migrations
                             DoctorID = "acd250006",
                             Email = "frank.white@avondaleclinic.com",
                             FirstName = "Frank",
-                            ImagePath = "/images/doctors/6.png",
                             LastName = "White",
                             Phone = "021-666-7890",
                             Specialization = 0
@@ -624,7 +611,6 @@ namespace AvondaleCollegeClinic.Migrations
                             DoctorID = "acd250007",
                             Email = "grace.lee@avondaleclinic.com",
                             FirstName = "Grace",
-                            ImagePath = "/images/doctors/7.jpg",
                             LastName = "Lee",
                             Phone = "021-777-8901",
                             Specialization = 1
@@ -634,7 +620,6 @@ namespace AvondaleCollegeClinic.Migrations
                             DoctorID = "acd250008",
                             Email = "harry.singh@avondaleclinic.com",
                             FirstName = "Harry",
-                            ImagePath = "/images/doctors/8.jpg",
                             LastName = "Singh",
                             Phone = "021-888-9012",
                             Specialization = 2
@@ -644,7 +629,6 @@ namespace AvondaleCollegeClinic.Migrations
                             DoctorID = "acd250009",
                             Email = "isla.walker@avondaleclinic.com",
                             FirstName = "Isla",
-                            ImagePath = "/images/doctors/9.jpg",
                             LastName = "Walker",
                             Phone = "021-999-0123",
                             Specialization = 3
@@ -654,7 +638,6 @@ namespace AvondaleCollegeClinic.Migrations
                             DoctorID = "acd250010",
                             Email = "jack.patel@avondaleclinic.com",
                             FirstName = "Jack",
-                            ImagePath = "/images/doctors/10.jpg",
                             LastName = "Patel",
                             Phone = "021-000-1234",
                             Specialization = 4
@@ -1434,10 +1417,9 @@ namespace AvondaleCollegeClinic.Migrations
                         new
                         {
                             TeacherID = "act250001",
-                            Email = "v.Prasad@avondale.school.nz",
-                            FirstName = "Mr. Vijay",
-                            ImagePath = "/images/teachers/MrPrasad.jpg",
-                            LastName = "Prasad",
+                            Email = "olivia.park@avondale.school.nz",
+                            FirstName = "Olivia",
+                            LastName = "Park",
                             TeacherCode = "OPA"
                         },
                         new
@@ -1445,7 +1427,6 @@ namespace AvondaleCollegeClinic.Migrations
                             TeacherID = "act250002",
                             Email = "james.ngata@avondale.school.nz",
                             FirstName = "James",
-                            ImagePath = "/images/teachers/Principle.jpeg",
                             LastName = "Ngata",
                             TeacherCode = "JNG"
                         },
@@ -1454,7 +1435,6 @@ namespace AvondaleCollegeClinic.Migrations
                             TeacherID = "act250003",
                             Email = "sophia.lee@avondale.school.nz",
                             FirstName = "Sophia",
-                            ImagePath = "/images/teachers/5.jpg",
                             LastName = "Lee",
                             TeacherCode = "SLE"
                         },
@@ -1463,7 +1443,6 @@ namespace AvondaleCollegeClinic.Migrations
                             TeacherID = "act250004",
                             Email = "ethan.white@avondale.school.nz",
                             FirstName = "Ethan",
-                            ImagePath = "/images/teachers/6.jpg",
                             LastName = "White",
                             TeacherCode = "EWH"
                         },
@@ -1472,7 +1451,6 @@ namespace AvondaleCollegeClinic.Migrations
                             TeacherID = "act250005",
                             Email = "ava.singh@avondale.school.nz",
                             FirstName = "Ava",
-                            ImagePath = "/images/teachers/7.jpg",
                             LastName = "Singh",
                             TeacherCode = "ASI"
                         },
@@ -1481,7 +1459,6 @@ namespace AvondaleCollegeClinic.Migrations
                             TeacherID = "act250006",
                             Email = "william.morris@avondale.school.nz",
                             FirstName = "William",
-                            ImagePath = "/images/teachers/8.jpg",
                             LastName = "Morris",
                             TeacherCode = "WMO"
                         },
@@ -1490,7 +1467,6 @@ namespace AvondaleCollegeClinic.Migrations
                             TeacherID = "act250007",
                             Email = "isabella.tao@avondale.school.nz",
                             FirstName = "Isabella",
-                            ImagePath = "/images/teachers/9.jpg",
                             LastName = "Tao",
                             TeacherCode = "ITA"
                         },
@@ -1499,7 +1475,6 @@ namespace AvondaleCollegeClinic.Migrations
                             TeacherID = "act250008",
                             Email = "lucas.patel@avondale.school.nz",
                             FirstName = "Lucas",
-                            ImagePath = "/images/teachers/10.jpg",
                             LastName = "Patel",
                             TeacherCode = "LPA"
                         },
@@ -1508,7 +1483,6 @@ namespace AvondaleCollegeClinic.Migrations
                             TeacherID = "act250009",
                             Email = "emily.brown@avondale.school.nz",
                             FirstName = "Emily",
-                            ImagePath = "/images/teachers/2.jpg",
                             LastName = "Brown",
                             TeacherCode = "EBR"
                         },
@@ -1517,7 +1491,6 @@ namespace AvondaleCollegeClinic.Migrations
                             TeacherID = "act250010",
                             Email = "daniel.king@avondale.school.nz",
                             FirstName = "Daniel",
-                            ImagePath = "/images/teachers/3.jpg",
                             LastName = "King",
                             TeacherCode = "DKG"
                         });

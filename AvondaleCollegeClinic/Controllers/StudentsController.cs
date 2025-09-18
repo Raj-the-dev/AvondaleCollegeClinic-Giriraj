@@ -266,18 +266,6 @@ namespace AvondaleCollegeClinic.Controllers
                 student.HomeroomID = form.HomeroomID;
                 student.CaregiverID = form.CaregiverID;
 
-                if (await _context.Students.AnyAsync(s => s.Email == student.Email))
-                {
-                    ModelState.AddModelError("Email", "This email is already in use by another student.");
-                    return View(student);
-                }
-
-                // Check full name
-                if (await _context.Students.AnyAsync(s => s.FirstName == student.FirstName && s.LastName == student.LastName))
-                {
-                    ModelState.AddModelError("", "A student with the same name already exists.");
-                    return View(student);
-                }
 
                 // If a new image was uploaded, save it and update ImagePath
                 if (form.ImageFile != null && form.ImageFile.Length > 0)

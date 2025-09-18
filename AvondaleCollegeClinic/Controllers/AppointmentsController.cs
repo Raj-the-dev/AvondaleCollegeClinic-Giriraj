@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using AvondaleCollegeClinic.Areas.Identity.Data;
 using AvondaleCollegeClinic.Models;
 using AvondaleCollegeClinic.Helpers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AvondaleCollegeClinic.Controllers
 {
+    [Authorize(Roles = "Admin, Student, Teacher, Doctor")]
     public class AppointmentsController : Controller
     {
         private readonly AvondaleCollegeClinicContext _context;
