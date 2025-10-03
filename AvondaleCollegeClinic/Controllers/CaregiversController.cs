@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace AvondaleCollegeClinic.Controllers
 {
-
+    [Authorize(Roles = "Doctor,Teachers,Admin,Student")]
     public class CaregiversController : Controller
     {
         private readonly AvondaleCollegeClinicContext _context;
@@ -71,7 +71,7 @@ namespace AvondaleCollegeClinic.Controllers
             var paginatedList = new PaginatedList<Caregiver>(pagedCaregivers, totalCount, page, pageSize);
             return View(paginatedList);
         }
-
+        [Authorize(Roles = "Admin")]
         // GET: Caregivers/Details/5
         public async Task<IActionResult> Details(string? id)
         {
@@ -89,7 +89,7 @@ namespace AvondaleCollegeClinic.Controllers
 
             return View(caregiver);
         }
-
+        [Authorize(Roles = "Admin")]
         // GET: Caregivers/Create
         public IActionResult Create()
         {
@@ -101,7 +101,7 @@ namespace AvondaleCollegeClinic.Controllers
 
             return View(caregiver);
         }
-
+        [Authorize(Roles = "Admin")]
         // POST: Caregivers/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -145,7 +145,7 @@ namespace AvondaleCollegeClinic.Controllers
 
             return View(caregiver);
         }
-
+        [Authorize(Roles = "Admin")]
         // GET: Caregivers/Edit/5
         public async Task<IActionResult> Edit(string? id)
         {
@@ -161,7 +161,7 @@ namespace AvondaleCollegeClinic.Controllers
             }
             return View(caregiver);
         }
-
+        [Authorize(Roles = "Admin")]
         // POST: Caregivers/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -218,7 +218,7 @@ namespace AvondaleCollegeClinic.Controllers
 
             return View(form);
         }
-
+        [Authorize(Roles = "Admin")]
         //GET: Caregivers/Delete/5
         public async Task<IActionResult> Delete(string? id)
         {
@@ -236,7 +236,7 @@ namespace AvondaleCollegeClinic.Controllers
 
             return View(caregiver);
         }
-
+        [Authorize(Roles = "Admin")]
         // POST: Caregivers/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

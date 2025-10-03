@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace AvondaleCollegeClinic.Controllers
 {
-    [Authorize(Roles = "Admin, Student, Caregiver, Doctor")]
+    [Authorize(Roles = "Admin,Student,Caregiver,Doctor")]
     public class DiagnosesController : Controller
     {
         private readonly AvondaleCollegeClinicContext _context;
@@ -32,40 +32,14 @@ namespace AvondaleCollegeClinic.Controllers
             ViewData["DateSortParm"] = String.IsNullOrEmpty(sortOrder) ? "date_desc" : "Date";
             ViewData["CurrentFilter"] = searchString;
 
-            // 1) Who is logged in?
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null) return Challenge(); // not logged in
-
-            var userId = user.Id;                    // Identity PK (GUID)
-            var uname = user.UserName ?? "";        // e.g., ac250001 or acc250001
-            var email = user.Email ?? "";
-
-            // 2) Resolve domain IDs for Student OR Caregiver
-            var studentId = await _context.Students
-                .Where(s => s.IdentityUserId == userId || s.StudentID == uname || s.Email == email)
-                .Select(s => s.StudentID)
-                .FirstOrDefaultAsync();
-
-            var caregiverId = await _context.Caregivers
-                .Where(c => c.IdentityUserId == userId || c.CaregiverID == uname || c.Email == email)
-                .Select(c => c.CaregiverID)
-                .FirstOrDefaultAsync();
-
-            if (string.IsNullOrEmpty(studentId) && string.IsNullOrEmpty(caregiverId))
-                return Forbid();
-
+            // Base query: include related entities
             var query = _context.Diagnoses
                 .Include(d => d.Appointment)
                     .ThenInclude(a => a.Student)
                 .Include(d => d.Appointment.Doctor)
                 .AsQueryable();
 
-            if (!string.IsNullOrEmpty(studentId))
-                query = query.Where(d => d.Appointment.StudentID == studentId);
-            else if (!string.IsNullOrEmpty(caregiverId))
-                query = query.Where(d => d.Appointment.Student.CaregiverID == caregiverId);
-
-            // 5) Optional search (DB-level LIKE for speed)
+            // Optional search (DB-level LIKE for performance)
             if (!string.IsNullOrWhiteSpace(searchString))
             {
                 var term = $"%{searchString.Trim()}%";
@@ -78,7 +52,7 @@ namespace AvondaleCollegeClinic.Controllers
                 );
             }
 
-            // 5) Sort
+            // Sort (DB-level)
             query = sortOrder switch
             {
                 "date_desc" => query.OrderByDescending(d => d.DateDiagnosed),
@@ -87,7 +61,7 @@ namespace AvondaleCollegeClinic.Controllers
 
             var diagnoses = await query.AsNoTracking().ToListAsync();
 
-            // 🔍 Filter
+            // Optional client-side filtering (extra layer)
             if (!string.IsNullOrEmpty(searchString))
             {
                 searchString = searchString.ToLower();
@@ -100,7 +74,7 @@ namespace AvondaleCollegeClinic.Controllers
                 ).ToList();
             }
 
-            // ↕ Sort
+            // Optional client-side re-sorting
             switch (sortOrder)
             {
                 case "date_desc":
@@ -111,7 +85,7 @@ namespace AvondaleCollegeClinic.Controllers
                     break;
             }
 
-            // 📄 Pagination
+            // Pagination
             int pageSize = 10;
             int page = pageNumber ?? 1;
             var totalCount = diagnoses.Count;
@@ -120,6 +94,7 @@ namespace AvondaleCollegeClinic.Controllers
             var paginatedList = new PaginatedList<Diagnosis>(pagedDiagnoses, totalCount, page, pageSize);
             return View(paginatedList);
         }
+
 
         // GET: Diagnoses/Details/5
         public async Task<IActionResult> Details(int? id)

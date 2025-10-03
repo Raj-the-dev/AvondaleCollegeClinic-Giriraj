@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace AvondaleCollegeClinic.Controllers
 {
-    [Authorize(Roles = "Admin, Student, Caregiver, Doctor")]
+    [Authorize(Roles = "Doctor,Student,Caregiver,Admin")]
     public class LabtestsController : Controller
     {
         private readonly AvondaleCollegeClinicContext _context;
@@ -32,40 +32,13 @@ namespace AvondaleCollegeClinic.Controllers
             ViewData["TestSortParm"] = String.IsNullOrEmpty(sortOrder) ? "test_desc" : "";
             ViewData["CurrentFilter"] = searchString;
 
-            // 1) Who is logged in?
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null) return Challenge();
-
-            var userId = user.Id;
-            var uname = user.UserName ?? "";
-            var email = user.Email ?? "";
-
-            // 2) Resolve domain IDs
-            var studentId = await _context.Students
-                .Where(s => s.IdentityUserId == userId || s.StudentID == uname || s.Email == email)
-                .Select(s => s.StudentID)
-                .FirstOrDefaultAsync();
-
-            var caregiverId = await _context.Caregivers
-                .Where(c => c.IdentityUserId == userId || c.CaregiverID == uname || c.Email == email)
-                .Select(c => c.CaregiverID)
-                .FirstOrDefaultAsync();
-
-            if (string.IsNullOrEmpty(studentId) && string.IsNullOrEmpty(caregiverId))
-                return Forbid();
-
-            // 3) Query
+            // Base query: include related entities
             var query = _context.LabTests
                 .Include(l => l.MedicalRecord)
                     .ThenInclude(m => m.Student)
                 .AsQueryable();
 
-            if (!string.IsNullOrEmpty(studentId))
-                query = query.Where(l => l.MedicalRecord.StudentID == studentId);
-            else if (!string.IsNullOrEmpty(caregiverId))
-                query = query.Where(l => l.MedicalRecord.Student.CaregiverID == caregiverId);
-
-            // 4) Search
+            // Search
             if (!string.IsNullOrWhiteSpace(searchString))
             {
                 var term = $"%{searchString.Trim()}%";
@@ -76,7 +49,7 @@ namespace AvondaleCollegeClinic.Controllers
                 );
             }
 
-            // 5) Sort
+            // Sort (DB-level)
             query = sortOrder switch
             {
                 "test_desc" => query.OrderByDescending(l => l.TestType),
@@ -85,6 +58,7 @@ namespace AvondaleCollegeClinic.Controllers
 
             var labtests = await query.AsNoTracking().ToListAsync();
 
+            // Client-side filtering (extra layer)
             if (!string.IsNullOrEmpty(searchString))
             {
                 searchString = searchString.ToLower();
@@ -93,6 +67,7 @@ namespace AvondaleCollegeClinic.Controllers
                 ).ToList();
             }
 
+            // Sort again client-side (if needed)
             switch (sortOrder)
             {
                 case "test_desc":
@@ -103,6 +78,7 @@ namespace AvondaleCollegeClinic.Controllers
                     break;
             }
 
+            // Pagination
             int pageSize = 10;
             int page = pageNumber ?? 1;
             return View(new PaginatedList<Labtest>(
@@ -112,6 +88,7 @@ namespace AvondaleCollegeClinic.Controllers
         }
 
 
+        [Authorize(Roles = "Admin,Doctor")]
         // GET: Labtests/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -130,7 +107,7 @@ namespace AvondaleCollegeClinic.Controllers
 
             return View(labtest);
         }
-
+        [Authorize(Roles = "Admin,Doctor")]
         // GET: Labtests/Create
         public IActionResult Create()
         {
@@ -145,7 +122,7 @@ namespace AvondaleCollegeClinic.Controllers
 
             return View();
         }
-
+        [Authorize(Roles = "Admin,Doctor")]
         // POST: Labtests/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -183,7 +160,7 @@ namespace AvondaleCollegeClinic.Controllers
             ViewData["RecordID"] = new SelectList(_context.MedicalRecords, "MedicalRecordID", "MedicalRecordID", labtest.RecordID);
             return View(labtest);
         }
-
+        [Authorize(Roles = "Admin,Doctor")]
         // GET: Labtests/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -200,7 +177,7 @@ namespace AvondaleCollegeClinic.Controllers
             ViewData["RecordID"] = new SelectList(_context.MedicalRecords, "MedicalRecordID", "MedicalRecordID", labtest.RecordID);
             return View(labtest);
         }
-
+        [Authorize(Roles = "Admin,Doctor")]
         // POST: Labtests/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -273,7 +250,7 @@ namespace AvondaleCollegeClinic.Controllers
             ViewData["RecordID"] = new SelectList(_context.MedicalRecords, "MedicalRecordID", "MedicalRecordID", labtest.RecordID);
             return View(labtest);
         }
-
+        [Authorize(Roles = "Admin,Doctor")]
         // GET: Labtests/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -292,7 +269,7 @@ namespace AvondaleCollegeClinic.Controllers
 
             return View(labtest);
         }
-
+        [Authorize(Roles = "Admin,Doctor")]
         // POST: Labtests/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

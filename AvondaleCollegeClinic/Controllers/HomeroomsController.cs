@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace AvondaleCollegeClinic.Controllers
 {
-    [Authorize(Roles = "Admin, Teacher, Doctor, Caregiver")]
+    [Authorize(Roles = "Admin,Teacher,Doctor,Caregiver")]
     public class HomeroomsController : Controller
     {
         private readonly AvondaleCollegeClinicContext _context;
@@ -73,7 +73,7 @@ namespace AvondaleCollegeClinic.Controllers
             var paginatedList = new PaginatedList<Homeroom>(pagedHomerooms, totalCount, page, pageSize);
             return View(paginatedList);
         }
-
+        [Authorize(Roles = "Admin")]
         // GET: Homerooms/Details/5
         public async Task<IActionResult> Details(string id)
         {
@@ -92,7 +92,7 @@ namespace AvondaleCollegeClinic.Controllers
 
             return View(homeroom);
         }
-
+        [Authorize(Roles = "Admin,Teacher")]
         // GET: Homerooms/Create
         public IActionResult Create()
         {
@@ -109,7 +109,7 @@ namespace AvondaleCollegeClinic.Controllers
             return View();
         }
 
-
+        [Authorize(Roles = "Admin,Teacher")]
         // POST: Homerooms/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -156,7 +156,7 @@ namespace AvondaleCollegeClinic.Controllers
             );
             return View(homeroom);
         }
-
+        [Authorize(Roles = "Admin,Teacher")]
         // GET: Homerooms/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
@@ -182,7 +182,7 @@ namespace AvondaleCollegeClinic.Controllers
             );
             return View(homeroom);
         }
-
+        [Authorize(Roles = "Admin,Teacher")]
         // POST: Homerooms/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -227,7 +227,7 @@ namespace AvondaleCollegeClinic.Controllers
             );
             return View(homeroom);
         }
-
+        [Authorize(Roles = "Admin,Teacher")]
         // GET: Homerooms/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
@@ -246,7 +246,7 @@ namespace AvondaleCollegeClinic.Controllers
 
             return View(homeroom);
         }
-
+        [Authorize(Roles = "Admin,Teacher")]
         // POST: Homerooms/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

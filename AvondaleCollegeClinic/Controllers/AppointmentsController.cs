@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace AvondaleCollegeClinic.Controllers
 {
-    [Authorize(Roles = "Admin, Student, Teacher, Doctor")]
+    [Authorize(Roles = "Doctor,Student,Caregiver,Admin")]
     public class AppointmentsController : Controller
     {
         private readonly AvondaleCollegeClinicContext _context;

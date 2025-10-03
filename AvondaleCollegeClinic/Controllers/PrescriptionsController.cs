@@ -10,11 +10,11 @@ using AvondaleCollegeClinic.Models;
 using AvondaleCollegeClinic.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+
 
 namespace AvondaleCollegeClinic.Controllers
 {
-    [Authorize(Roles = "Admin, Student, Caregiver, Doctor")]
+    [Authorize(Roles = "Doctor,Student,Caregiver,Admin")]
     public class PrescriptionsController : Controller
     {
         private readonly AvondaleCollegeClinicContext _context;
@@ -34,50 +34,14 @@ namespace AvondaleCollegeClinic.Controllers
             ViewData["DosageSortParm"] = sortOrder == "Dosage" ? "dosage_desc" : "Dosage";
             ViewData["CurrentFilter"] = searchString;
 
-            // 1) Who is logged in?
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null) return Challenge(); // not logged in
-
-            var userId = user.Id;                    // Identity PK (GUID)
-            var uname = user.UserName ?? "";        // e.g., ac250001 or acc250001
-            var email = user.Email ?? "";
-
-            // 2) Resolve domain IDs for Student OR Caregiver
-            var studentId = await _context.Students
-                .Where(s => s.IdentityUserId == userId || s.StudentID == uname || s.Email == email)
-                .Select(s => s.StudentID)
-                .FirstOrDefaultAsync();
-
-            var caregiverId = await _context.Caregivers
-                .Where(c => c.IdentityUserId == userId || c.CaregiverID == uname || c.Email == email)
-                .Select(c => c.CaregiverID)
-                .FirstOrDefaultAsync();
-
-            // 3) Safety: if neither studentId nor caregiverId, block
-            if (string.IsNullOrEmpty(studentId) && string.IsNullOrEmpty(caregiverId))
-            {
-                return Forbid();
-            }
-
-            // 4) Base query restricted to either Student OR Caregiver
+            // Base query: include related entities
             var query = _context.Prescriptions
                 .Include(p => p.Diagnosis)
                     .ThenInclude(d => d.Appointment)
                         .ThenInclude(a => a.Student)
                 .AsQueryable();
 
-            if (!string.IsNullOrEmpty(studentId))
-            {
-                // Student → only their own prescriptions
-                query = query.Where(p => p.Diagnosis.Appointment.StudentID == studentId);
-            }
-            else if (!string.IsNullOrEmpty(caregiverId))
-            {
-                // Caregiver → prescriptions for ALL their students
-                query = query.Where(p => p.Diagnosis.Appointment.Student.CaregiverID == caregiverId);
-            }
-
-            // 5) Optional search (DB-level LIKE for speed)
+            // Optional search (DB-level LIKE for speed)
             if (!string.IsNullOrWhiteSpace(searchString))
             {
                 var term = $"%{searchString.Trim()}%";
@@ -91,6 +55,7 @@ namespace AvondaleCollegeClinic.Controllers
 
             var prescriptions = await query.AsNoTracking().ToListAsync();
 
+            // Client-side filtering (extra layer, not strictly necessary if DB filtering works)
             if (!string.IsNullOrEmpty(searchString))
             {
                 searchString = searchString.ToLower();
@@ -102,6 +67,7 @@ namespace AvondaleCollegeClinic.Controllers
                 ).ToList();
             }
 
+            // Sorting
             switch (sortOrder)
             {
                 case "presc_desc":
@@ -118,6 +84,7 @@ namespace AvondaleCollegeClinic.Controllers
                     break;
             }
 
+            // Pagination
             int pageSize = 10;
             int page = pageNumber ?? 1;
             return View(new PaginatedList<Prescription>(
@@ -127,6 +94,7 @@ namespace AvondaleCollegeClinic.Controllers
         }
 
 
+        [Authorize(Roles = "Admin,Doctor")]
         // GET: Prescriptions/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -145,7 +113,7 @@ namespace AvondaleCollegeClinic.Controllers
 
             return View(prescription);
         }
-
+        [Authorize(Roles = "Admin,Doctor")]
         // GET: Prescriptions/Create
         public IActionResult Create()
         {
@@ -166,7 +134,7 @@ namespace AvondaleCollegeClinic.Controllers
             return View();
         }
 
-
+        [Authorize(Roles = "Admin,Doctor")]
         // POST: Prescriptions/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -183,7 +151,7 @@ namespace AvondaleCollegeClinic.Controllers
             ViewData["DiagnosisID"] = new SelectList(_context.Diagnoses, "DiagnosisID", "DiagnosisID", prescription.DiagnosisID);
             return View(prescription);
         }
-
+        [Authorize(Roles = "Admin,Doctor")]
         // GET: Prescriptions/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -214,7 +182,7 @@ namespace AvondaleCollegeClinic.Controllers
             return View(prescription);
             return View(prescription);
         }
-
+        [Authorize(Roles = "Admin,Doctor")]
         // POST: Prescriptions/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -250,7 +218,7 @@ namespace AvondaleCollegeClinic.Controllers
             ViewData["DiagnosisID"] = new SelectList(_context.Diagnoses, "DiagnosisID", "DiagnosisID", prescription.DiagnosisID);
             return View(prescription);
         }
-
+        [Authorize(Roles = "Admin,Doctor")]
         // GET: Prescriptions/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -269,7 +237,7 @@ namespace AvondaleCollegeClinic.Controllers
 
             return View(prescription);
         }
-
+        [Authorize(Roles = "Admin,Doctor")]
         // POST: Prescriptions/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

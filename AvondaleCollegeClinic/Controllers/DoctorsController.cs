@@ -23,7 +23,7 @@ namespace AvondaleCollegeClinic.Controllers
         {
             _context = context;
         }
-
+        [Authorize(Roles = "Doctor,Student,Caregiver,Admin")]
         // GET: Doctors
         public async Task<IActionResult> Index(string sortOrder, string searchString, int? pageNumber)
         {
@@ -73,7 +73,7 @@ namespace AvondaleCollegeClinic.Controllers
         }
 
 
-
+        [Authorize(Roles = "Admin,Doctor")]
         // GET: Doctors/Details/5
         public async Task<IActionResult> Details(string id)
         {
@@ -85,7 +85,7 @@ namespace AvondaleCollegeClinic.Controllers
 
             return View(doctor);
         }
-
+        [Authorize(Roles = "Admin,Doctor")]
         // GET: Doctors/Create
         public IActionResult Create()
         {
@@ -95,7 +95,7 @@ namespace AvondaleCollegeClinic.Controllers
             };
             return View(doctor);
         }
-
+        [Authorize(Roles = "Admin,Doctor")]
         // POST: Doctors/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -141,7 +141,7 @@ namespace AvondaleCollegeClinic.Controllers
 
             return View(doctor);
         }
-
+        [Authorize(Roles = "Admin,Doctor")]
         // GET: Doctors/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
@@ -152,7 +152,7 @@ namespace AvondaleCollegeClinic.Controllers
 
             return View(doctor);
         }
-
+        [Authorize(Roles = "Admin,Doctor")]
         // POST: Doctors/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -211,7 +211,7 @@ namespace AvondaleCollegeClinic.Controllers
 
             return View(form);
         }
-
+        [Authorize(Roles = "Admin,Doctor")]
         // GET: Doctors/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
@@ -223,7 +223,7 @@ namespace AvondaleCollegeClinic.Controllers
 
             return View(doctor);
         }
-
+        [Authorize(Roles = "Admin,Doctor")]
         // POST: Doctors/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace AvondaleCollegeClinic.Controllers
 {
-    [Authorize(Roles = "Admin, Teacher, Doctor, Student")]
+    [Authorize(Roles = "Admin,Teacher,Doctor,Student")]
     public class DoctorAvailabilitiesController : Controller
     {
         private readonly AvondaleCollegeClinicContext _context;
@@ -65,7 +65,7 @@ namespace AvondaleCollegeClinic.Controllers
             var paginatedList = new PaginatedList<DoctorAvailability>(pagedAvailabilities, totalCount, page, pageSize);
             return View(paginatedList);
         }
-
+        [Authorize(Roles = "Admin,Doctor")]
         // GET: DoctorAvailabilities/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -84,7 +84,7 @@ namespace AvondaleCollegeClinic.Controllers
 
             return View(doctorAvailability);
         }
-
+        [Authorize(Roles = "Admin,Doctor")]
         // GET: DoctorAvailabilities/Create
         public IActionResult Create()
         {
@@ -94,7 +94,7 @@ namespace AvondaleCollegeClinic.Controllers
             }), "DoctorID", "FullName");
             return View();
         }
-
+        [Authorize(Roles = "Admin,Doctor")]
         // POST: DoctorAvailabilities/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -111,7 +111,7 @@ namespace AvondaleCollegeClinic.Controllers
             ViewData["DoctorID"] = new SelectList(_context.Doctors, "DoctorID", "DoctorID", doctorAvailability.DoctorID);
             return View(doctorAvailability);
         }
-
+        [Authorize(Roles = "Admin,Doctor")]
         // GET: DoctorAvailabilities/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -131,7 +131,7 @@ namespace AvondaleCollegeClinic.Controllers
             }), "DoctorID", "FullName");
             return View(doctorAvailability);
         }
-
+        [Authorize(Roles = "Admin,Doctor")]
         // POST: DoctorAvailabilities/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -167,7 +167,7 @@ namespace AvondaleCollegeClinic.Controllers
             ViewData["DoctorID"] = new SelectList(_context.Doctors, "DoctorID", "DoctorID", doctorAvailability.DoctorID);
             return View(doctorAvailability);
         }
-
+        [Authorize(Roles = "Admin,Doctor")]
         // GET: DoctorAvailabilities/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -186,7 +186,7 @@ namespace AvondaleCollegeClinic.Controllers
 
             return View(doctorAvailability);
         }
-
+        [Authorize(Roles = "Admin,Doctor")]
         // POST: DoctorAvailabilities/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
