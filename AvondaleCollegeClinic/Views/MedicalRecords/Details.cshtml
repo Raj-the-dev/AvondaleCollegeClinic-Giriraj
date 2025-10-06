@@ -1,42 +1,26 @@
 ﻿@model AvondaleCollegeClinic.Models.MedicalRecord
-
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Medical Record Details";
 }
+<section class="wrap page">
+    <h1>@ViewData["Title"]</h1>
 
-<h1>Details</h1>
+    <dl class="desc-list">
+        <dt>@Html.DisplayNameFor(m => m.Notes)</dt>
+        <dd>@Html.DisplayFor(m => m.Notes)</dd>
 
-<div>
-    <h4>MedicalRecord</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Notes)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Notes)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Date)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Date)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Student)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Student.StudentID)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Doctor)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Doctor.DoctorID)
-        </dd>
+        <dt>@Html.DisplayNameFor(m => m.Date)</dt>
+        <dd>@Html.DisplayFor(m => m.Date)</dd>
+
+        <dt>Student</dt>
+        <dd>@(Model.Student != null ? (Model.Student.FirstName + " " + Model.Student.LastName) : Model.StudentID)</dd>
+
+        <dt>Doctor</dt>
+        <dd>@(Model.Doctor != null ? (Model.Doctor.FirstName + " " + Model.Doctor.LastName) : Model.DoctorID)</dd>
     </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.MedicalRecordID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+
+    <div class="form-buttons">
+        <a asp-action="Edit" asp-route-id="@Model.MedicalRecordID" class="btn">Edit</a>
+        <a asp-action="Index" class="link-quiet">Back to list</a>
+    </div>
+</section>

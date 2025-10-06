@@ -3,40 +3,62 @@
 @{
     ViewData["Title"] = "First-time setup";
 }
-<h1>First-time setup</h1>
-<p class="text-muted">Use this once to create your login with your school/clinic ID.</p>
-
-<div class="row">
-    <div class="col-md-6">
-        <form method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Identifier" class="form-control" placeholder="ID" />
-                <label asp-for="Input.Identifier"></label>
-                <span asp-validation-for="Input.Identifier" class="text-danger"></span>
-            </div>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>First-time — Avondale College Clinic</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
 
 
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Password" class="form-control" />
-                <label asp-for="Input.Password"></label>
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.ConfirmPassword" class="form-control" />
-                <label asp-for="Input.ConfirmPassword"></label>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.CityOfBirth" class="form-control" />
-                <label asp-for="Input.CityOfBirth"></label>
-            </div>
+<main>
+  <div class="wrap">
+    <div class="eyebrow">First-time setup</div>
+    <h1>Create your access</h1>
 
-            <button type="submit" class="btn btn-primary">Complete Setup</button>
-        </form>
-    </div>
-</div>
+    <div asp-validation-summary="ModelOnly" class="error-summary" role="alert"></div>
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
+    <form method="post" class="auth">
+      <div class="form-row">
+        <label asp-for="Input.Identifier">Your school ID</label>
+        <input asp-for="Input.Identifier" class="input-line" autocomplete="username" />
+        <span asp-validation-for="Input.Identifier" class="error-summary"></span>
+      </div>
+
+      <div class="form-row">
+        <label asp-for="Input.Password">Password</label>
+        <input asp-for="Input.Password" class="input-line" autocomplete="new-password" type="password" />
+        <div class="hint">Min 8 chars with upper, lower & a number.</div>
+        <span asp-validation-for="Input.Password" class="error-summary"></span>
+      </div>
+
+      <div class="form-row">
+        <label asp-for="Input.ConfirmPassword">Confirm password</label>
+        <input asp-for="Input.ConfirmPassword" class="input-line" autocomplete="new-password" type="password" />
+        <span asp-validation-for="Input.ConfirmPassword" class="error-summary"></span>
+      </div>
+
+      <div class="form-row">
+        <label asp-for="Input.CityOfBirth">Keyword (city you were born in)</label>
+        <input asp-for="Input.CityOfBirth" class="input-line" />
+        <span asp-validation-for="Input.CityOfBirth" class="error-summary"></span>
+      </div>
+
+      <div class="form-row">
+        <button type="submit" class="btn">Create account</button>
+      </div>
+
+      <div class="muted" style="margin-top:14px">
+        Already set up? <a href="/Identity/Account/Login">Sign in</a>
+      </div>
+    </form>
+  </div>
+</main>
+
+<script src="~/js/site.js"></script>
+</body>
+</html>
+

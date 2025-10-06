@@ -1,29 +1,26 @@
 ﻿@model AvondaleCollegeClinic.Models.Homeroom
-
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Homeroom Details";
 }
+<section class="wrap page">
+    <h1>@ViewData["Title"]</h1>
 
-<h1>Details</h1>
+    <dl class="desc-list">
+        <dt>@Html.DisplayNameFor(m => m.YearLevel)</dt>
+        <dd>@((int)Model.YearLevel)</dd>
 
-<div>
-    <h4>Homeroom</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">@Html.DisplayNameFor(m => m.YearLevel)</dt>
-        <dd class="col-sm-10">@((int)Model.YearLevel)</dd>
+        <dt>@Html.DisplayNameFor(m => m.Block)</dt>
+        <dd>@Html.DisplayFor(_ => Model.Block)</dd>
 
-        <dt class="col-sm-2">@Html.DisplayNameFor(m => m.Block)</dt>
-        <dd class="col-sm-10">@Html.DisplayFor(_ => Model.Block)</dd>
+        <dt>@Html.DisplayNameFor(m => m.ClassNumber)</dt>
+        <dd>@((int)Model.ClassNumber)</dd>
 
-        <dt class="col-sm-2">@Html.DisplayNameFor(m => m.ClassNumber)</dt>
-        <dd class="col-sm-10">@((int)Model.ClassNumber)</dd>
-
-        <dt class="col-sm-2">@Html.DisplayNameFor(m => m.Teacher)</dt>
-        <dd class="col-sm-10">@((Model.Teacher != null) ? Model.Teacher.FirstName + " " + Model.Teacher.LastName : Model.TeacherID)</dd>
+        <dt>Teacher</dt>
+        <dd>@(Model.Teacher != null ? (Model.Teacher.FirstName + " " + Model.Teacher.LastName) : Model.TeacherID)</dd>
     </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.HomeroomID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+
+    <div class="form-buttons">
+        <a asp-action="Edit" asp-route-id="@Model.HomeroomID" class="btn">Edit</a>
+        <a asp-action="Index" class="link-quiet">Back to list</a>
+    </div>
+</section>

@@ -1,25 +1,16 @@
 ﻿@model AvondaleCollegeClinic.Models.Labtest
-
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Lab Test Details";
 }
+<section class="wrap page">
+    <h1>@ViewData["Title"]</h1>
 
-<h1>Details</h1>
+    <dl class="desc-list">
+        <dt>@Html.DisplayNameFor(m => m.TestType)</dt>
+        <dd>@Html.DisplayFor(m => m.TestType)</dd>
 
-<div>
-    <h4>Labtest</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TestType)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TestType)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.File)
-        </dt>
-        <dd class = "col-sm-10">
+        <dt>Report</dt>
+        <dd>
             @if (!string.IsNullOrEmpty(Model.File))
             {
                 <p><a href="@Model.File" target="_blank" rel="noopener">Open PDF</a></p>
@@ -27,24 +18,19 @@
             }
             else
             {
-                <p>No PDF uploaded.</p>
+                <span class="muted">No PDF uploaded</span>
             }
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ResultDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ResultDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MedicalRecord)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MedicalRecord.MedicalRecordID)
-        </dd>
+
+        <dt>@Html.DisplayNameFor(m => m.ResultDate)</dt>
+        <dd>@Html.DisplayFor(m => m.ResultDate)</dd>
+
+        <dt>Medical Record</dt>
+        <dd>@Model.MedicalRecord?.MedicalRecordID</dd>
     </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.LabtestID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+
+    <div class="form-buttons">
+        <a asp-action="Edit" asp-route-id="@Model.LabtestID" class="btn">Edit</a>
+        <a asp-action="Index" class="link-quiet">Back to list</a>
+    </div>
+</section>

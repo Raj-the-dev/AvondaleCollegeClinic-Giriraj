@@ -1,55 +1,56 @@
 ﻿@model AvondaleCollegeClinic.Models.Teacher
-
 @{
-    ViewData["Title"] = "Create";
-
+    ViewData["Title"] = "Create Teacher";
 }
 
-<h1>Create</h1>
+<section class="wrap" style="padding:36px 0">
+    <div class="eyebrow">Teachers</div>
+    <h1>Create</h1>
 
-<h4>Teacher</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create" method="post" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="TeacherID" />
-            <div class="form-group">
-                <label asp-for="FirstName" class="control-label"></label>
-                <input asp-for="FirstName" class="form-control" />
-                <span asp-validation-for="FirstName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="LastName" class="control-label"></label>
-                <input asp-for="LastName" class="form-control" />
-                <span asp-validation-for="LastName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ImageFile">Upload Image</label>
-                <input asp-for="ImageFile" type="file" class="form-control" />
-                <span asp-validation-for="ImageFile" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TeacherCode" class="control-label"></label>
-                <input asp-for="TeacherCode" class="form-control" />
-                <span asp-validation-for="TeacherCode" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
+    <div asp-validation-summary="ModelOnly" class="error-summary" role="alert"></div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+    <form asp-action="Create" method="post" enctype="multipart/form-data" class="auth" style="max-width:640px">
+        <input type="hidden" asp-for="TeacherID" />
+
+        <div class="form-row">
+            <label asp-for="FirstName"></label>
+            <input asp-for="FirstName" class="input-line" />
+            <span asp-validation-for="FirstName" class="error-summary"></span>
+        </div>
+
+        <div class="form-row">
+            <label asp-for="LastName"></label>
+            <input asp-for="LastName" class="input-line" />
+            <span asp-validation-for="LastName" class="error-summary"></span>
+        </div>
+
+        <div class="form-row">
+            <label asp-for="ImageFile">Upload image</label>
+            <input asp-for="ImageFile" type="file" class="input-line" />
+            <span asp-validation-for="ImageFile" class="error-summary"></span>
+        </div>
+
+        <div class="form-row">
+            <label asp-for="Email"></label>
+            <input asp-for="Email" class="input-line" />
+            <span asp-validation-for="Email" class="error-summary"></span>
+        </div>
+
+        <div class="form-row">
+            <label asp-for="TeacherCode"></label>
+            <input asp-for="TeacherCode" class="input-line" />
+            <span asp-validation-for="TeacherCode" class="error-summary"></span>
+        </div>
+
+        <div class="form-row">
+            <button type="submit" class="btn">Create</button>
+            <a asp-action="Index" class="link-quiet" style="margin-left:12px">Back to list</a>
+        </div>
+    </form>
+</section>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

@@ -1,105 +1,83 @@
 ﻿@model AvondaleCollegeClinic.Helpers.PaginatedList<AvondaleCollegeClinic.Models.Doctor>
-
-
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Doctors";
+
+    // Helper for initials if no photo
+    string Initials(string? first, string? last)
+    {
+        var a = !string.IsNullOrWhiteSpace(first) ? char.ToUpper(first![0]).ToString() : "";
+        var b = !string.IsNullOrWhiteSpace(last) ? char.ToUpper(last![0]).ToString() : "";
+        return (a + b);
+    }
 }
 
-<h1>Index</h1>
+<section class="wrap" style="padding:36px 0">
+    <h1 style="margin:0 0 18px">@ViewData["Title"]</h1>
 
-<form asp-action="Index" method="get">
-    <p>
-        Find by name or specialization: <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" />
-        <input type="submit" value="Search" />
-    </p>
-</form>
+    <!-- search + create (keeps your theme controls) -->
+    <form asp-action="Index" method="get" style="display:flex;gap:12px;align-items:center;margin:0 0 18px">
+        <label for="q" class="muted" style="font-size:14px">Search</label>
+        <input id="q" type="text" name="searchString" value="@ViewData["CurrentFilter"]" class="input-line" style="max-width:320px" />
+        <button type="submit" class="btn">Search</button>
+        <a asp-action="Index" class="link-quiet">Clear</a>
+        <span style="flex:1"></span>
+        <a asp-action="Create" class="btn">Create New</a>
+    </form>
 
-
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>@Html.DisplayNameFor(model => model[0].DoctorID)</th>
-            <th>@Html.DisplayNameFor(model => model[0].FirstName)</th>
-            <th>
-                <a asp-action="Index"
-                   asp-route-sortOrder="@ViewData["NameSortParm"]"
-                   asp-route-searchString="@ViewData["CurrentFilter"]">Last Name</a>
-            </th>
-            <th>Profile Image</th>
-            <th>
-                <a asp-action="Index"
-                   asp-route-sortOrder="@ViewData["SpecSortParm"]"
-                   asp-route-searchString="@ViewData["CurrentFilter"]">Specialization</a>
-            </th>
-            <th>@Html.DisplayNameFor(model => model[0].Email)</th>
-            <th>@Html.DisplayNameFor(model => model[0].Phone)</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
+    <!-- gallery grid using your .grid + .tile -->
+    <div class="grid">
+        @foreach (var d in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DoctorID)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FirstName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.LastName)
-                </td>
-                <td>
-                    @if (!string.IsNullOrEmpty(item.ImagePath))
-                    {
-                        <img src="@item.ImagePath" alt="Doctor Photo" width="100" height="100" />
-                    }
-                    else
-                    {
-                        <span>No image uploaded</span>
-                    }
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Specialization)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Email)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Phone)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.DoctorID">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.DoctorID">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.DoctorID">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-<div>
-    Page @Model.PageIndex of @Model.TotalPages
-    @if (Model.HasPreviousPage)
-    {
-        <a asp-action="Index"
-           asp-route-pageNumber="@(Model.PageIndex - 1)"
-           asp-route-sortOrder="@ViewData["CurrentSort"]"
-           asp-route-searchString="@ViewData["CurrentFilter"]">
-            Previous
-        </a>
-    }
+            <article class="tile span-4">
+                @if (!string.IsNullOrWhiteSpace(d.ImagePath))
+                {
+                    <img src="@d.ImagePath" alt="@($"{d.FirstName} {d.LastName}")" class="cg-portrait" />
+                }
+                else
+                {
+                    <div class="cg-initials">@Initials(d.FirstName, d.LastName)</div>
+                }
 
-    @if (Model.HasNextPage)
-    {
-        <a asp-action="Index"
-           asp-route-pageNumber="@(Model.PageIndex + 1)"
-           asp-route-sortOrder="@ViewData["CurrentSort"]"
-           asp-route-searchString="@ViewData["CurrentFilter"]">
-            Next
-        </a>
-    }
-</div>
+                <h3 class="cg-name">@d.FirstName @d.LastName</h3>
+                <p class="cg-sub">
+                    @d.Specialization
+                    @if (!string.IsNullOrWhiteSpace(d.Email))
+                    {
+                        <span> · @d.Email</span>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(d.Phone))
+                    {
+                        <span> · @d.Phone</span>
+                    }
+                </p>
+
+                <div class="cg-actions">
+                    <a asp-action="Details" asp-route-id="@d.DoctorID">Details</a>
+                    <a asp-action="Edit" asp-route-id="@d.DoctorID">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@d.DoctorID">Delete</a>
+                </div>
+            </article>
+        }
+    </div>
+
+    <!-- pager -->
+    <div class="belt" style="padding-top:16px">
+        <div>Page @Model.PageIndex of @Model.TotalPages</div>
+        <div>
+            @if (Model.HasPreviousPage)
+            {
+                <a class="link-quiet" asp-action="Index"
+                   asp-route-pageNumber="@(Model.PageIndex - 1)"
+                   asp-route-sortOrder="@ViewData["CurrentSort"]"
+                   asp-route-searchString='@ViewData["CurrentFilter"]'>Previous</a>
+            }
+            @if (Model.HasNextPage)
+            {
+                <a class="link-quiet" style="margin-left:12px" asp-action="Index"
+                   asp-route-pageNumber="@(Model.PageIndex + 1)"
+                   asp-route-sortOrder="@ViewData["CurrentSort"]"
+                   asp-route-searchString='@ViewData["CurrentFilter"]'>Next</a>
+            }
+        </div>
+    </div>
+</section>

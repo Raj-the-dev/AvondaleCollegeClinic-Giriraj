@@ -1,48 +1,40 @@
 ﻿@model AvondaleCollegeClinic.Models.Prescription
-
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Prescription Details";
 }
+<section class="wrap page">
+    <h1>@ViewData["Title"]</h1>
 
-<h1>Details</h1>
+    <dl class="desc-list">
+        <dt>@Html.DisplayNameFor(m => m.Medication)</dt>
+        <dd>@Html.DisplayFor(m => m.Medication)</dd>
 
-<div>
-    <h4>Prescription</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Medication)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Medication)
+        <dt>@Html.DisplayNameFor(m => m.Dosage)</dt>
+        <dd>@Html.DisplayFor(m => m.Dosage)</dd>
+
+        <dt>@Html.DisplayNameFor(m => m.StartDate)</dt>
+        <dd>@Html.DisplayFor(m => m.StartDate)</dd>
+
+        <dt>@Html.DisplayNameFor(m => m.EndDate)</dt>
+        <dd>@Html.DisplayFor(m => m.EndDate)</dd>
+
+        <dt>Student</dt>
+        <dd>
+            @(Model.Diagnosis?.Appointment?.Student != null
+                ? Model.Diagnosis.Appointment.Student.FirstName + " " + Model.Diagnosis.Appointment.Student.LastName
+                : "—")
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Dosage)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Dosage)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.StartDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.StartDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EndDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EndDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Diagnosis)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Diagnosis.DiagnosisID)
+
+        <dt>Doctor</dt>
+        <dd>
+            @(Model.Diagnosis?.Appointment?.Doctor != null
+                ? Model.Diagnosis.Appointment.Doctor.FirstName + " " + Model.Diagnosis.Appointment.Doctor.LastName
+                : "—")
         </dd>
     </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.PrescriptionID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+
+    <div class="form-buttons">
+        <a asp-action="Edit" asp-route-id="@Model.PrescriptionID" class="btn">Edit</a>
+        <a asp-action="Index" class="link-quiet">Back to list</a>
+    </div>
+</section>

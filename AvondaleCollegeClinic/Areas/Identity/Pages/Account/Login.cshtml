@@ -3,35 +3,51 @@
 @{
     ViewData["Title"] = "Login";
 }
-<h1>Login</h1>
-<div class="row">
-    <div class="col-md-5">
-        <form method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Login — Avondale College Clinic</title>
+    <link rel="stylesheet" href="~/css/site.css" />
 
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Identifier" class="form-control" placeholder="Email or ID" />
-                <label asp-for="Input.Identifier"></label>
-                <span asp-validation-for="Input.Identifier" class="text-danger"></span>
-            </div>
+</head>
+<body>
 
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Password" class="form-control" placeholder="Password" />
-                <label asp-for="Input.Password"></label>
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
-            </div>
 
-            <button class="w-100 btn btn-primary" type="submit">Login</button>
-        </form>
+<main>
+  <div class="wrap">
+    <div class="eyebrow">Secure access</div>
+    <h1>Sign in</h1>
 
-        <div class="mt-3 small">
-            <a asp-page="./FirstTime">First-time setup</a> ·
-            <a asp-page="./KeywordLogin">Use keyword instead</a> ·
-            <a asp-page="./Login" asp-route-admin="1">Admin login</a>
-        </div>
-    </div>
-</div>
+    <div asp-validation-summary="ModelOnly" class="error-summary" role="alert"></div>
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
+    <form method="post" class="auth">
+      <div class="form-row">
+        <label asp-for="Input.Identifier">Email or ID</label>
+        <input asp-for="Input.Identifier" class="input-line" autocomplete="username" />
+        <span asp-validation-for="Input.Identifier" class="error-summary"></span>
+      </div>
+
+      <div class="form-row">
+        <label asp-for="Input.Password">Password</label>
+        <input asp-for="Input.Password" class="input-line" autocomplete="current-password" type="password" />
+        <span asp-validation-for="Input.Password" class="error-summary"></span>
+      </div>
+
+      <div class="form-row">
+        <button type="submit" class="btn">Login</button>
+      </div>
+
+      <div class="links muted">
+        <a href="/Identity/Account/FirstTime">First-time setup</a>
+        <a href="/Identity/Account/KeywordLogin">Forgot? Use keyword</a>
+        <a href="/">Back to home</a>
+      </div>
+    </form>
+  </div>
+</main>
+
+    <script src="~/js/site.js"></script>
+</body>
+</html>

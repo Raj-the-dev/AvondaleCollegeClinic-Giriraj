@@ -1,73 +1,75 @@
 ﻿@model AvondaleCollegeClinic.Models.Student
-
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit Student";
 }
 
-<h1>Edit</h1>
+<section class="wrap" style="padding:36px 0">
+    <div class="eyebrow">Students</div>
+    <h1>Edit</h1>
 
-<h4>Student</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="StudentID" />
-            <div class="form-group">
-                <label asp-for="FirstName" class="control-label"></label>
-                <input asp-for="FirstName" class="form-control" />
-                <span asp-validation-for="FirstName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="LastName" class="control-label"></label>
-                <input asp-for="LastName" class="form-control" />
-                <span asp-validation-for="LastName" class="text-danger"></span>
-            </div>
-            @* show current image if there is one *@
-            @if (!string.IsNullOrEmpty(Model.ImagePath))
-            {
-                <div class="mb-2">
-                    <img src="@Model.ImagePath" alt="Current photo" width="120" height="120" />
-                </div>
-            }
-            <div class="form-group">
-                <label asp-for="ImageFile"></label>
-                <input asp-for="ImageFile" type="file" class="form-control" />
-                <span asp-validation-for="ImageFile" class="text-danger"></span>
-            </div>
+    <div asp-validation-summary="ModelOnly" class="error-summary" role="alert"></div>
 
-            <button type="submit" class="btn btn-primary">Create</button>
-            <div class="form-group">
-                <label asp-for="DOB" class="control-label"></label>
-                <input asp-for="DOB" class="form-control" />
-                <span asp-validation-for="DOB" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="HomeroomID" class="control-label"></label>
-                <select asp-for="HomeroomID" class="form-control" asp-items="ViewBag.HomeroomID"></select>
-                <span asp-validation-for="HomeroomID" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CaregiverID" class="control-label"></label>
-                <select asp-for="CaregiverID" class="form-control" asp-items="ViewBag.CaregiverID"></select>
-                <span asp-validation-for="CaregiverID" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
+    <form asp-action="Edit" method="post" enctype="multipart/form-data" class="auth" style="max-width:640px">
+        <input type="hidden" asp-for="StudentID" />
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+        <div class="form-row">
+            <label asp-for="FirstName"></label>
+            <input asp-for="FirstName" class="input-line" />
+            <span asp-validation-for="FirstName" class="error-summary"></span>
+        </div>
+
+        <div class="form-row">
+            <label asp-for="LastName"></label>
+            <input asp-for="LastName" class="input-line" />
+            <span asp-validation-for="LastName" class="error-summary"></span>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.ImagePath))
+        {
+            <div class="form-row">
+                <img src="@Model.ImagePath" alt="Current photo" width="140" height="140" />
+            </div>
+        }
+
+        <div class="form-row">
+            <label asp-for="ImageFile">Replace photo (optional)</label>
+            <input asp-for="ImageFile" type="file" class="input-line" />
+            <span asp-validation-for="ImageFile" class="error-summary"></span>
+        </div>
+
+        <div class="form-row">
+            <label asp-for="DOB"></label>
+            <input asp-for="DOB" class="input-line" />
+            <span asp-validation-for="DOB" class="error-summary"></span>
+        </div>
+
+        <div class="form-row">
+            <label asp-for="Email"></label>
+            <input asp-for="Email" class="input-line" />
+            <span asp-validation-for="Email" class="error-summary"></span>
+        </div>
+
+        <div class="form-row">
+            <label asp-for="HomeroomID">Homeroom</label>
+            <select asp-for="HomeroomID" class="input-line" asp-items="ViewBag.HomeroomID"></select>
+            <span asp-validation-for="HomeroomID" class="error-summary"></span>
+        </div>
+
+        <div class="form-row">
+            <label asp-for="CaregiverID">Caregiver</label>
+            <select asp-for="CaregiverID" class="input-line" asp-items="ViewBag.CaregiverID"></select>
+            <span asp-validation-for="CaregiverID" class="error-summary"></span>
+        </div>
+
+        <div class="form-row">
+            <button type="submit" class="btn">Save</button>
+            <a asp-action="Index" class="link-quiet" style="margin-left:12px">Back to list</a>
+        </div>
+    </form>
+</section>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

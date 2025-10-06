@@ -1,69 +1,69 @@
 ﻿@model AvondaleCollegeClinic.Models.Doctor
-
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit Doctor";
 }
 
-<h1>Edit</h1>
+<section class="wrap" style="padding:36px 0">
+    <div class="eyebrow">DOCTORS</div>
+    <h1>Edit</h1>
 
-<h4>Doctor</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="DoctorID" />
-            <div class="form-group">
-                <label asp-for="FirstName" class="control-label"></label>
-                <input asp-for="FirstName" class="form-control" />
-                <span asp-validation-for="FirstName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="LastName" class="control-label"></label>
-                <input asp-for="LastName" class="form-control" />
-                <span asp-validation-for="LastName" class="text-danger"></span>
-            </div>
-            @* show current image if there is one *@
-            @if (!string.IsNullOrEmpty(Model.ImagePath))
-            {
-                <div class="mb-2">
-                    <img src="@Model.ImagePath" alt="Current photo" width="120" height="120" />
-                </div>
-            }
+    <form asp-action="Edit" method="post" enctype="multipart/form-data" class="auth" style="max-width:720px">
+        <div asp-validation-summary="ModelOnly" class="error-summary" role="alert"></div>
+        <input type="hidden" asp-for="DoctorID" />
 
-            <div class="form-group">
-                <label asp-for="ImageFile">Replace Photo (optional)</label>
-                <input asp-for="ImageFile" type="file" class="form-control" />
-                <span asp-validation-for="ImageFile" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Specialization" class="control-label"></label>
-                <select asp-for="Specialization" class="form-control"
-                        asp-items="Html.GetEnumSelectList<SpecializationType>()">
-                </select>
-                <span asp-validation-for="Specialization" class="text-danger"></span>
-            </div> <!--Enum drop down specialization-->
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Phone" class="control-label"></label>
-                <input asp-for="Phone" class="form-control" />
-                <span asp-validation-for="Phone" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
+        <div class="form-row">
+            <label asp-for="FirstName"></label>
+            <input asp-for="FirstName" class="input-line" />
+            <span asp-validation-for="FirstName" class="error-summary"></span>
+        </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+        <div class="form-row">
+            <label asp-for="LastName"></label>
+            <input asp-for="LastName" class="input-line" />
+            <span asp-validation-for="LastName" class="error-summary"></span>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.ImagePath))
+        {
+            <div class="form-row">
+                <img src="@Model.ImagePath" alt="Current photo" width="120" height="120" />
+            </div>
+        }
+
+        <div class="form-row">
+            <label asp-for="ImageFile">Replace photo (optional)</label>
+            <input asp-for="ImageFile" type="file" class="input-line" />
+            <span asp-validation-for="ImageFile" class="error-summary"></span>
+        </div>
+
+        <div class="form-row">
+            <label asp-for="Specialization"></label>
+            <select asp-for="Specialization" class="input-line"
+                    asp-items="Html.GetEnumSelectList<SpecializationType>()"></select>
+            <span asp-validation-for="Specialization" class="error-summary"></span>
+        </div>
+
+        <div class="form-row">
+            <label asp-for="Email"></label>
+            <input asp-for="Email" class="input-line" />
+            <span asp-validation-for="Email" class="error-summary"></span>
+        </div>
+
+        <div class="form-row">
+            <label asp-for="Phone"></label>
+            <input asp-for="Phone" class="input-line" />
+            <span asp-validation-for="Phone" class="error-summary"></span>
+        </div>
+
+        <div class="form-row">
+            <button type="submit" class="btn">Save</button>
+            <a asp-action="Index" class="link-quiet" style="margin-left:12px">Back to list</a>
+        </div>
+    </form>
+</section>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

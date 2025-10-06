@@ -1,53 +1,51 @@
 ﻿@model AvondaleCollegeClinic.Models.Appointment
-
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Appointment";
 }
 
-<h1>Create</h1>
+<section class="wrap page">
+    <h1>@ViewData["Title"]</h1>
 
-<h4>Appointment</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="StudentID" class="control-label"></label>
-                <select asp-for="StudentID" class ="form-control" asp-items="ViewBag.StudentID"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="DoctorID" class="control-label"></label>
-                <select asp-for="DoctorID" class ="form-control" asp-items="ViewBag.DoctorID"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="AppointmentDateTime" class="control-label"></label>
-                <input asp-for="AppointmentDateTime" class="form-control" />
-                <span asp-validation-for="AppointmentDateTime" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Status" class="control-label"></label>
-                <select asp-for="Status" class="form-control"
-                        asp-items="Html.GetEnumSelectList<AppointmentStatus>()">
-                </select>
-                <span asp-validation-for="Status" class="text-danger"></span>
-            </div> <!--Enum drop down for Status-->
-            <div class="form-group">
-                <label asp-for="Reason" class="control-label"></label>
-                <input asp-for="Reason" class="form-control" />
-                <span asp-validation-for="Reason" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
+    <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+    <form asp-action="Create">
+        <div class="form-row">
+            <label asp-for="StudentID" class="form-label"></label>
+            <select asp-for="StudentID" class="form-control" asp-items="ViewBag.StudentID"></select>
+            <span asp-validation-for="StudentID" class="text-danger"></span>
+        </div>
+
+        <div class="form-row">
+            <label asp-for="DoctorID" class="form-label"></label>
+            <select asp-for="DoctorID" class="form-control" asp-items="ViewBag.DoctorID"></select>
+            <span asp-validation-for="DoctorID" class="text-danger"></span>
+        </div>
+
+        <div class="form-row">
+            <label asp-for="AppointmentDateTime" class="form-label"></label>
+            <input asp-for="AppointmentDateTime" class="form-control" />
+            <span asp-validation-for="AppointmentDateTime" class="text-danger"></span>
+        </div>
+
+        <div class="form-row">
+            <label asp-for="Status" class="form-label"></label>
+            <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<AppointmentStatus>()"></select>
+            <span asp-validation-for="Status" class="text-danger"></span>
+        </div>
+
+        <div class="form-row">
+            <label asp-for="Reason" class="form-label"></label>
+            <input asp-for="Reason" class="form-control" />
+            <span asp-validation-for="Reason" class="text-danger"></span>
+        </div>
+
+        <div class="form-buttons">
+            <button type="submit" class="btn">Create</button>
+            <a asp-action="Index" class="link-quiet">Back to list</a>
+        </div>
+    </form>
+</section>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @await Html.PartialAsync("_ValidationScriptsPartial")
 }

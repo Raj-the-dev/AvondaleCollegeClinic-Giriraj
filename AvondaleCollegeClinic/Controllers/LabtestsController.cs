@@ -29,14 +29,53 @@ namespace AvondaleCollegeClinic.Controllers
         public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
             ViewData["CurrentSort"] = sortOrder;
-            ViewData["TestSortParm"] = String.IsNullOrEmpty(sortOrder) ? "test_desc" : "";
+            ViewData["TestSortParm"] = string.IsNullOrEmpty(sortOrder) ? "test_desc" : "";
             ViewData["CurrentFilter"] = searchString;
 
-            // Base query: include related entities
+            var me = await _userManager.GetUserAsync(User);
+            if (me == null) return Challenge();
+
+            var userId = me.Id;
+            var uname = me.UserName ?? string.Empty;
+            var email = me.Email ?? string.Empty;
+
+            var studentId = await _context.Students
+                .Where(s => s.IdentityUserId == userId || s.StudentID == uname || s.Email == email)
+                .Select(s => s.StudentID)
+                .FirstOrDefaultAsync();
+
+            var caregiverId = await _context.Caregivers
+                .Where(c => c.IdentityUserId == userId || c.CaregiverID == uname || c.Email == email)
+                .Select(c => c.CaregiverID)
+                .FirstOrDefaultAsync();
+
+            // Link to Student via MedicalRecord
             var query = _context.LabTests
                 .Include(l => l.MedicalRecord)
                     .ThenInclude(m => m.Student)
                 .AsQueryable();
+
+            // Ownership filter
+            if (User.IsInRole("Student") && !string.IsNullOrEmpty(studentId))
+            {
+                query = query.Where(l => l.MedicalRecord.StudentID == studentId);
+            }
+            else if (User.IsInRole("Caregiver") && !string.IsNullOrEmpty(caregiverId))
+            {
+                query = query.Where(l => l.MedicalRecord.Student.CaregiverID == caregiverId);
+            }
+            else if (User.IsInRole("Doctor"))
+            {
+                // leave unfiltered or tie to doctor via MedicalRecord.DoctorID if present
+            }
+            else if (User.IsInRole("Admin"))
+            {
+                // see all
+            }
+            else
+            {
+                return Forbid();
+            }
 
             // Search
             if (!string.IsNullOrWhiteSpace(searchString))
@@ -45,47 +84,29 @@ namespace AvondaleCollegeClinic.Controllers
                 query = query.Where(l =>
                     EF.Functions.Like(l.TestType, term) ||
                     EF.Functions.Like(l.MedicalRecord.Student.FirstName, term) ||
-                    EF.Functions.Like(l.MedicalRecord.Student.LastName, term)
-                );
+                    EF.Functions.Like(l.MedicalRecord.Student.LastName, term));
             }
 
-            // Sort (DB-level)
+            // Sort
             query = sortOrder switch
             {
                 "test_desc" => query.OrderByDescending(l => l.TestType),
                 _ => query.OrderBy(l => l.TestType)
             };
 
-            var labtests = await query.AsNoTracking().ToListAsync();
-
-            // Client-side filtering (extra layer)
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                searchString = searchString.ToLower();
-                labtests = labtests.Where(l =>
-                    l.TestType.ToLower().Contains(searchString)
-                ).ToList();
-            }
-
-            // Sort again client-side (if needed)
-            switch (sortOrder)
-            {
-                case "test_desc":
-                    labtests = labtests.OrderByDescending(l => l.TestType).ToList();
-                    break;
-                default:
-                    labtests = labtests.OrderBy(l => l.TestType).ToList();
-                    break;
-            }
-
-            // Pagination
-            int pageSize = 10;
+            // Paging
+            const int pageSize = 10;
             int page = pageNumber ?? 1;
-            return View(new PaginatedList<Labtest>(
-                labtests.Skip((page - 1) * pageSize).Take(pageSize).ToList(),
-                labtests.Count, page, pageSize
-            ));
+            var total = await query.CountAsync();
+            var rows = await query.AsNoTracking()
+                                   .Skip((page - 1) * pageSize)
+                                   .Take(pageSize)
+                                   .ToListAsync();
+
+            // NOTE: use your actual entity type name (Labtest vs LabTest) to match your project
+            return View(new PaginatedList<Labtest>(rows, total, page, pageSize));
         }
+
 
 
         [Authorize(Roles = "Admin,Doctor")]

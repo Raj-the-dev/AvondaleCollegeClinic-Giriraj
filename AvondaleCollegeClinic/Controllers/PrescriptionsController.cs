@@ -30,18 +30,57 @@ namespace AvondaleCollegeClinic.Controllers
         public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
             ViewData["CurrentSort"] = sortOrder;
-            ViewData["PrescriptionSortParm"] = String.IsNullOrEmpty(sortOrder) ? "presc_desc" : "";
+            ViewData["PrescriptionSortParm"] = string.IsNullOrEmpty(sortOrder) ? "presc_desc" : "";
             ViewData["DosageSortParm"] = sortOrder == "Dosage" ? "dosage_desc" : "Dosage";
             ViewData["CurrentFilter"] = searchString;
 
-            // Base query: include related entities
+            var me = await _userManager.GetUserAsync(User);
+            if (me == null) return Challenge();
+
+            var userId = me.Id;
+            var uname = me.UserName ?? string.Empty;
+            var email = me.Email ?? string.Empty;
+
+            var studentId = await _context.Students
+                .Where(s => s.IdentityUserId == userId || s.StudentID == uname || s.Email == email)
+                .Select(s => s.StudentID)
+                .FirstOrDefaultAsync();
+
+            var caregiverId = await _context.Caregivers
+                .Where(c => c.IdentityUserId == userId || c.CaregiverID == uname || c.Email == email)
+                .Select(c => c.CaregiverID)
+                .FirstOrDefaultAsync();
+
+            // Base + includes to Student via Appointment
             var query = _context.Prescriptions
                 .Include(p => p.Diagnosis)
                     .ThenInclude(d => d.Appointment)
                         .ThenInclude(a => a.Student)
                 .AsQueryable();
 
-            // Optional search (DB-level LIKE for speed)
+            // Ownership filter
+            if (User.IsInRole("Student") && !string.IsNullOrEmpty(studentId))
+            {
+                query = query.Where(p => p.Diagnosis.Appointment.StudentID == studentId);
+            }
+            else if (User.IsInRole("Caregiver") && !string.IsNullOrEmpty(caregiverId))
+            {
+                query = query.Where(p => p.Diagnosis.Appointment.Student.CaregiverID == caregiverId);
+            }
+            else if (User.IsInRole("Doctor"))
+            {
+                // leave unfiltered, or tie to doctor via p.Diagnosis.Appointment.DoctorID
+            }
+            else if (User.IsInRole("Admin"))
+            {
+                // see all
+            }
+            else
+            {
+                return Forbid();
+            }
+
+            // Search
             if (!string.IsNullOrWhiteSpace(searchString))
             {
                 var term = $"%{searchString.Trim()}%";
@@ -49,49 +88,30 @@ namespace AvondaleCollegeClinic.Controllers
                     EF.Functions.Like(p.Medication, term) ||
                     EF.Functions.Like(p.Dosage, term) ||
                     EF.Functions.Like(p.Diagnosis.Appointment.Student.FirstName, term) ||
-                    EF.Functions.Like(p.Diagnosis.Appointment.Student.LastName, term)
-                );
+                    EF.Functions.Like(p.Diagnosis.Appointment.Student.LastName, term));
             }
 
-            var prescriptions = await query.AsNoTracking().ToListAsync();
-
-            // Client-side filtering (extra layer, not strictly necessary if DB filtering works)
-            if (!string.IsNullOrEmpty(searchString))
+            // Sort
+            query = sortOrder switch
             {
-                searchString = searchString.ToLower();
-                prescriptions = prescriptions.Where(p =>
-                    p.Medication.ToLower().Contains(searchString) ||
-                    p.Dosage.ToLower().Contains(searchString) ||
-                    p.Diagnosis.Appointment.Student.FirstName.ToLower().Contains(searchString) ||
-                    p.Diagnosis.Appointment.Student.LastName.ToLower().Contains(searchString)
-                ).ToList();
-            }
+                "presc_desc" => query.OrderByDescending(p => p.Medication),
+                "Dosage" => query.OrderBy(p => p.Dosage),
+                "dosage_desc" => query.OrderByDescending(p => p.Dosage),
+                _ => query.OrderBy(p => p.Medication)
+            };
 
-            // Sorting
-            switch (sortOrder)
-            {
-                case "presc_desc":
-                    prescriptions = prescriptions.OrderByDescending(p => p.Medication).ToList();
-                    break;
-                case "Dosage":
-                    prescriptions = prescriptions.OrderBy(p => p.Dosage).ToList();
-                    break;
-                case "dosage_desc":
-                    prescriptions = prescriptions.OrderByDescending(p => p.Dosage).ToList();
-                    break;
-                default:
-                    prescriptions = prescriptions.OrderBy(p => p.Medication).ToList();
-                    break;
-            }
-
-            // Pagination
-            int pageSize = 10;
+            // Paging
+            const int pageSize = 10;
             int page = pageNumber ?? 1;
-            return View(new PaginatedList<Prescription>(
-                prescriptions.Skip((page - 1) * pageSize).Take(pageSize).ToList(),
-                prescriptions.Count, page, pageSize
-            ));
+            var total = await query.CountAsync();
+            var rows = await query.AsNoTracking()
+                                   .Skip((page - 1) * pageSize)
+                                   .Take(pageSize)
+                                   .ToListAsync();
+
+            return View(new PaginatedList<Prescription>(rows, total, page, pageSize));
         }
+
 
 
         [Authorize(Roles = "Admin,Doctor")]

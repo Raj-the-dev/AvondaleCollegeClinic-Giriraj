@@ -1,85 +1,238 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@using AvondaleCollegeClinic.Areas.Identity.Data
+@inject SignInManager<AvondaleCollegeClinicUser> SignInManager
+@inject UserManager<AvondaleCollegeClinicUser> UserManager
+<!doctype html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - AvondaleCollegeClinic</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>@ViewData["Title"] - Avondale College Clinic</title>
+    <meta name="description" content="Avondale College Clinic — appointments, results, and care information." />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/AvondaleCollegeClinic.styles.css" asp-append-version="true" />
 </head>
 <body>
+
+
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">AvondaleCollegeClinic</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+        @{
+            var isSignedIn = SignInManager.IsSignedIn(User);
+            AvondaleCollegeClinicUser? me = null;
+            bool isAdmin = false, isStudent = false, isTeacher = false, isDoctor = false, isCaregiver = false;
+
+            if (isSignedIn)
+            {
+                me = await UserManager.GetUserAsync(User);
+                if (me != null)
+                {
+                    isAdmin = await UserManager.IsInRoleAsync(me, "Admin");
+                    isStudent = await UserManager.IsInRoleAsync(me, "Student");
+                    isTeacher = await UserManager.IsInRoleAsync(me, "Teacher");
+                    isDoctor = await UserManager.IsInRoleAsync(me, "Doctor");
+                    isCaregiver = await UserManager.IsInRoleAsync(me, "Caregiver");
+                }
+            }
+        }
+        <div class="wrap head">
+            <div class="brand"><a href="/">Avondale College Clinic</a></div>
+
+            <!-- Desktop nav -->
+            <nav class="primary" aria-label="Primary">
+                <ul>
+                    <!-- Public links (always) -->
+                    <li><a href="/#about">About</a></li>
+
+                    @* NOT SIGNED IN: show About • Visit • Login only *@
+                    @if (!isSignedIn)
+                    {
+                        <li><a href="/Appointments">Visit</a></li>
+                        <li><a href="/Identity/Account/Login">Login</a></li>
+                    }
+                    else
+                    {
+                        @* ADMIN: single "Users" dropdown *@
+                        if (isAdmin)
+                        {
+                            <li class="dropdown">
+                                <a class="drop-toggle" href="javascript:void(0)" aria-haspopup="true" aria-expanded="false">Users</a>
+                                <div class="drop-panel" role="menu" aria-label="Users">
+                                    <a href="/Students" role="menuitem">Students</a>
+                                    <a href="/Doctors" role="menuitem">Doctors</a>
+                                    <a href="/Caregivers" role="menuitem">Caregivers</a>
+                                    <a href="/Teachers" role="menuitem">Teachers</a>
+                                </div>
+                            </li>
+                            <li class="dropdown">
+                                <a class="drop-toggle" href="javascript:void(0)" aria-haspopup="true" aria-expanded="false">Services</a>
+                                <div class="drop-panel" role="menu" aria-label="Student">
+                                    <a href="/Appointments" role="menuitem">Visit</a>
+                                    <a href="/Diagnoses" role="menuitem">Diagnoses</a>
+                                    <a href="/DoctorAvailability" role="menuitem">Doctor Availability</a>
+                                    <a href="/Prescriptions" role="menuitem">Prescriptions</a>
+                                    <a href="/MedicalRecords" role="menuitem">Medical Records</a>
+                                    <a href="/LabTests" role="menuitem">Lab Tests</a>
+                                </div>
+                            </li>
+                        }
+
+                        @* STUDENT dropdown (Visit -> Create + their items) *@
+                        if (isStudent)
+                        {
+                            <li class="dropdown">
+                                <a class="drop-toggle" href="javascript:void(0)" aria-haspopup="true" aria-expanded="false">Student</a>
+                                <div class="drop-panel" role="menu" aria-label="Student">
+                                    <a href="/Appointments/Create" role="menuitem">Visit</a>
+                                    <a href="/Prescriptions" role="menuitem">Prescriptions</a>
+                                    <a href="/MedicalRecords" role="menuitem">Medical Records</a>
+                                    <a href="/LabTests" role="menuitem">Lab Tests</a>
+                                </div>
+                            </li>
+                        }
+
+                        @* TEACHER dropdown (same as you had) *@
+                        if (isTeacher)
+                        {
+                            <li class="dropdown">
+                                <a class="drop-toggle" href="javascript:void(0)" aria-haspopup="true" aria-expanded="false">Teacher</a>
+                                <div class="drop-panel" role="menu" aria-label="Teacher">
+                                    <a href="/Teachers" role="menuitem">Teachers</a>
+                                    <a href="/Homerooms" role="menuitem">Homerooms</a>
+                                    <a href="/Students" role="menuitem">Students</a>
+                                </div>
+                            </li>
+                        }
+
+                        @* DOCTOR dropdown (unchanged) *@
+                        if (isDoctor)
+                        {
+                            <li class="dropdown">
+                                <a class="drop-toggle" href="javascript:void(0)" aria-haspopup="true" aria-expanded="false">Doctor</a>
+                                <div class="drop-panel" role="menu" aria-label="Doctor">
+                                    <a href="/Doctors" role="menuitem">Doctors</a>
+                                    <a href="/Diagnoses" role="menuitem">Diagnoses</a>
+                                    <a href="/MedicalRecords" role="menuitem">Medical Records</a>
+                                    <a href="/Prescriptions" role="menuitem">Prescriptions</a>
+                                    <a href="/DoctorAvailability" role="menuitem">Doctor Availability</a>
+                                    <a href="/LabTests" role="menuitem">Lab Tests</a>
+                                </div>
+                            </li>
+                        }
+
+                        @* CAREGIVER dropdown (unchanged) *@
+                        if (isCaregiver)
+                        {
+                            <li class="dropdown">
+                                <a class="drop-toggle" href="javascript:void(0)" aria-haspopup="true" aria-expanded="false">Caregiver</a>
+                                <div class="drop-panel" role="menu" aria-label="Caregiver">
+                                    <a href="/Caregivers" role="menuitem">Caregivers</a>
+                                    <a href="/Students" role="menuitem">Students</a>
+                                    <a href="/Appointments" role="menuitem">Appointments</a>
+                                </div>
+                            </li>
+                        }
+
+                        @* Account *@
+                        <li class="dropdown">
+                            <a class="drop-toggle" href="javascript:void(0)" aria-haspopup="true" aria-expanded="false">Account</a>
+                            <div class="drop-panel" role="menu" aria-label="Account">
+                                <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/" method="post" style="display:inline">
+                                    <button type="submit" style="background:none;">Logout</button>
+                                </form>
+                            </div>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Students" asp-action="Index">Students</a>
+                    }
+                </ul>
+            </nav>
+
+            <!-- Hamburger (mobile) -->
+            <button class="hamburger" aria-label="Open menu" aria-controls="menu" aria-expanded="false" data-menu-btn>
+                <span class="bars" aria-hidden="true"></span>
+                <span class="sr-only">Menu</span>
+            </button>
+        </div>
+
+        <!-- Mobile overlay (mirrors desktop) -->
+        <div id="menu" class="overlay" hidden data-menu>
+            <nav aria-label="Mobile">
+                <ul>
+                    <li><a data-close href="/#about">About</a></li>
+
+                    @if (!isSignedIn)
+                    {
+                        <li><a data-close href="/Appointments">Visit</a></li>
+                        <li><a data-close href="/Identity/Account/Login">Login</a></li>
+                    }
+                    else
+                    {
+                        if (isAdmin)
+                        {
+                            <li><strong class="muted eyebrow">Users</strong></li>
+                            <li><a data-close href="/Students">Students</a></li>
+                            <li><a data-close href="/Doctors">Doctors</a></li>
+                            <li><a data-close href="/Caregivers">Caregivers</a></li>
+                            <li><a data-close href="/Teachers">Teachers</a></li>
+                        }
+
+                        if (isStudent)
+                        {
+                            <li><strong class="muted eyebrow">Student</strong></li>
+                            <li><a data-close href="/Appointments/Create">Visit (Book Appointment)</a></li>
+                            <li><a data-close href="/Prescriptions">Prescriptions</a></li>
+                            <li><a data-close href="/MedicalRecords">Medical Records</a></li>
+                            <li><a data-close href="/LabTests">Lab Tests</a></li>
+                        }
+
+                        if (isTeacher)
+                        {
+                            <li><strong class="muted eyebrow">Teacher</strong></li>
+                            <li><a data-close href="/Teachers">Teachers</a></li>
+                            <li><a data-close href="/Homerooms">Homerooms</a></li>
+                            <li><a data-close href="/Students">Students</a></li>
+                        }
+
+                        if (isDoctor)
+                        {
+                            <li><strong class="muted eyebrow">Doctor</strong></li>
+                            <li><a data-close href="/Doctors">Doctors</a></li>
+                            <li><a data-close href="/Diagnoses">Diagnoses</a></li>
+                            <li><a data-close href="/MedicalRecords">Medical Records</a></li>
+                            <li><a data-close href="/Prescriptions">Prescriptions</a></li>
+                            <li><a data-close href="/DoctorAvailability">Doctor Availability</a></li>
+                            <li><a data-close href="/LabTests">Lab Tests</a></li>
+                        }
+
+                        if (isCaregiver)
+                        {
+                            <li><strong class="muted eyebrow">Caregiver</strong></li>
+                            <li><a data-close href="/Caregivers">Caregivers</a></li>
+                            <li><a data-close href="/Students">Students</a></li>
+                            <li><a data-close href="/Appointments">Appointments</a></li>
+                        }
+
+                        <li><strong class="muted eyebrow">Account</strong></li>
+                        <li><a data-close href="/Identity/Account/Manage/CompleteProfile">Profile</a></li>
+                        <li>
+                            <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/" method="post" style="display:inline">
+                                <button type="submit" style="background:none;border:0;padding:0;margin:0;cursor:pointer">Logout</button>
+                            </form>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Teachers" asp-action="Index">Teachers</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Doctors" asp-action="Index">Doctors</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Caregivers" asp-action="Index">Caregivers</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Homerooms" asp-action="Index">Homerooms</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Appointments" asp-action="Index">Appointments</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Prescriptions" asp-action="Index">Prescriptions</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Diagnoses" asp-action="Index">Diagnoses</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="MedicalRecords" asp-action="Index">Medical Records</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="DoctorAvailabilities" asp-action="Index">Doctor Availability</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="LabTests" asp-action="Index">Lab Tests</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                    <partial name="_LoginPartial" />
-                </div>
-            </div>
-        </nav>
+                    }
+                </ul>
+            </nav>
+            <div class="foot">© Avondale College Clinic, Auckland • Mon–Fri 8:30–16:00</div>
+        </div>
     </header>
 
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - AvondaleCollegeClinic - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- PAGE CONTENT -->
+    <main>
+        @RenderBody()
+    </main>
+
+    <!-- No footer (removed globally) -->
+
     <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+    @RenderSection("Scripts", required: false)
 </body>
 </html>

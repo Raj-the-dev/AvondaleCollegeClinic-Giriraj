@@ -30,14 +30,55 @@ namespace AvondaleCollegeClinic.Controllers
         public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
             ViewData["CurrentSort"] = sortOrder;
-            ViewData["DateSortParm"] = String.IsNullOrEmpty(sortOrder) ? "date_desc" : "Date";
+            ViewData["DateSortParm"] = string.IsNullOrEmpty(sortOrder) ? "date_desc" : "Date";
             ViewData["CurrentFilter"] = searchString;
 
-            // Base query: include related entities
+            // Who is logged in?
+            var me = await _userManager.GetUserAsync(User);
+            if (me == null) return Challenge();
+
+            var userId = me.Id;
+            var uname = me.UserName ?? string.Empty;
+            var email = me.Email ?? string.Empty;
+
+            // Resolve domain IDs
+            var studentId = await _context.Students
+                .Where(s => s.IdentityUserId == userId || s.StudentID == uname || s.Email == email)
+                .Select(s => s.StudentID)
+                .FirstOrDefaultAsync();
+
+            var caregiverId = await _context.Caregivers
+                .Where(c => c.IdentityUserId == userId || c.CaregiverID == uname || c.Email == email)
+                .Select(c => c.CaregiverID)
+                .FirstOrDefaultAsync();
+
+            // Base query
             var query = _context.MedicalRecords
                 .Include(m => m.Student)
                 .Include(m => m.Doctor)
                 .AsQueryable();
+
+            // Ownership filter
+            if (User.IsInRole("Student") && !string.IsNullOrEmpty(studentId))
+            {
+                query = query.Where(m => m.StudentID == studentId);
+            }
+            else if (User.IsInRole("Caregiver") && !string.IsNullOrEmpty(caregiverId))
+            {
+                query = query.Where(m => m.Student.CaregiverID == caregiverId);
+            }
+            else if (User.IsInRole("Doctor"))
+            {
+                // leave unfiltered, or add: query = query.Where(m => m.DoctorID == doctorId);
+            }
+            else if (User.IsInRole("Admin"))
+            {
+                // see all
+            }
+            else
+            {
+                return Forbid();
+            }
 
             // Search
             if (!string.IsNullOrWhiteSpace(searchString))
@@ -47,49 +88,29 @@ namespace AvondaleCollegeClinic.Controllers
                     EF.Functions.Like(m.Student.FirstName, term) ||
                     EF.Functions.Like(m.Student.LastName, term) ||
                     EF.Functions.Like(m.Doctor.FirstName, term) ||
-                    EF.Functions.Like(m.Doctor.LastName, term)
-                );
+                    EF.Functions.Like(m.Doctor.LastName, term));
             }
 
-            // Sort (DB-level)
+            // Sort
             query = sortOrder switch
             {
                 "date_desc" => query.OrderByDescending(m => m.Date),
                 _ => query.OrderBy(m => m.Date)
             };
 
-            var records = await query.AsNoTracking().ToListAsync();
-
-            // Client-side filtering (extra layer)
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                searchString = searchString.ToLower();
-                records = records.Where(m =>
-                    m.Student.FirstName.ToLower().Contains(searchString) ||
-                    m.Student.LastName.ToLower().Contains(searchString) ||
-                    m.Doctor.FirstName.ToLower().Contains(searchString) ||
-                    m.Doctor.LastName.ToLower().Contains(searchString)
-                ).ToList();
-            }
-
-            // Sort again client-side (if needed)
-            switch (sortOrder)
-            {
-                case "date_desc":
-                    records = records.OrderByDescending(m => m.Date).ToList();
-                    break;
-                default:
-                    records = records.OrderBy(m => m.Date).ToList();
-                    break;
-            }
-
-            int pageSize = 10;
+            // Paging
+            const int pageSize = 10;
             int page = pageNumber ?? 1;
-            return View(new PaginatedList<MedicalRecord>(
-                records.Skip((page - 1) * pageSize).Take(pageSize).ToList(),
-                records.Count, page, pageSize
-            ));
+
+            var total = await query.CountAsync();
+            var rows = await query.AsNoTracking()
+                                   .Skip((page - 1) * pageSize)
+                                   .Take(pageSize)
+                                   .ToListAsync();
+
+            return View(new PaginatedList<MedicalRecord>(rows, total, page, pageSize));
         }
+
 
 
         [Authorize(Roles = "Admin,Doctor")]

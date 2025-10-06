@@ -23,7 +23,7 @@ namespace AvondaleCollegeClinic.Controllers
         {
             _context = context;
         }
-        [Authorize(Roles = "Doctor,Student,Caregiver,Admin")]
+        [Authorize(Roles = "Doctor,Student,Caregiver,Admin,Teachers")]
         // GET: Doctors
         public async Task<IActionResult> Index(string sortOrder, string searchString, int? pageNumber)
         {

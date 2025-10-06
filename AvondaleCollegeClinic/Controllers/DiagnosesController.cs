@@ -29,17 +29,55 @@ namespace AvondaleCollegeClinic.Controllers
         public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
             ViewData["CurrentSort"] = sortOrder;
-            ViewData["DateSortParm"] = String.IsNullOrEmpty(sortOrder) ? "date_desc" : "Date";
+            ViewData["DateSortParm"] = string.IsNullOrEmpty(sortOrder) ? "date_desc" : "Date";
             ViewData["CurrentFilter"] = searchString;
 
-            // Base query: include related entities
+            var me = await _userManager.GetUserAsync(User);
+            if (me == null) return Challenge();
+
+            var userId = me.Id;
+            var uname = me.UserName ?? string.Empty;
+            var email = me.Email ?? string.Empty;
+
+            var studentId = await _context.Students
+                .Where(s => s.IdentityUserId == userId || s.StudentID == uname || s.Email == email)
+                .Select(s => s.StudentID)
+                .FirstOrDefaultAsync();
+
+            var caregiverId = await _context.Caregivers
+                .Where(c => c.IdentityUserId == userId || c.CaregiverID == uname || c.Email == email)
+                .Select(c => c.CaregiverID)
+                .FirstOrDefaultAsync();
+
             var query = _context.Diagnoses
                 .Include(d => d.Appointment)
                     .ThenInclude(a => a.Student)
                 .Include(d => d.Appointment.Doctor)
                 .AsQueryable();
 
-            // Optional search (DB-level LIKE for performance)
+            // Ownership filter
+            if (User.IsInRole("Student") && !string.IsNullOrEmpty(studentId))
+            {
+                query = query.Where(d => d.Appointment.StudentID == studentId);
+            }
+            else if (User.IsInRole("Caregiver") && !string.IsNullOrEmpty(caregiverId))
+            {
+                query = query.Where(d => d.Appointment.Student.CaregiverID == caregiverId);
+            }
+            else if (User.IsInRole("Doctor"))
+            {
+                // leave unfiltered, or: query = query.Where(d => d.Appointment.DoctorID == doctorId);
+            }
+            else if (User.IsInRole("Admin"))
+            {
+                // see all
+            }
+            else
+            {
+                return Forbid();
+            }
+
+            // Search
             if (!string.IsNullOrWhiteSpace(searchString))
             {
                 var term = $"%{searchString.Trim()}%";
@@ -48,52 +86,28 @@ namespace AvondaleCollegeClinic.Controllers
                     EF.Functions.Like(d.Appointment.Student.FirstName, term) ||
                     EF.Functions.Like(d.Appointment.Student.LastName, term) ||
                     EF.Functions.Like(d.Appointment.Doctor.FirstName, term) ||
-                    EF.Functions.Like(d.Appointment.Doctor.LastName, term)
-                );
+                    EF.Functions.Like(d.Appointment.Doctor.LastName, term));
             }
 
-            // Sort (DB-level)
+            // Sort
             query = sortOrder switch
             {
                 "date_desc" => query.OrderByDescending(d => d.DateDiagnosed),
                 _ => query.OrderBy(d => d.DateDiagnosed)
             };
 
-            var diagnoses = await query.AsNoTracking().ToListAsync();
-
-            // Optional client-side filtering (extra layer)
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                searchString = searchString.ToLower();
-                diagnoses = diagnoses.Where(d =>
-                    d.Description.ToLower().Contains(searchString) ||
-                    d.Appointment.Student.FirstName.ToLower().Contains(searchString) ||
-                    d.Appointment.Student.LastName.ToLower().Contains(searchString) ||
-                    d.Appointment.Doctor.FirstName.ToLower().Contains(searchString) ||
-                    d.Appointment.Doctor.LastName.ToLower().Contains(searchString)
-                ).ToList();
-            }
-
-            // Optional client-side re-sorting
-            switch (sortOrder)
-            {
-                case "date_desc":
-                    diagnoses = diagnoses.OrderByDescending(d => d.DateDiagnosed).ToList();
-                    break;
-                default:
-                    diagnoses = diagnoses.OrderBy(d => d.DateDiagnosed).ToList();
-                    break;
-            }
-
-            // Pagination
-            int pageSize = 10;
+            // Paging
+            const int pageSize = 10;
             int page = pageNumber ?? 1;
-            var totalCount = diagnoses.Count;
-            var pagedDiagnoses = diagnoses.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            var total = await query.CountAsync();
+            var rows = await query.AsNoTracking()
+                                   .Skip((page - 1) * pageSize)
+                                   .Take(pageSize)
+                                   .ToListAsync();
 
-            var paginatedList = new PaginatedList<Diagnosis>(pagedDiagnoses, totalCount, page, pageSize);
-            return View(paginatedList);
+            return View(new PaginatedList<Diagnosis>(rows, total, page, pageSize));
         }
+
 
 
         // GET: Diagnoses/Details/5

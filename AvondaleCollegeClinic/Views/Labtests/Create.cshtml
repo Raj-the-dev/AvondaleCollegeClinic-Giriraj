@@ -1,47 +1,44 @@
 ﻿@model AvondaleCollegeClinic.Models.Labtest
-
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Lab Test";
 }
+<section class="wrap page">
+    <h1>@ViewData["Title"]</h1>
 
-<h1>Create</h1>
+    <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
 
-<h4>Labtest</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="RecordID" class="control-label"></label>
-                <select asp-for="RecordID" class ="form-control" asp-items="ViewBag.RecordID"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="TestType" class="control-label"></label>
-                <input asp-for="TestType" class="form-control" />
-                <span asp-validation-for="TestType" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PDFFile" class="control-label">Lab Report (PDF)</label>
-                <input asp-for="PDFFile" type="file" accept="application/pdf,.pdf" class="form-control" />
-                <span asp-validation-for="PDFFile" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ResultDate" class="control-label"></label>
-                <input asp-for="ResultDate" class="form-control" />
-                <span asp-validation-for="ResultDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
+    <form asp-action="Create" enctype="multipart/form-data">
+        <div class="form-row">
+            <label asp-for="RecordID" class="form-label"></label>
+            <select asp-for="RecordID" class="form-control" asp-items="ViewBag.RecordID"></select>
+            <span asp-validation-for="RecordID" class="text-danger"></span>
+        </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+        <div class="form-row">
+            <label asp-for="TestType" class="form-label"></label>
+            <input asp-for="TestType" class="form-control" />
+            <span asp-validation-for="TestType" class="text-danger"></span>
+        </div>
+
+        <div class="form-row">
+            <label asp-for="PDFFile" class="form-label">Lab Report (PDF)</label>
+            <input asp-for="PDFFile" type="file" accept="application/pdf,.pdf" class="form-control" />
+            <span asp-validation-for="PDFFile" class="text-danger"></span>
+        </div>
+
+        <div class="form-row">
+            <label asp-for="ResultDate" class="form-label"></label>
+            <input asp-for="ResultDate" class="form-control" />
+            <span asp-validation-for="ResultDate" class="text-danger"></span>
+        </div>
+
+        <div class="form-buttons">
+            <button type="submit" class="btn">Create</button>
+            <a asp-action="Index" class="link-quiet">Back to list</a>
+        </div>
+    </form>
+</section>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @await Html.PartialAsync("_ValidationScriptsPartial")
 }

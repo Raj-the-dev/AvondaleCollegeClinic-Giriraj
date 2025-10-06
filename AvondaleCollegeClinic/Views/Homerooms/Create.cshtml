@@ -3,61 +3,52 @@
 @using AvondaleCollegeClinic.Models
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Homeroom";
 
-    // Build number-only dropdowns for the enums
+    // number-only dropdowns for the enums
     var yearOptions = Enum.GetValues(typeof(YearLevel)).Cast<YearLevel>()
         .Select(y => new SelectListItem { Value = ((int)y).ToString(), Text = ((int)y).ToString() });
 
     var classOptions = Enum.GetValues(typeof(ClassNumber)).Cast<ClassNumber>()
         .Select(c => new SelectListItem { Value = ((int)c).ToString(), Text = ((int)c).ToString() });
 }
+<section class="wrap page">
+    <h1>@ViewData["Title"]</h1>
 
-<h1>Create</h1>
+    <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
 
-<h4>Homeroom</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <form asp-action="Create">
+        <div class="form-row">
+            <label asp-for="YearLevel" class="form-label"></label>
+            <select asp-for="YearLevel" class="form-control" asp-items="yearOptions"></select>
+            <span asp-validation-for="YearLevel" class="text-danger"></span>
+        </div>
 
-            <div class="form-group">
-                <label asp-for="YearLevel" class="control-label"></label>
-                <select asp-for="YearLevel" class="form-control" asp-items="yearOptions"></select>
-                <span asp-validation-for="YearLevel" class="text-danger"></span>
-            </div>
+        <div class="form-row">
+            <label asp-for="TeacherID" class="form-label"></label>
+            <select asp-for="TeacherID" class="form-control" asp-items="ViewBag.TeacherID"></select>
+            <span asp-validation-for="TeacherID" class="text-danger"></span>
+        </div>
 
-            <div class="form-group">
-                <label asp-for="TeacherID" class="control-label"></label>
-                <select asp-for="TeacherID" class="form-control" asp-items="ViewBag.TeacherID"></select>
-            </div>
+        <div class="form-row">
+            <label asp-for="Block" class="form-label"></label>
+            <select asp-for="Block" class="form-control" asp-items="Html.GetEnumSelectList<Block>()"></select>
+            <span asp-validation-for="Block" class="text-danger"></span>
+        </div>
 
-            <div class="form-group">
-                <label asp-for="Block" class="control-label"></label>
-                <select asp-for="Block" class="form-control" asp-items="Html.GetEnumSelectList<Block>()"></select>
-                <span asp-validation-for="Block" class="text-danger"></span>
-            </div>
+        <div class="form-row">
+            <label asp-for="ClassNumber" class="form-label"></label>
+            <select asp-for="ClassNumber" class="form-control" asp-items="classOptions"></select>
+            <span asp-validation-for="ClassNumber" class="text-danger"></span>
+        </div>
 
-            <div class="form-group">
-                <label asp-for="ClassNumber" class="control-label"></label>
-                <select asp-for="ClassNumber" class="form-control" asp-items="classOptions"></select>
-                <span asp-validation-for="ClassNumber" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+        <div class="form-buttons">
+            <button type="submit" class="btn">Create</button>
+            <a asp-action="Index" class="link-quiet">Back to list</a>
+        </div>
+    </form>
+</section>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @await Html.PartialAsync("_ValidationScriptsPartial")
 }

@@ -3,31 +3,48 @@
 @{
     ViewData["Title"] = "Keyword login";
 }
-<h1>Keyword login</h1>
-<p class="text-muted">If you forgot your password, you can log in using your keyword (city of birth).</p>
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Keyword login — Avondale College Clinic</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
 
-<div class="row">
-    <div class="col-md-5">
-        <form method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Identifier" class="form-control" />
-                <label asp-for="Input.Identifier"></label>
-                <span asp-validation-for="Input.Identifier" class="text-danger"></span>
-            </div>
+    <main>
+        <div class="wrap">
+            <div class="eyebrow">Password-free access</div>
+            <h1>Keyword login</h1>
 
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Keyword" class="form-control" />
-                <label asp-for="Input.Keyword"></label>
-                <span asp-validation-for="Input.Keyword" class="text-danger"></span>
-            </div>
+            <div asp-validation-summary="ModelOnly" class="error-summary" role="alert"></div>
 
-            <button class="btn btn-primary w-100" type="submit">Login with keyword</button>
-        </form>
-    </div>
-</div>
+            <form method="post" class="auth">
+                <div class="form-row">
+                    <label asp-for="Input.Identifier">Email or ID</label>
+                    <input asp-for="Input.Identifier" class="input-line" autocomplete="username" />
+                    <span asp-validation-for="Input.Identifier" class="error-summary"></span>
+                </div>
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
+                <div class="form-row">
+                    <label asp-for="Input.Keyword">City you were born in</label>
+                    <input asp-for="Input.Keyword" class="input-line" />
+                    <span asp-validation-for="Input.Keyword" class="error-summary"></span>
+                </div>
+
+                <div class="form-row">
+                    <button type="submit" class="btn">Verify & Continue</button>
+                </div>
+
+                <div class="muted" style="margin-top:14px">
+                    Prefer password? <a href="/Identity/Account/Login">Back to login</a>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script src="~/js/site.js"></script>
+</body>
+</html>

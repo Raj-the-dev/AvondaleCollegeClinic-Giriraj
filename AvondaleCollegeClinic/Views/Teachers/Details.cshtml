@@ -1,53 +1,40 @@
 ﻿@model AvondaleCollegeClinic.Models.Teacher
-
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Teacher Details";
 }
 
-<h1>Details</h1>
+<section class="wrap" style="padding:36px 0">
+    <div class="eyebrow">Teachers</div>
+    <h1>Details</h1>
 
-<div>
-    <h4>Teacher</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FirstName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FirstName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.LastName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.LastName)
-        </dd>
-        <dt class="col-sm-3">Profile Image</dt>
-        <dd class="col-sm-9">
+    <div class="tile span-12" style="padding:26px; margin-top:12px">
+        <dl class="row" style="margin:0">
+            <dt class="col-sm-3 muted">First name</dt>
+            <dd class="col-sm-9">@Model.FirstName</dd>
+
+            <dt class="col-sm-3 muted">Last name</dt>
+            <dd class="col-sm-9">@Model.LastName</dd>
+
+            <dt class="col-sm-3 muted">Email</dt>
+            <dd class="col-sm-9">@Model.Email</dd>
+
+            <dt class="col-sm-3 muted">Teacher code</dt>
+            <dd class="col-sm-9">@Model.TeacherCode</dd>
+
             @if (!string.IsNullOrEmpty(Model.ImagePath))
             {
-                <img src="@Model.ImagePath" alt="Teacher Photo" width="140" height="140" />
+                <dt class="col-sm-3 muted">Photo</dt>
+                <dd class="col-sm-9"><img src="@Model.ImagePath" alt="Teacher photo" width="140" height="140" /></dd>
             }
-            else
-            {
-                <span>No image uploaded</span>
-            }
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Email)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.TeacherCode)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.TeacherCode)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.TeacherID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+        </dl>
+
+        <div class="belt" style="padding-top:16px">
+            <div></div>
+            <div>
+                <a asp-action="Edit" asp-route-id="@Model.TeacherID">Edit</a>
+                <span class="muted"> · </span>
+                <a asp-action="Index">Back to list</a>
+            </div>
+        </div>
+    </div>
+</section>

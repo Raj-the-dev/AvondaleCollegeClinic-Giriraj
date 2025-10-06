@@ -1,81 +1,87 @@
 ﻿@model AvondaleCollegeClinic.Helpers.PaginatedList<AvondaleCollegeClinic.Models.Prescription>
-
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Prescriptions";
 }
+<section class="wrap page">
+    <h2>Prescriptions</h2>
 
-<h1>Index</h1>
-<form asp-action="Index" method="get">
-    <p>
-        Search student, medication, or dosage:
-        <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" />
-        <input type="submit" value="Search" />
-    </p>
-</form>
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["PrescriptionSortParm"]" asp-route-searchString="@ViewData["CurrentFilter"]">Medication</a>
-            </th>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["DosageSortParm"]" asp-route-searchString="@ViewData["CurrentFilter"]">Dosage</a>
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model[0].StartDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model[0].EndDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model[0].Diagnosis)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+    <!-- Toolbar: search + create -->
+    <form asp-action="Index" method="get" class="toolbar">
+        <div class="left">
+            <label for="search" class="form-label" style="margin:0">Search</label>
+            <input id="search" type="text" name="searchString" value='@ViewData["CurrentFilter"]' class="form-control" />
+            <button type="submit" class="btn">Search</button>
+            <a asp-action="Index" class="link-quiet">Clear</a>
+        </div>
+        <div class="right">
+            <a asp-action="Create" class="btn">Create New</a>
+        </div>
+    </form>
+
+    <table class="table-flat">
+        <thead>
             <tr>
-                <td>
-                    @item.Medication
-                </td>
-                <td>
-                    @item.Dosage
-                </td>
-                <td>
-                    @item.StartDate.ToShortDateString()
-                </td>
-                <td>
-                    @item.EndDate.ToShortDateString()
-                </td>
-                <td>
-                    @(item.Diagnosis?.Appointment?.Student?.FirstName + " " + item.Diagnosis?.Appointment?.Student?.LastName)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.PrescriptionID">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.PrescriptionID">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.PrescriptionID">Delete</a>
-                </td>
+                <th>
+                    <a asp-action="Index"
+                       asp-route-sortOrder='@ViewData["PrescriptionSortParm"]'
+                       asp-route-searchString='@ViewData["CurrentFilter"]'>
+                        Medication
+                    </a>
+                </th>
+                <th>
+                    <a asp-action="Index"
+                       asp-route-sortOrder='@ViewData["DosageSortParm"]'
+                       asp-route-searchString='@ViewData["CurrentFilter"]'>
+                        Dosage
+                    </a>
+                </th>
+                <th>@Html.DisplayNameFor(model => model[0].StartDate)</th>
+                <th>@Html.DisplayNameFor(model => model[0].EndDate)</th>
+                <th>Student</th>
+                <th class="actions">Actions</th>
             </tr>
-        }
-    </tbody>
-</table>
-<div>
-    Page @Model.PageIndex of @Model.TotalPages
-    @if (Model.HasPreviousPage)
-    {
-        <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex - 1)"
-           asp-route-sortOrder="@ViewData["CurrentSort"]"
-           asp-route-searchString="@ViewData["CurrentFilter"]">Previous</a>
-    }
-    @if (Model.HasNextPage)
-    {
-        <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 1)"
-           asp-route-sortOrder="@ViewData["CurrentSort"]"
-           asp-route-searchString="@ViewData["CurrentFilter"]">Next</a>
-    }
-</div>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Medication</td>
+                    <td>@item.Dosage</td>
+                    <td>@item.StartDate.ToShortDateString()</td>
+                    <td>@item.EndDate.ToShortDateString()</td>
+                    <td>
+                        @(item.Diagnosis?.Appointment?.Student != null
+                            ? item.Diagnosis.Appointment.Student.FirstName + " " + item.Diagnosis.Appointment.Student.LastName
+                            : "—")
+                    </td>
+                    <td class="actions">
+                        <a asp-action="Edit" asp-route-id="@item.PrescriptionID">Edit</a>
+                        <a asp-action="Details" asp-route-id="@item.PrescriptionID">Details</a>
+                        <a asp-action="Delete" asp-route-id="@item.PrescriptionID">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Simple pager -->
+    <div class="belt" style="padding-top:16px">
+        <div>Page @Model.PageIndex of @Model.TotalPages</div>
+        <div>
+            @if (Model.HasPreviousPage)
+            {
+                <a class="link-quiet" asp-action="Index"
+                   asp-route-pageNumber="@(Model.PageIndex - 1)"
+                   asp-route-sortOrder='@ViewData["CurrentSort"]'
+                   asp-route-searchString='@ViewData["CurrentFilter"]'>Previous</a>
+            }
+            @if (Model.HasNextPage)
+            {
+                <a class="link-quiet" style="margin-left:12px" asp-action="Index"
+                   asp-route-pageNumber="@(Model.PageIndex + 1)"
+                   asp-route-sortOrder='@ViewData["CurrentSort"]'
+                   asp-route-searchString='@ViewData["CurrentFilter"]'>Next</a>
+            }
+        </div>
+    </div>
+</section>
