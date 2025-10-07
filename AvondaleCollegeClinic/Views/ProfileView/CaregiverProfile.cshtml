@@ -1,0 +1,41 @@
+﻿@model AvondaleCollegeClinic.Models.Caregiver
+@{
+    ViewData["Title"] = "My Caregiver";
+}
+<section class="wrap page">
+    <div class="eyebrow">Profile</div>
+    <h2>My Caregiver</h2>
+
+    <dl class="desc-list">
+        <dt>Caregiver ID</dt>
+        <dd>@Model.CaregiverID</dd>
+        <dt>Name</dt>
+        <dd>@Model.FirstName @Model.LastName</dd>
+        <dt>Relationship</dt>
+        <dd>@Model.Relationship</dd>
+        <dt>Email</dt>
+        <dd>@Model.Email</dd>
+        <dt>Phone</dt>
+        <dd>@Model.Phone</dd>
+    </dl>
+
+    @if (User.IsInRole("Caregiver"))
+    {
+        <div class="belt hair" style="margin-top:18px;padding-top:16px">
+            <h3 style="margin:0 0 8px">Students</h3>
+            @if (Model.Students == null || !Model.Students.Any())
+            {
+                <div class="muted">No students linked.</div>
+            }
+            else
+            {
+                <ul>
+                    @foreach (var s in Model.Students)
+                    {
+                        <li>@s.StudentID — @s.FirstName @s.LastName</li>
+                    }
+                </ul>
+            }
+        </div>
+    }
+</section>

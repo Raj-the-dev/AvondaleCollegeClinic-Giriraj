@@ -1,0 +1,38 @@
+﻿@model AvondaleCollegeClinic.Models.Doctor
+@{
+    ViewData["Title"] = "My Doctor Record";
+}
+<section class="wrap page">
+    <div class="eyebrow">Profile</div>
+    <h2>My Doctor Record</h2>
+
+    <dl class="desc-list">
+        <dt>Doctor ID</dt>
+        <dd>@Model.DoctorID</dd>
+        <dt>Name</dt>
+        <dd>@Model.FirstName @Model.LastName</dd>
+        <dt>Email</dt>
+        <dd>@Model.Email</dd>
+        <dt>Specialization</dt>
+        <dd>@Model.Specialization</dd>
+        <dt>Phone</dt>
+        <dd>@Model.Phone</dd>
+    </dl>
+
+    <div class="belt hair" style="margin-top:18px;padding-top:16px">
+        <h3 style="margin:0 0 8px">My Availability</h3>
+        @if (Model.Availabilities == null || !Model.Availabilities.Any())
+        {
+            <div class="muted">No availability published.</div>
+        }
+        else
+        {
+            <ul>
+                @foreach (var a in Model.Availabilities.OrderBy(a => a.AvailableDate).ThenBy(a => a.StartTime))
+                {
+                    <li>@a.AvailableDate.ToShortDateString() • @a.StartTime.ToShortTimeString() - @a.EndTime.ToShortTimeString()</li>
+                }
+            </ul>
+        }
+    </div>
+</section>

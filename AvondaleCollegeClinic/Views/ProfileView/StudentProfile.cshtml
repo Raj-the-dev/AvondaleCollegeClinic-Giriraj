@@ -1,0 +1,45 @@
+﻿@model AvondaleCollegeClinic.Models.Student
+@{
+    ViewData["Title"] = "My Student Record";
+}
+<section class="wrap page">
+    <div class="eyebrow">Profile</div>
+    <h2>My Student Record</h2>
+
+    <dl class="desc-list">
+        <dt>Student ID</dt>
+        <dd>@Model.StudentID</dd>
+        <dt>Name</dt>
+        <dd>@Model.FirstName @Model.LastName</dd>
+        <dt>DOB</dt>
+        <dd>@Model.DOB.ToShortDateString()</dd>
+        <dt>Email</dt>
+        <dd>@Model.Email</dd>
+        <dt>Homeroom</dt>
+        <dd>
+            @Model.Homeroom?.YearLevel (Block @Model.Homeroom?.Block) —
+            @Model.Homeroom?.Teacher?.FirstName @Model.Homeroom?.Teacher?.LastName
+        </dd>
+    </dl>
+
+    <div class="belt hair" style="margin-top:18px;padding-top:16px">
+        <h3 style="margin:0 0 8px">Caregiver</h3>
+        @if (Model.Caregiver is null)
+        {
+            <div class="muted">No caregiver linked.</div>
+        }
+        else
+        {
+            <dl class="desc-list">
+                <dt>Name</dt>
+                <dd>@Model.Caregiver.FirstName @Model.Caregiver.LastName</dd>
+                <dt>Relationship</dt>
+                <dd>@Model.Caregiver.Relationship</dd>
+                <dt>Email</dt>
+                <dd>@Model.Caregiver.Email</dd>
+                <dt>Phone</dt>
+                <dd>@Model.Caregiver.Phone</dd>
+            </dl>
+        }
+    </div>
+</section>

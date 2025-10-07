@@ -36,12 +36,12 @@
                        asp-route-sortOrder="@ViewData["TeacherSortParm"]"
                        asp-route-searchString="@ViewData["CurrentFilter"]">Teacher</a>
                 </th>
-                <td class="actions">
+                <div class="actions">
                     @if (User.IsInRole("Admin") || User.IsInRole("Doctor"))
                     {
                     <th class="actions">Actions</th>
                 }
-                    </td>
+                    </div>
                 </tr>
         </thead>
         <tbody>

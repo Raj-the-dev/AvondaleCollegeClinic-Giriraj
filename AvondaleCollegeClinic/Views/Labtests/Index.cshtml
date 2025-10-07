@@ -34,12 +34,12 @@
                 <th>Report</th>
                 <th>@Html.DisplayNameFor(model => model[0].ResultDate)</th>
                 <th>Medical Record</th>
-                <td class="actions">
+                <div class="actions">
                     @if (User.IsInRole("Admin") || User.IsInRole("Doctor"))
                     {
                     <th class="actions">Actions</th>
                     }
-                </td>
+                </div>
             </tr>
         </thead>
         <tbody>
@@ -62,10 +62,11 @@
                     <td class="actions">
                         @if (User.IsInRole("Admin") || User.IsInRole("Doctor"))
                         {
+                            <a asp-action="Details" asp-route-id="@item.LabtestID">Details</a>
 
                             <a asp-action="Edit" asp-route-id="@item.LabtestID">Edit</a>
 
-                            <a asp-action="Delete" asp-route-id="@item.LabtestID">Delete</a>
+
 
                             <a asp-action="Delete" asp-route-id="@item.LabtestID">Delete</a>
                         }

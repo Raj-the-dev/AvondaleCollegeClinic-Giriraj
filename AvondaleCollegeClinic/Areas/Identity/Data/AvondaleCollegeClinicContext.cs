@@ -838,7 +838,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 LabtestID = 1,
                 RecordID = 1,
                 TestType = "Blood Test 1",
-                File = "report1.pdf",
+                File = "/labtests/labtestsample.pdf",
                 ResultDate = DateOnly.FromDateTime(new DateTime(2024, 10, 11))
             },
             new Labtest
@@ -846,7 +846,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 LabtestID = 2,
                 RecordID = 2,
                 TestType = "Blood Test 2",
-                File = "report2.pdf",
+                File = "/labtests/labtestsample.pdf",
                 ResultDate = DateOnly.FromDateTime(new DateTime(2024, 10, 12))
             },
             new Labtest
@@ -854,7 +854,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 LabtestID = 3,
                 RecordID = 3,
                 TestType = "Blood Test 3",
-                File = "report3.pdf",
+                File = "/labtests/labtestsample.pdf",
                 ResultDate = DateOnly.FromDateTime(new DateTime(2024, 10, 13))
             },
             new Labtest
@@ -862,7 +862,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 LabtestID = 4,
                 RecordID = 4,
                 TestType = "Blood Test 4",
-                File = "report4.pdf",
+                File = "/labtests/labtestsample.pdf",
                 ResultDate = DateOnly.FromDateTime(new DateTime(2024, 10, 14))
             },
             new Labtest
@@ -870,7 +870,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 LabtestID = 5,
                 RecordID = 5,
                 TestType = "Blood Test 5",
-                File = "report5.pdf",
+                File = "/labtests/labtestsample.pdf",
                 ResultDate = DateOnly.FromDateTime(new DateTime(2024, 10, 15))
             },
             new Labtest
@@ -878,7 +878,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 LabtestID = 6,
                 RecordID = 6,
                 TestType = "Blood Test 6",
-                File = "report6.pdf",
+                File = "/labtests/labtestsample.pdf",
                 ResultDate = DateOnly.FromDateTime(new DateTime(2024, 10, 16))
             },
             new Labtest
@@ -886,7 +886,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 LabtestID = 7,
                 RecordID = 7,
                 TestType = "Blood Test 7",
-                File = "report7.pdf",
+                File = "/labtests/labtestsample.pdf",
                 ResultDate = DateOnly.FromDateTime(new DateTime(2024, 10, 17))
             },
             new Labtest
@@ -894,7 +894,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 LabtestID = 8,
                 RecordID = 8,
                 TestType = "Blood Test 8",
-                File = "report8.pdf",
+                File = "/labtests/labtestsample.pdf",
                 ResultDate = DateOnly.FromDateTime(new DateTime(2024, 10, 18))
             },
             new Labtest
@@ -902,7 +902,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 LabtestID = 9,
                 RecordID = 9,
                 TestType = "Blood Test 9",
-                File = "report9.pdf",
+                File = "/labtests/labtestsample.pdf",
                 ResultDate = DateOnly.FromDateTime(new DateTime(2024, 10, 19))
             },
             new Labtest
@@ -910,7 +910,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 LabtestID = 10,
                 RecordID = 10,
                 TestType = "Blood Test 10",
-                File = "report10.pdf",
+                File = "/labtests/labtestsample.pdf",
                 ResultDate = DateOnly.FromDateTime(new DateTime(2024, 10, 20))
             }
         );

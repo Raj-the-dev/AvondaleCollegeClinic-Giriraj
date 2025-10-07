@@ -683,3 +683,15 @@ label {
     padding-top: 4px;
     padding-bottom: 4px;
 }
+/* Only sortable headers (those with <a> inside <th>) */
+.table-flat thead th > a {
+    font-weight: 700; /* bold */
+    text-decoration: none; /* no underline by default */
+    cursor: pointer;
+}
+
+    .table-flat thead th > a:hover,
+    .table-flat thead th > a:focus-visible {
+        text-decoration: underline; /* underline on hover/focus */
+        text-underline-offset: 4px;
+    }

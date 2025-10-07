@@ -97,15 +97,6 @@
                         if (isStudent)
                         {
                             <li class="dropdown">
-                                <a class="drop-toggle" href="javascript:void(0)" aria-haspopup="true" aria-expanded="false">Student</a>
-                                <div class="drop-panel" role="menu" aria-label="Student">
-                                    <!-- My info (indexes filter to the logged-in student's records in the controllers) -->
-                                    <a href="/Students" role="menuitem">My Student Record</a>
-                                    <a href="/Caregivers" role="menuitem">My Caregiver</a>
-                                </div>
-                            </li>
-
-                            <li class="dropdown">
                                 <a class="drop-toggle" href="javascript:void(0)" aria-haspopup="true" aria-expanded="false">Clinical</a>
                                 <div class="drop-panel" role="menu" aria-label="Clinical">
                                     <a href="/MedicalRecords" role="menuitem">Medical Records</a>
@@ -118,7 +109,7 @@
                                 <a class="drop-toggle" href="javascript:void(0)" aria-haspopup="true" aria-expanded="false">Scheduling</a>
                                 <div class="drop-panel" role="menu" aria-label="Scheduling">
                                     <!-- “Visit” is already in the header and points to /Appointments.
-                                         We also expose the Appointments index here. -->
+                    We also expose the Appointments index here. -->
                                     <a href="/Appointments" role="menuitem">Appointments</a>
                                 </div>
                             </li>
@@ -130,12 +121,20 @@
                                     <a href="/Homerooms" role="menuitem">Homerooms</a>
                                 </div>
                             </li>
+                            <li class="dropdown">
+                                <a class="drop-toggle" href="javascript:void(0)" aria-haspopup="true" aria-expanded="false">Profile</a>
+                                <div class="drop-panel" role="menu" aria-label="Student">
+                                    <!-- My info (indexes filter to the logged-in student's records in the controllers) -->
+                                    <a href="/Profile/Student" role="menuitem">My Student Record</a>
+                                </div>
+                            </li>
 
                         }
 
                         @* TEACHER dropdown (same as you had) *@
                         if (isTeacher)
                         {
+
                             <!-- Teaching -->
                             <li class="dropdown">
                                 <a class="drop-toggle" href="javascript:void(0)" aria-haspopup="true" aria-expanded="false">Teaching</a>
@@ -151,6 +150,12 @@
                                 <div class="drop-panel" role="menu" aria-label="Directory">
                                     <a href="/Teachers" role="menuitem">Teachers</a>
                                     <a href="/Caregivers" role="menuitem">Caregivers</a>
+                                </div>
+                            </li>
+                            <li class="dropdown">
+                                <a class="drop-toggle" href="javascript:void(0)" aria-haspopup="true" aria-expanded="false">Profile</a>
+                                <div class="drop-panel" role="menu" aria-label="Teacher">
+                                    <a href="/Profile/Teacher" role="menuitem">My Teacher Record</a>
                                 </div>
                             </li>
                         }
@@ -186,9 +191,16 @@
                                     <a href="/DoctorAvailability" role="menuitem">Doctor Availability</a>
                                 </div>
                             </li>
+                            <li class="dropdown">
+                                <a class="drop-toggle" href="javascript:void(0)" aria-haspopup="true" aria-expanded="false">Profile</a>
+                                <div class="drop-panel" role="menu" aria-label="Doctor">
+                                    <!-- My info (indexes filter to the logged-in student's records in the controllers) -->
+                                    <a href="/Profile/Doctor" role="menuitem">My Doctor Record</a>
+                                </div>
+                            </li>
                         }
 
-                        @* CAREGIVER dropdown (unchanged) *@
+                        @* CAREGIVER dropdown *@
                         if (isCaregiver)
                         {
                             <!-- Care -->
@@ -208,6 +220,13 @@
                                 <div class="drop-panel" role="menu" aria-label="Family">
                                     <a href="/Students" role="menuitem">Students</a>
                                     <a href="/Caregivers" role="menuitem">Caregivers</a>
+                                </div>
+                            </li>
+                            <li class="dropdown">
+                                <a class="drop-toggle" href="javascript:void(0)" aria-haspopup="true" aria-expanded="false">Profile</a>
+                                <div class="drop-panel" role="menu" aria-label="Caregiver">
+                                    <!-- My info (indexes filter to the logged-in student's records in the controllers) -->
+                                    <a href="/Profile/Caregiver" role="menuitem">My Record</a>
                                 </div>
                             </li>
                         }

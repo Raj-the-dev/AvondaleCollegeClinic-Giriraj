@@ -25,9 +25,15 @@
     <Folder Include="wwwroot\images\students\" />
     <Folder Include="wwwroot\images\teachers\" />
     <Folder Include="Helpers\" />
+    <Folder Include="Views\ProfileView\" />
+    <Folder Include="wwwroot\labtests\" />
   </ItemGroup>
 
   <ItemGroup>
     <None Remove="Helpers\" />
+    <None Remove="Views\ProfileView\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Remove="wwwroot\labtests\" />
   </ItemGroup>
 </Project>

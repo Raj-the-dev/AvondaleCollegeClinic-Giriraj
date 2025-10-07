@@ -1,0 +1,36 @@
+﻿@model AvondaleCollegeClinic.Models.Teacher
+@{
+    ViewData["Title"] = "My Teacher Record";
+}
+<section class="wrap page">
+    <div class="eyebrow">Profile</div>
+    <h2>My Teacher Record</h2>
+
+    <dl class="desc-list">
+        <dt>Teacher ID</dt>
+        <dd>@Model.TeacherID</dd>
+        <dt>Name</dt>
+        <dd>@Model.FirstName @Model.LastName</dd>
+        <dt>Email</dt>
+        <dd>@Model.Email</dd>
+        <dt>Code</dt>
+        <dd>@Model.TeacherCode</dd>
+    </dl>
+
+    <div class="belt hair" style="margin-top:18px;padding-top:16px">
+        <h3 style="margin:0 0 8px">Homerooms</h3>
+        @if (Model.Homerooms == null || !Model.Homerooms.Any())
+        {
+            <div class="muted">No homerooms assigned.</div>
+        }
+        else
+        {
+            <ul>
+                @foreach (var h in Model.Homerooms)
+                {
+                    <li>Year @((int)h.YearLevel) • Block @h.Block • Class @((int)h.ClassNumber)</li>
+                }
+            </ul>
+        }
+    </div>
+</section>

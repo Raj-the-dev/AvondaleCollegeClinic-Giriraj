@@ -33,12 +33,12 @@
                     </a>
                 </th>
                 <th>Appointment</th>
-                <td class="actions">
+                <div class="actions">
                     @if (User.IsInRole("Admin") || User.IsInRole("Doctor"))
                     {
                     <th class="actions">Actions</th>
                     }
-                </td>
+                </div>
             </tr>
         </thead>
         <tbody>
@@ -51,10 +51,10 @@
                     <td class="actions">
                         @if (User.IsInRole("Admin") || User.IsInRole("Doctor"))
                         {
-
+                            <a asp-action="Details" asp-route-id="@item.DiagnosisID">Details</a>
                             <a asp-action="Edit" asp-route-id="@item.DiagnosisID">Edit</a>
 
-                            <a asp-action="Delete" asp-route-id="@item.DiagnosisID">Delete</a>
+
 
                             <a asp-action="Delete" asp-route-id="@item.DiagnosisID">Delete</a>
                         }
