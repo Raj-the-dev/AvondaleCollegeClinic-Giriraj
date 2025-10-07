@@ -10,6 +10,7 @@ using AvondaleCollegeClinic.Models;
 using Microsoft.Data.SqlClient;
 using AvondaleCollegeClinic.Helpers;
 using NuGet.DependencyResolver;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AvondaleCollegeClinic.Controllers
 {
@@ -74,7 +75,7 @@ namespace AvondaleCollegeClinic.Controllers
                 students.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
-
+        [Authorize(Roles = "Admin,Teacher")]
         // GET: Students/Details/5
         public async Task<IActionResult> Details(string id)
         {
@@ -95,7 +96,7 @@ namespace AvondaleCollegeClinic.Controllers
 
             return View(student);
         }
-
+        [Authorize(Roles = "Admin,Teacher")]
         // GET: Students/Create
         public IActionResult Create()
         {
@@ -127,7 +128,7 @@ namespace AvondaleCollegeClinic.Controllers
 
             return View(student);
         }
-
+        [Authorize(Roles = "Admin,Teacher")]
         // POST: Students/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -203,6 +204,7 @@ namespace AvondaleCollegeClinic.Controllers
             );
             return View(student);
         }
+        [Authorize(Roles = "Admin,Teacher")]
         // GET: Students/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
@@ -239,7 +241,7 @@ namespace AvondaleCollegeClinic.Controllers
         }
 
 
-
+        [Authorize(Roles = "Admin,Teacher")]
         // POST: Students/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -308,7 +310,7 @@ namespace AvondaleCollegeClinic.Controllers
 
 
 
-
+        [Authorize(Roles = "Admin,Teacher")]
         // GET: Students/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
@@ -329,7 +331,7 @@ namespace AvondaleCollegeClinic.Controllers
 
             return View(student);
         }
-
+        [Authorize(Roles = "Admin,Teacher")]
         // POST: Students/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

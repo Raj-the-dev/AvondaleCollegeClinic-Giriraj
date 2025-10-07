@@ -14,7 +14,10 @@
             <a asp-action="Index" class="link-quiet">Clear</a>
         </div>
         <div class="right">
-            <a asp-action="Create" class="btn">Create New</a>
+            @if (User.IsInRole("Admin") || User.IsInRole("Teacher"))
+            {
+                <a asp-action="Create" class="btn">Create New</a>
+            }
         </div>
     </form>
 
@@ -33,8 +36,13 @@
                        asp-route-sortOrder="@ViewData["TeacherSortParm"]"
                        asp-route-searchString="@ViewData["CurrentFilter"]">Teacher</a>
                 </th>
-                <th class="actions">Actions</th>
-            </tr>
+                <td class="actions">
+                    @if (User.IsInRole("Admin") || User.IsInRole("Doctor"))
+                    {
+                    <th class="actions">Actions</th>
+                }
+                    </td>
+                </tr>
         </thead>
         <tbody>
             @foreach (var item in Model)
@@ -45,9 +53,12 @@
                     <td>@((int)item.ClassNumber)</td>
                     <td>@(item.Teacher != null ? item.Teacher.FirstName + " " + item.Teacher.LastName : item.TeacherID)</td>
                     <td class="actions">
-                        <a asp-action="Edit" asp-route-id="@item.HomeroomID">Edit</a>
-                        <a asp-action="Details" asp-route-id="@item.HomeroomID">Details</a>
-                        <a asp-action="Delete" asp-route-id="@item.HomeroomID">Delete</a>
+                        @if (User.IsInRole("Admin") || User.IsInRole("Teacher"))
+                        {
+                            <a asp-action="Details" asp-route-id="@item.HomeroomID">Details</a>
+                            <a asp-action="Edit" asp-route-id="@item.HomeroomID">Edit</a>
+                            <a asp-action="Delete" asp-route-id="@item.HomeroomID">Delete</a>
+                        }
                     </td>
                 </tr>
             }

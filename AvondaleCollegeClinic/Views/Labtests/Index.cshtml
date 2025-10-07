@@ -14,7 +14,10 @@
             <a asp-action="Index" class="link-quiet">Clear</a>
         </div>
         <div class="right">
-            <a asp-action="Create" class="btn">Create New</a>
+            @if (User.IsInRole("Admin") || User.IsInRole("Doctor"))
+            {
+                <a asp-action="Create" class="btn">Create New</a>
+            }
         </div>
     </form>
 
@@ -31,7 +34,12 @@
                 <th>Report</th>
                 <th>@Html.DisplayNameFor(model => model[0].ResultDate)</th>
                 <th>Medical Record</th>
-                <th class="actions">Actions</th>
+                <td class="actions">
+                    @if (User.IsInRole("Admin") || User.IsInRole("Doctor"))
+                    {
+                    <th class="actions">Actions</th>
+                    }
+                </td>
             </tr>
         </thead>
         <tbody>
@@ -52,9 +60,15 @@
                     <td>@item.ResultDate.ToShortDateString()</td>
                     <td>@item.MedicalRecord?.MedicalRecordID</td>
                     <td class="actions">
-                        <a asp-action="Edit" asp-route-id="@item.LabtestID">Edit</a>
-                        <a asp-action="Details" asp-route-id="@item.LabtestID">Details</a>
-                        <a asp-action="Delete" asp-route-id="@item.LabtestID">Delete</a>
+                        @if (User.IsInRole("Admin") || User.IsInRole("Doctor"))
+                        {
+
+                            <a asp-action="Edit" asp-route-id="@item.LabtestID">Edit</a>
+
+                            <a asp-action="Delete" asp-route-id="@item.LabtestID">Delete</a>
+
+                            <a asp-action="Delete" asp-route-id="@item.LabtestID">Delete</a>
+                        }
                     </td>
                 </tr>
             }

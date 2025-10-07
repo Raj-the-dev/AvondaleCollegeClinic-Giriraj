@@ -14,7 +14,10 @@
             <a asp-action="Index" class="link-quiet">Clear</a>
         </div>
         <div class="right">
-            <a asp-action="Create" class="btn">Create New</a>
+            @if (User.IsInRole("Admin") || User.IsInRole("Doctor"))
+            {
+                <a asp-action="Create" class="btn">Create New</a>
+            }
         </div>
     </form>
 
@@ -31,7 +34,13 @@
                 </th>
                 <th>Student</th>
                 <th>Doctor</th>
-                <th class="actions">Actions</th>
+                <td class="actions">
+                    @if (User.IsInRole("Admin") || User.IsInRole("Doctor"))
+                    {
+                    <th class="actions">Actions</th>
+                    }
+                </td>
+
             </tr>
         </thead>
         <tbody>
@@ -43,10 +52,17 @@
                     <td>@(item.Student != null ? item.Student.FirstName + " " + item.Student.LastName : item.StudentID)</td>
                     <td>@(item.Doctor != null ? item.Doctor.FirstName + " " + item.Doctor.LastName : item.DoctorID)</td>
                     <td class="actions">
-                        <a asp-action="Edit" asp-route-id="@item.MedicalRecordID">Edit</a>
-                        <a asp-action="Details" asp-route-id="@item.MedicalRecordID">Details</a>
-                        <a asp-action="Delete" asp-route-id="@item.MedicalRecordID">Delete</a>
+                        @if (User.IsInRole("Admin") || User.IsInRole("Doctor"))
+                        {
+
+                            <a asp-action="Edit" asp-route-id="@item.MedicalRecordID">Edit</a>
+
+                            <a asp-action="Delete" asp-route-id="@item.MedicalRecordID">Delete</a>
+
+                            <a asp-action="Delete" asp-route-id="@item.MedicalRecordID">Delete</a>
+                        }
                     </td>
+
                 </tr>
             }
         </tbody>

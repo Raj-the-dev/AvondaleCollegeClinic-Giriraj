@@ -21,7 +21,10 @@
         <button type="submit" class="btn">Search</button>
         <a asp-action="Index" class="link-quiet">Clear</a>
         <span style="flex:1"></span>
-        <a asp-action="Create" class="btn">Create New</a>
+        @if (User.IsInRole("Admin") || User.IsInRole("Teacher"))
+        {
+            <a asp-action="Create" class="btn">Create New</a>
+        }
     </form>
 
     <!-- gallery grid using existing .grid + .tile -->
@@ -53,9 +56,12 @@
                 </p>
 
                 <div class="cg-actions">
-                    <a asp-action="Details" asp-route-id="@c.CaregiverID">Details</a>
-                    <a asp-action="Edit" asp-route-id="@c.CaregiverID">Edit</a>
-                    <a asp-action="Delete" asp-route-id="@c.CaregiverID">Delete</a>
+                    @if (User.IsInRole("Admin") || User.IsInRole("Teacher"))
+                    {
+                        <a asp-action="Details" asp-route-id="@c.CaregiverID">Details</a>
+                        <a asp-action="Edit" asp-route-id="@c.CaregiverID">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@c.CaregiverID">Delete</a>
+                    }
                 </div>
             </article>
         }

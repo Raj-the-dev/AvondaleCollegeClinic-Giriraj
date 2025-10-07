@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace AvondaleCollegeClinic.Controllers
 {
-    [Authorize(Roles = "Admin,Teacher,Doctor,Caregiver")]
+
     public class HomeroomsController : Controller
     {
         private readonly AvondaleCollegeClinicContext _context;
@@ -22,7 +22,7 @@ namespace AvondaleCollegeClinic.Controllers
         {
             _context = context;
         }
-
+        [Authorize(Roles = "Admin,Teacher,Doctor,Caregiver,Student")]
         // GET: Homerooms
         public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
@@ -73,6 +73,7 @@ namespace AvondaleCollegeClinic.Controllers
             var paginatedList = new PaginatedList<Homeroom>(pagedHomerooms, totalCount, page, pageSize);
             return View(paginatedList);
         }
+        [Authorize(Roles = "Admin,Teacher")]
         [Authorize(Roles = "Admin")]
         // GET: Homerooms/Details/5
         public async Task<IActionResult> Details(string id)

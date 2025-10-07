@@ -9,6 +9,7 @@ using AvondaleCollegeClinic.Areas.Identity.Data;
 using AvondaleCollegeClinic.Models;
 using System.IO;
 using AvondaleCollegeClinic.Helpers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AvondaleCollegeClinic.Controllers
 {
@@ -20,7 +21,7 @@ namespace AvondaleCollegeClinic.Controllers
         {
             _context = context;
         }
-
+        [Authorize(Roles = "Doctor,Student,Caregiver,Admin,Teacher")]
         // GET: Teachers
         public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
@@ -69,7 +70,7 @@ namespace AvondaleCollegeClinic.Controllers
             return View(await PaginatedList<Teacher>.CreateAsync(
                 teachers.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
-
+        [Authorize(Roles = "Admin,Teacher")]
         // GET: Teachers/Details/5
         public async Task<IActionResult> Details(string id)
         {
@@ -87,7 +88,7 @@ namespace AvondaleCollegeClinic.Controllers
 
             return View(teacher);
         }
-
+        [Authorize(Roles = "Admin,Teacher")]
         // GET: Teachers/Create
         public IActionResult Create()
         {
@@ -103,7 +104,7 @@ namespace AvondaleCollegeClinic.Controllers
                 "TeacherID", "FullName");
             return View(teacher);
         }
-
+        [Authorize(Roles = "Admin,Teacher")]
         // POST: Teachers/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -151,7 +152,7 @@ namespace AvondaleCollegeClinic.Controllers
 
             return View(teacher);
         }
-
+        [Authorize(Roles = "Admin,Teacher")]
         // GET: Teachers/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
@@ -173,7 +174,7 @@ namespace AvondaleCollegeClinic.Controllers
                 "TeacherID", "FullName");
             return View(teacher);
         }
-
+        [Authorize(Roles = "Admin,Teacher")]
         // POST: Teachers/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -239,7 +240,7 @@ namespace AvondaleCollegeClinic.Controllers
 
             return View(form);
         }
-
+        [Authorize(Roles = "Admin,Teacher")]
         // GET: Teachers/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
@@ -257,7 +258,7 @@ namespace AvondaleCollegeClinic.Controllers
 
             return View(teacher);
         }
-
+        [Authorize(Roles = "Admin,Teacher")]
         // POST: Teachers/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
