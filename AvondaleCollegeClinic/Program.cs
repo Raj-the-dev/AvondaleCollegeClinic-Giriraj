@@ -1,12 +1,17 @@
 using AvondaleCollegeClinic.Areas.Identity.Data;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
+#if DEBUG
+builder.Services
+    .AddDataProtection()
+    .SetApplicationName("AvondaleClinic-DEV-" + Guid.NewGuid()); // new app name => new key ring each run
+#endif
 builder.Services.AddDbContext<AvondaleCollegeClinicContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("AvondaleCollegeClinicContextConnection")
         ?? throw new InvalidOperationException("Connection string not found.")));

@@ -658,3 +658,28 @@ label {
     gap: 14px;
     font-size: 14px
 }
+/* Brand image: small, sleek, never stretched */
+.brand {
+    display: flex;
+    align-items: center;
+}
+
+.brand-logo {
+    height: 82px; /* desktop size */
+    width: auto; /* keep aspect ratio */
+    object-fit: contain; /* no stretch, fits inside the height */
+    display: block;
+}
+
+/* Slightly smaller on tighter screens */
+@media (max-width: 720px) {
+    .brand-logo {
+        height: 26px;
+    }
+}
+
+/* Optional: reduce header padding so the logo sits tighter */
+.wrap.head {
+    padding-top: 4px;
+    padding-bottom: 4px;
+}

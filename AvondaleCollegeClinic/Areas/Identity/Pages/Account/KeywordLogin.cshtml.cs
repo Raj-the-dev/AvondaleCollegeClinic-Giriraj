@@ -63,7 +63,7 @@ namespace AvondaleCollegeClinic.Areas.Identity.Pages.Account
             if (!await _users.HasPasswordAsync(user))
                 return Redirect("~/Identity/Account/Manage/SetPassword");
 
-            return Redirect("~/Identity/Account/Manage/ChangePassword");
+            return Redirect("~/Identity/Account/Manage/SetNewPassword");
         }
     }
 }

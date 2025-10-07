@@ -34,7 +34,11 @@
             }
         }
         <div class="wrap head">
-            <div class="brand"><a href="/">Avondale College Clinic</a></div>
+            <div class="brand">
+                <a href="/">
+                    <img src="/images/logo.png" alt="Avondale College Clinic" class="brand-logo">
+                </a>
+            </div>
 
             <!-- Desktop nav -->
             <nav class="primary" aria-label="Primary">
@@ -57,19 +61,33 @@
                                 <a class="drop-toggle" href="javascript:void(0)" aria-haspopup="true" aria-expanded="false">Users</a>
                                 <div class="drop-panel" role="menu" aria-label="Users">
                                     <a href="/Students" role="menuitem">Students</a>
-                                    <a href="/Doctors" role="menuitem">Doctors</a>
                                     <a href="/Caregivers" role="menuitem">Caregivers</a>
                                     <a href="/Teachers" role="menuitem">Teachers</a>
+                                    <a href="/Doctors" role="menuitem">Doctors</a>
                                 </div>
                             </li>
+
                             <li class="dropdown">
-                                <a class="drop-toggle" href="javascript:void(0)" aria-haspopup="true" aria-expanded="false">Services</a>
-                                <div class="drop-panel" role="menu" aria-label="Student">
-                                    <a href="/Appointments" role="menuitem">Visit</a>
-                                    <a href="/Diagnoses" role="menuitem">Diagnoses</a>
+                                <a class="drop-toggle" href="javascript:void(0)" aria-haspopup="true" aria-expanded="false">School</a>
+                                <div class="drop-panel" role="menu" aria-label="School">
+                                    <a href="/Homerooms" role="menuitem">Homerooms</a>
+                                </div>
+                            </li>
+
+                            <li class="dropdown">
+                                <a class="drop-toggle" href="javascript:void(0)" aria-haspopup="true" aria-expanded="false">Scheduling</a>
+                                <div class="drop-panel" role="menu" aria-label="Scheduling">
+                                    <a href="/Appointments" role="menuitem">Appointments</a>
                                     <a href="/DoctorAvailability" role="menuitem">Doctor Availability</a>
-                                    <a href="/Prescriptions" role="menuitem">Prescriptions</a>
+                                </div>
+                            </li>
+
+                            <li class="dropdown">
+                                <a class="drop-toggle" href="javascript:void(0)" aria-haspopup="true" aria-expanded="false">Clinical</a>
+                                <div class="drop-panel" role="menu" aria-label="Clinical">
                                     <a href="/MedicalRecords" role="menuitem">Medical Records</a>
+                                    <a href="/Diagnoses" role="menuitem">Diagnoses</a>
+                                    <a href="/Prescriptions" role="menuitem">Prescriptions</a>
                                     <a href="/LabTests" role="menuitem">Lab Tests</a>
                                 </div>
                             </li>
@@ -81,10 +99,28 @@
                             <li class="dropdown">
                                 <a class="drop-toggle" href="javascript:void(0)" aria-haspopup="true" aria-expanded="false">Student</a>
                                 <div class="drop-panel" role="menu" aria-label="Student">
-                                    <a href="/Appointments/Create" role="menuitem">Visit</a>
-                                    <a href="/Prescriptions" role="menuitem">Prescriptions</a>
+                                    <!-- My info (indexes filter to the logged-in student's records in the controllers) -->
+                                    <a href="/Students" role="menuitem">My Student Record</a>
+                                    <a href="/Caregivers" role="menuitem">My Caregiver</a>
+                                </div>
+                            </li>
+
+                            <li class="dropdown">
+                                <a class="drop-toggle" href="javascript:void(0)" aria-haspopup="true" aria-expanded="false">Clinical</a>
+                                <div class="drop-panel" role="menu" aria-label="Clinical">
                                     <a href="/MedicalRecords" role="menuitem">Medical Records</a>
+                                    <a href="/Diagnoses" role="menuitem">Diagnoses</a>
+                                    <a href="/Prescriptions" role="menuitem">Prescriptions</a>
                                     <a href="/LabTests" role="menuitem">Lab Tests</a>
+                                </div>
+                            </li>
+
+                            <li class="dropdown">
+                                <a class="drop-toggle" href="javascript:void(0)" aria-haspopup="true" aria-expanded="false">Scheduling</a>
+                                <div class="drop-panel" role="menu" aria-label="Scheduling">
+                                    <!-- “Visit” is already in the header and points to /Appointments.
+                                         We also expose the Appointments index here. -->
+                                    <a href="/Appointments" role="menuitem">Appointments</a>
                                 </div>
                             </li>
                         }
@@ -92,12 +128,21 @@
                         @* TEACHER dropdown (same as you had) *@
                         if (isTeacher)
                         {
+                            <!-- Teaching -->
                             <li class="dropdown">
-                                <a class="drop-toggle" href="javascript:void(0)" aria-haspopup="true" aria-expanded="false">Teacher</a>
-                                <div class="drop-panel" role="menu" aria-label="Teacher">
-                                    <a href="/Teachers" role="menuitem">Teachers</a>
+                                <a class="drop-toggle" href="javascript:void(0)" aria-haspopup="true" aria-expanded="false">Teaching</a>
+                                <div class="drop-panel" role="menu" aria-label="Teaching">
                                     <a href="/Homerooms" role="menuitem">Homerooms</a>
                                     <a href="/Students" role="menuitem">Students</a>
+                                </div>
+                            </li>
+
+                            <!-- Directory -->
+                            <li class="dropdown">
+                                <a class="drop-toggle" href="javascript:void(0)" aria-haspopup="true" aria-expanded="false">Directory</a>
+                                <div class="drop-panel" role="menu" aria-label="Directory">
+                                    <a href="/Teachers" role="menuitem">Teachers</a>
+                                    <a href="/Caregivers" role="menuitem">Caregivers</a>
                                 </div>
                             </li>
                         }
@@ -105,15 +150,32 @@
                         @* DOCTOR dropdown (unchanged) *@
                         if (isDoctor)
                         {
+                            <!-- Patients -->
                             <li class="dropdown">
-                                <a class="drop-toggle" href="javascript:void(0)" aria-haspopup="true" aria-expanded="false">Doctor</a>
-                                <div class="drop-panel" role="menu" aria-label="Doctor">
-                                    <a href="/Doctors" role="menuitem">Doctors</a>
-                                    <a href="/Diagnoses" role="menuitem">Diagnoses</a>
+                                <a class="drop-toggle" href="javascript:void(0)" aria-haspopup="true" aria-expanded="false">Patients</a>
+                                <div class="drop-panel" role="menu" aria-label="Patients">
+                                    <a href="/Students" role="menuitem">Students</a>
+                                    <a href="/Caregivers" role="menuitem">Caregivers</a>
+                                </div>
+                            </li>
+
+                            <!-- Clinical -->
+                            <li class="dropdown">
+                                <a class="drop-toggle" href="javascript:void(0)" aria-haspopup="true" aria-expanded="false">Clinical</a>
+                                <div class="drop-panel" role="menu" aria-label="Clinical">
                                     <a href="/MedicalRecords" role="menuitem">Medical Records</a>
+                                    <a href="/Diagnoses" role="menuitem">Diagnoses</a>
                                     <a href="/Prescriptions" role="menuitem">Prescriptions</a>
-                                    <a href="/DoctorAvailability" role="menuitem">Doctor Availability</a>
                                     <a href="/LabTests" role="menuitem">Lab Tests</a>
+                                </div>
+                            </li>
+
+                            <!-- Scheduling -->
+                            <li class="dropdown">
+                                <a class="drop-toggle" href="javascript:void(0)" aria-haspopup="true" aria-expanded="false">Scheduling</a>
+                                <div class="drop-panel" role="menu" aria-label="Scheduling">
+                                    <a href="/Appointments" role="menuitem">Appointments</a>
+                                    <a href="/DoctorAvailability" role="menuitem">Doctor Availability</a>
                                 </div>
                             </li>
                         }
@@ -121,12 +183,23 @@
                         @* CAREGIVER dropdown (unchanged) *@
                         if (isCaregiver)
                         {
+                            <!-- Care -->
                             <li class="dropdown">
-                                <a class="drop-toggle" href="javascript:void(0)" aria-haspopup="true" aria-expanded="false">Caregiver</a>
-                                <div class="drop-panel" role="menu" aria-label="Caregiver">
-                                    <a href="/Caregivers" role="menuitem">Caregivers</a>
-                                    <a href="/Students" role="menuitem">Students</a>
+                                <a class="drop-toggle" href="javascript:void(0)" aria-haspopup="true" aria-expanded="false">Care</a>
+                                <div class="drop-panel" role="menu" aria-label="Care">
                                     <a href="/Appointments" role="menuitem">Appointments</a>
+                                    <a href="/MedicalRecords" role="menuitem">Medical Records</a>
+                                    <a href="/Prescriptions" role="menuitem">Prescriptions</a>
+                                    <a href="/LabTests" role="menuitem">Lab Tests</a>
+                                </div>
+                            </li>
+
+                            <!-- Family -->
+                            <li class="dropdown">
+                                <a class="drop-toggle" href="javascript:void(0)" aria-haspopup="true" aria-expanded="false">Family</a>
+                                <div class="drop-panel" role="menu" aria-label="Family">
+                                    <a href="/Students" role="menuitem">Students</a>
+                                    <a href="/Caregivers" role="menuitem">Caregivers</a>
                                 </div>
                             </li>
                         }
@@ -135,8 +208,12 @@
                         <li class="dropdown">
                             <a class="drop-toggle" href="javascript:void(0)" aria-haspopup="true" aria-expanded="false">Account</a>
                             <div class="drop-panel" role="menu" aria-label="Account">
-                                <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/" method="post" style="display:inline">
-                                    <button type="submit" style="background:none;">Logout</button>
+                                <form asp-area="Identity"
+                                      asp-page="/Account/Logout"
+                                      asp-route-returnUrl="/"
+                                      method="post"
+                                      class="logout-form">
+                                    <button type="submit" class="btn">Logout</button>
                                 </form>
                             </div>
                         </li>
@@ -151,76 +228,7 @@
             </button>
         </div>
 
-        <!-- Mobile overlay (mirrors desktop) -->
-        <div id="menu" class="overlay" hidden data-menu>
-            <nav aria-label="Mobile">
-                <ul>
-                    <li><a data-close href="/#about">About</a></li>
-
-                    @if (!isSignedIn)
-                    {
-                        <li><a data-close href="/Appointments">Visit</a></li>
-                        <li><a data-close href="/Identity/Account/Login">Login</a></li>
-                    }
-                    else
-                    {
-                        if (isAdmin)
-                        {
-                            <li><strong class="muted eyebrow">Users</strong></li>
-                            <li><a data-close href="/Students">Students</a></li>
-                            <li><a data-close href="/Doctors">Doctors</a></li>
-                            <li><a data-close href="/Caregivers">Caregivers</a></li>
-                            <li><a data-close href="/Teachers">Teachers</a></li>
-                        }
-
-                        if (isStudent)
-                        {
-                            <li><strong class="muted eyebrow">Student</strong></li>
-                            <li><a data-close href="/Appointments/Create">Visit (Book Appointment)</a></li>
-                            <li><a data-close href="/Prescriptions">Prescriptions</a></li>
-                            <li><a data-close href="/MedicalRecords">Medical Records</a></li>
-                            <li><a data-close href="/LabTests">Lab Tests</a></li>
-                        }
-
-                        if (isTeacher)
-                        {
-                            <li><strong class="muted eyebrow">Teacher</strong></li>
-                            <li><a data-close href="/Teachers">Teachers</a></li>
-                            <li><a data-close href="/Homerooms">Homerooms</a></li>
-                            <li><a data-close href="/Students">Students</a></li>
-                        }
-
-                        if (isDoctor)
-                        {
-                            <li><strong class="muted eyebrow">Doctor</strong></li>
-                            <li><a data-close href="/Doctors">Doctors</a></li>
-                            <li><a data-close href="/Diagnoses">Diagnoses</a></li>
-                            <li><a data-close href="/MedicalRecords">Medical Records</a></li>
-                            <li><a data-close href="/Prescriptions">Prescriptions</a></li>
-                            <li><a data-close href="/DoctorAvailability">Doctor Availability</a></li>
-                            <li><a data-close href="/LabTests">Lab Tests</a></li>
-                        }
-
-                        if (isCaregiver)
-                        {
-                            <li><strong class="muted eyebrow">Caregiver</strong></li>
-                            <li><a data-close href="/Caregivers">Caregivers</a></li>
-                            <li><a data-close href="/Students">Students</a></li>
-                            <li><a data-close href="/Appointments">Appointments</a></li>
-                        }
-
-                        <li><strong class="muted eyebrow">Account</strong></li>
-                        <li><a data-close href="/Identity/Account/Manage/CompleteProfile">Profile</a></li>
-                        <li>
-                            <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/" method="post" style="display:inline">
-                                <button type="submit" style="background:none;border:0;padding:0;margin:0;cursor:pointer">Logout</button>
-                            </form>
-                        </li>
-                    }
-                </ul>
-            </nav>
-            <div class="foot">© Avondale College Clinic, Auckland • Mon–Fri 8:30–16:00</div>
-        </div>
+        
     </header>
 
 

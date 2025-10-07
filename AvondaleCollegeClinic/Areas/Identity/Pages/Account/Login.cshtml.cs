@@ -60,9 +60,6 @@ namespace AvondaleCollegeClinic.Areas.Identity.Pages.Account
             var res = await _signIn.PasswordSignInAsync(user, Input.Password, isPersistent: false, lockoutOnFailure: true);
             if (res.Succeeded)
             {
-                // optional: if you want to force a change on next login
-                if (user.MustSetPassword)
-                    return Redirect("~/Identity/Account/Manage/ChangePassword");
                 return LocalRedirect(returnUrl);
             }
 
