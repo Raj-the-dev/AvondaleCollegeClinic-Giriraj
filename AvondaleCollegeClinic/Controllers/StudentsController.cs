@@ -70,7 +70,7 @@ namespace AvondaleCollegeClinic.Controllers
                     break;
             }
 
-            int pageSize = 10;
+            int pageSize = 6;
             return View(await PaginatedList<Student>.CreateAsync(
                 students.AsNoTracking(), pageNumber ?? 1, pageSize));
         }

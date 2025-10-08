@@ -1,36 +1,34 @@
 ﻿@model AvondaleCollegeClinic.Models.Teacher
 @{
-    ViewData["Title"] = "My Teacher Record";
+    ViewData["Title"] = "My Teacher Profile";
 }
 <section class="wrap page">
     <div class="eyebrow">Profile</div>
-    <h2>My Teacher Record</h2>
+    <h1>My Teacher Profile</h1>
 
-    <dl class="desc-list">
-        <dt>Teacher ID</dt>
-        <dd>@Model.TeacherID</dd>
-        <dt>Name</dt>
-        <dd>@Model.FirstName @Model.LastName</dd>
-        <dt>Email</dt>
-        <dd>@Model.Email</dd>
-        <dt>Code</dt>
-        <dd>@Model.TeacherCode</dd>
-    </dl>
+    <div class="profile-card">
+        <img src="@(string.IsNullOrWhiteSpace(Model.ImagePath) ? "/images/placeholder-user.png" : Model.ImagePath)"
+             alt="@Model.FirstName @Model.LastName"
+             class="profile-image" />
 
-    <div class="belt hair" style="margin-top:18px;padding-top:16px">
-        <h3 style="margin:0 0 8px">Homerooms</h3>
-        @if (Model.Homerooms == null || !Model.Homerooms.Any())
+        <div class="profile-info">
+            <div class="profile-line"><span>Teacher ID:</span><span>@Model.TeacherID</span></div>
+            <div class="profile-line"><span>First Name:</span><span>@Model.FirstName</span></div>
+            <div class="profile-line"><span>Last Name:</span><span>@Model.LastName</span></div>
+            <div class="profile-line"><span>Email:</span><span>@Model.Email</span></div>
+            <div class="profile-line"><span>Teacher Code:</span><span>@Model.TeacherCode</span></div>
+        </div>
+
+        @if (Model.Homerooms != null && Model.Homerooms.Any())
         {
-            <div class="muted">No homerooms assigned.</div>
-        }
-        else
-        {
-            <ul>
+            <hr style="margin:24px 0" />
+            <h3 style="font-size:16px;font-weight:600;margin-bottom:10px;">Assigned Homerooms</h3>
+            <div class="profile-info">
                 @foreach (var h in Model.Homerooms)
                 {
-                    <li>Year @((int)h.YearLevel) • Block @h.Block • Class @((int)h.ClassNumber)</li>
+                    <div class="profile-line"><span>Year @((int)h.YearLevel)</span><span>Block @h.Block • Class @((int)h.ClassNumber)</span></div>
                 }
-            </ul>
+            </div>
         }
     </div>
 </section>

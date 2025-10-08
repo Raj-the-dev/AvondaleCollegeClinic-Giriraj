@@ -101,7 +101,7 @@ namespace AvondaleCollegeClinic.Controllers
             };
 
             // Paging
-            const int pageSize = 10;
+            const int pageSize = 5;
             int page = pageNumber ?? 1;
             var total = await query.CountAsync();
             var rows = await query.AsNoTracking()

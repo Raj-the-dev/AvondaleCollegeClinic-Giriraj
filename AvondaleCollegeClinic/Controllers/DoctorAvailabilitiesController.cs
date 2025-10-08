@@ -57,7 +57,7 @@ namespace AvondaleCollegeClinic.Controllers
             }
 
             // 📄 Pagination
-            int pageSize = 10;
+            int pageSize = 5;
             int page = pageNumber ?? 1;
             var totalCount = availabilities.Count;
             var pagedAvailabilities = availabilities.Skip((page - 1) * pageSize).Take(pageSize).ToList();

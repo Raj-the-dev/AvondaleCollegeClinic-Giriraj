@@ -63,7 +63,7 @@ namespace AvondaleCollegeClinic.Controllers
             }
 
             // Pagination
-            int pageSize = 10;
+            int pageSize = 6;
             int page = pageNumber ?? 1;
             var totalCount = caregivers.Count;
             var pagedCaregivers = caregivers.Skip((page - 1) * pageSize).Take(pageSize).ToList();

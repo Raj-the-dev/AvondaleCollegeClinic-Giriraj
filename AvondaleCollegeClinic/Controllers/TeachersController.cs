@@ -66,7 +66,7 @@ namespace AvondaleCollegeClinic.Controllers
                     break;
             }
 
-            int pageSize = 10;
+            int pageSize = 6;
             return View(await PaginatedList<Teacher>.CreateAsync(
                 teachers.AsNoTracking(), pageNumber ?? 1, pageSize));
         }

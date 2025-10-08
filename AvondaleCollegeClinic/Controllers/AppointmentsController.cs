@@ -68,7 +68,7 @@ namespace AvondaleCollegeClinic.Controllers
             }
 
             // 📄 Pagination
-            int pageSize = 10;
+            int pageSize = 5;
             int page = pageNumber ?? 1;
             var totalCount = appointments.Count;
             var pagedAppointments = appointments.Skip((page - 1) * pageSize).Take(pageSize).ToList();

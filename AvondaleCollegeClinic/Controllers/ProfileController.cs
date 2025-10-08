@@ -1,96 +1,100 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using AvondaleCollegeClinic.Areas.Identity.Data;
+using AvondaleCollegeClinic.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using AvondaleCollegeClinic.Areas.Identity.Data;
-using AvondaleCollegeClinic.Models;
 
 namespace AvondaleCollegeClinic.Controllers
 {
-    [Authorize] // all users must be logged in
+    [Authorize] // must be signed in for any action below
     public class ProfileController : Controller
     {
-        private readonly AvondaleCollegeClinicContext _context;
-        private readonly UserManager<AvondaleCollegeClinicUser> _userManager;
+        private readonly AvondaleCollegeClinicContext _db;
+        private readonly UserManager<AvondaleCollegeClinicUser> _users;
 
-        public ProfileController(AvondaleCollegeClinicContext context, UserManager<AvondaleCollegeClinicUser> userManager)
+        public ProfileController(AvondaleCollegeClinicContext db, UserManager<AvondaleCollegeClinicUser> users)
         {
-            _context = context;
-            _userManager = userManager;
+            _db = db;
+            _users = users;
         }
 
-        // Student
+        // STUDENT → "My Student Record"
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> Student()
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null) return RedirectToAction("Login", "Account");
+            var u = await _users.GetUserAsync(User);
 
-            var student = await _context.Students
+            var model = await _db.Students
                 .Include(s => s.Homeroom).ThenInclude(h => h.Teacher)
                 .Include(s => s.Caregiver)
                 .AsNoTracking()
-                .FirstOrDefaultAsync(s => s.IdentityUserId == user.Id || s.Email == user.Email);
+                .FirstOrDefaultAsync(s => s.IdentityUserId == u.Id || s.Email == u.Email);
 
-            if (student == null)
-                return NotFound("Student record not found.");
-
-            return View("~/Views/ProfileView/StudentProfile.cshtml", student);
+            if (model == null) return NotFound();
+            return View("~/Views/Me/StudentMe.cshtml", model);
         }
 
-        // Caregiver
-        [Authorize(Roles = "Caregiver")]
+        // STUDENT → "My Caregiver"
+        // CAREGIVER → "My Caregiver Record"
+        [Authorize(Roles = "Student,Caregiver")]
         public async Task<IActionResult> Caregiver()
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null) return RedirectToAction("Login", "Account");
+            var u = await _users.GetUserAsync(User);
 
-            var caregiver = await _context.Caregivers
-                .Include(c => c.Students)
-                .AsNoTracking()
-                .FirstOrDefaultAsync(c => c.IdentityUserId == user.Id || c.Email == user.Email);
+            Caregiver? model;
 
-            if (caregiver == null)
-                return NotFound("Caregiver record not found.");
+            if (await _users.IsInRoleAsync(u, "Student"))
+            {
+                var student = await _db.Students
+                    .Include(s => s.Caregiver).ThenInclude(c => c.Students)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(s => s.IdentityUserId == u.Id || s.Email == u.Email);
 
-            return View("~/Views/ProfileView/CaregiverProfile.cshtml", caregiver);
+                model = student?.Caregiver;
+            }
+            else
+            {
+                model = await _db.Caregivers
+                    .Include(c => c.Students)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(c => c.IdentityUserId == u.Id || c.Email == u.Email);
+            }
+
+            if (model == null) return NotFound();
+            return View("~/Views/Me/CaregiverMe.cshtml", model);
         }
 
-        // Teacher
+        // TEACHER → "My Teacher Record"
         [Authorize(Roles = "Teacher")]
         public async Task<IActionResult> Teacher()
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null) return RedirectToAction("Login", "Account");
+            var u = await _users.GetUserAsync(User);
 
-            var teacher = await _context.Teachers
+            var model = await _db.Teachers
                 .Include(t => t.Homerooms)
                 .AsNoTracking()
-                .FirstOrDefaultAsync(t => t.IdentityUserId == user.Id || t.Email == user.Email);
+                .FirstOrDefaultAsync(t => t.IdentityUserId == u.Id || t.Email == u.Email);
 
-            if (teacher == null)
-                return NotFound("Teacher record not found.");
-
-            return View("~/Views/ProfileView/TeacherProfile.cshtml", teacher);
+            if (model == null) return NotFound();
+            return View("~/Views/Me/TeacherMe.cshtml", model);
         }
 
-        // Doctor
+        // DOCTOR → "My Doctor Record"
         [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> Doctor()
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null) return RedirectToAction("Login", "Account");
+            var u = await _users.GetUserAsync(User);
 
-            var doctor = await _context.Doctors
+            var model = await _db.Doctors
                 .Include(d => d.Availabilities)
                 .AsNoTracking()
-                .FirstOrDefaultAsync(d => d.IdentityUserId == user.Id || d.Email == user.Email);
+                .FirstOrDefaultAsync(d => d.IdentityUserId == u.Id || d.Email == u.Email);
 
-            if (doctor == null)
-                return NotFound("Doctor record not found.");
-
-            return View("~/Views/ProfileView/DoctorProfile.cshtml", doctor);
+            if (model == null) return NotFound();
+            return View("~/Views/Me/DoctorMe.cshtml", model);
         }
     }
 }
