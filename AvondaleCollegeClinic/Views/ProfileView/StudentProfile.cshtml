@@ -6,67 +6,34 @@
     <div class="eyebrow">Profile</div>
     <h1>My Student Record</h1>
 
-    <div class="grid" style="grid-template-columns:repeat(12,1fr);gap:20px">
-        <div class="tile span-6">
-            <div>
-                <h3>Details</h3>
-                <dl class="desc-list">
-                    <dt>Student ID</dt>
-                    <dd>@Model.StudentID</dd>
-                    <dt>Name</dt>
-                    <dd>@Model.FirstName @Model.LastName</dd>
-                    <dt>Date of Birth</dt>
-                    <dd>@Model.DOB.ToShortDateString()</dd>
-                    <dt>Email</dt>
-                    <dd>@Model.Email</dd>
-                </dl>
-            </div>
+    <div class="profile-card">
+        <img src="@(string.IsNullOrWhiteSpace(Model.ImagePath) ? "/images/placeholder-user.png" : Model.ImagePath)"
+             alt="@Model.FirstName @Model.LastName"
+             class="profile-image" />
+
+        <div class="profile-info">
+            <div class="profile-line"><span>Student ID:</span><span>@Model.StudentID</span></div>
+            <div class="profile-line"><span>First Name:</span><span>@Model.FirstName</span></div>
+            <div class="profile-line"><span>Last Name:</span><span>@Model.LastName</span></div>
+            <div class="profile-line"><span>Date of Birth:</span><span>@Model.DOB.ToShortDateString()</span></div>
+            <div class="profile-line"><span>Email:</span><span>@Model.Email</span></div>
+            @if (Model.Homeroom != null)
+            {
+                <div class="profile-line"><span>Homeroom:</span><span>@((int)Model.Homeroom.YearLevel) (@Model.Homeroom.Block)</span></div>
+                <div class="profile-line"><span>Teacher:</span><span>@Model.Homeroom.Teacher?.FirstName @Model.Homeroom.Teacher?.LastName</span></div>
+            }
         </div>
 
-        <div class="tile span-6">
-            <div>
-                <h3>Homeroom</h3>
-                @if (Model.Homeroom is null)
-                {
-                    <div class="muted">Not assigned.</div>
-                }
-                else
-                {
-                    <dl class="desc-list">
-                        <dt>Year</dt>
-                        <dd>@((int)Model.Homeroom.YearLevel)</dd>
-                        <dt>Block</dt>
-                        <dd>@Model.Homeroom.Block</dd>
-                        <dt>Class</dt>
-                        <dd>@((int)Model.Homeroom.ClassNumber)</dd>
-                        <dt>Teacher</dt>
-                        <dd>@Model.Homeroom.Teacher?.FirstName @Model.Homeroom.Teacher?.LastName</dd>
-                    </dl>
-                }
+        @if (Model.Caregiver != null)
+        {
+            <hr style="margin:24px 0" />
+            <h3 style="font-size:16px;font-weight:600;margin-bottom:10px;">Caregiver</h3>
+            <div class="profile-info">
+                <div class="profile-line"><span>Name:</span><span>@Model.Caregiver.FirstName @Model.Caregiver.LastName</span></div>
+                <div class="profile-line"><span>Relationship:</span><span>@Model.Caregiver.Relationship</span></div>
+                <div class="profile-line"><span>Email:</span><span>@Model.Caregiver.Email</span></div>
+                <div class="profile-line"><span>Phone:</span><span>@Model.Caregiver.Phone</span></div>
             </div>
-        </div>
-
-        <div class="tile span-12">
-            <div>
-                <h3>Caregiver</h3>
-                @if (Model.Caregiver is null)
-                {
-                    <div class="muted">No caregiver linked.</div>
-                }
-                else
-                {
-                    <dl class="desc-list">
-                        <dt>Name</dt>
-                        <dd>@Model.Caregiver.FirstName @Model.Caregiver.LastName</dd>
-                        <dt>Relationship</dt>
-                        <dd>@Model.Caregiver.Relationship</dd>
-                        <dt>Email</dt>
-                        <dd>@Model.Caregiver.Email</dd>
-                        <dt>Phone</dt>
-                        <dd>@Model.Caregiver.Phone</dd>
-                    </dl>
-                }
-            </div>
-        </div>
+        }
     </div>
 </section>

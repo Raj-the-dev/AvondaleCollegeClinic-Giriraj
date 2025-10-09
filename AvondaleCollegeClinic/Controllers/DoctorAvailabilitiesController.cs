@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace AvondaleCollegeClinic.Controllers
 {
-    [Authorize(Roles = "Admin,Teacher,Doctor,Student")]
+
     public class DoctorAvailabilitiesController : Controller
     {
         private readonly AvondaleCollegeClinicContext _context;
@@ -22,7 +22,7 @@ namespace AvondaleCollegeClinic.Controllers
         {
             _context = context;
         }
-
+        [Authorize(Roles = "Admin,Doctor")]
         // GET: DoctorAvailabilities
         public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {

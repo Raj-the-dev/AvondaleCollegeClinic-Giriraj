@@ -34,7 +34,7 @@ namespace AvondaleCollegeClinic.Controllers
                 .FirstOrDefaultAsync(s => s.IdentityUserId == u.Id || s.Email == u.Email);
 
             if (model == null) return NotFound();
-            return View("~/Views/Me/StudentMe.cshtml", model);
+            return View("~/Views/ProfileView/StudentProfile.cshtml", model);
         }
 
         // STUDENT → "My Caregiver"
@@ -64,7 +64,7 @@ namespace AvondaleCollegeClinic.Controllers
             }
 
             if (model == null) return NotFound();
-            return View("~/Views/Me/CaregiverMe.cshtml", model);
+            return View("~/Views/ProfileView/CaregiverProfile.cshtml", model);
         }
 
         // TEACHER → "My Teacher Record"
@@ -79,7 +79,7 @@ namespace AvondaleCollegeClinic.Controllers
                 .FirstOrDefaultAsync(t => t.IdentityUserId == u.Id || t.Email == u.Email);
 
             if (model == null) return NotFound();
-            return View("~/Views/Me/TeacherMe.cshtml", model);
+            return View("~/Views/ProfileView/TeacherProfile.cshtml", model);
         }
 
         // DOCTOR → "My Doctor Record"
@@ -94,7 +94,7 @@ namespace AvondaleCollegeClinic.Controllers
                 .FirstOrDefaultAsync(d => d.IdentityUserId == u.Id || d.Email == u.Email);
 
             if (model == null) return NotFound();
-            return View("~/Views/Me/DoctorMe.cshtml", model);
+            return View("~/Views/ProfileView/DoctorProfile.cshtml", model);
         }
     }
 }

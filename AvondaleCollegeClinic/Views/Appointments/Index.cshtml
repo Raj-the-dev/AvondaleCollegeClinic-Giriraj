@@ -45,8 +45,8 @@
                     <td>@Html.DisplayFor(modelItem => item.AppointmentDateTime)</td>
                     <td>@Html.DisplayFor(modelItem => item.Status)</td>
                     <td>@Html.DisplayFor(modelItem => item.Reason)</td>
-                    <td>@item.Student?.StudentID</td>
-                    <td>@item.Doctor?.DoctorID</td>
+                    <td>@($"{item.Student?.FirstName} {item.Student?.LastName}")</td>
+                    <td>@($"{item.Doctor?.FirstName} {item.Doctor?.LastName}")</td>
                     <td class="actions">
                         <a asp-action="Edit" asp-route-id="@item.AppointmentID">Edit</a>
                         <a asp-action="Details" asp-route-id="@item.AppointmentID">Details</a>
