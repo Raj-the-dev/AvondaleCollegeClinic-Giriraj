@@ -43,9 +43,8 @@ namespace AvondaleCollegeClinic.Controllers
             ViewData["CurrentFilter"] = searchString;
 
             var students = from s in _context.Students
-                           .Include(s => s.Caregiver)
-                           .Include(s => s.Homeroom)
-                               .ThenInclude(h => h.Teacher)
+                               .Include(s => s.Caregivers)                     
+                               .Include(s => s.Homeroom).ThenInclude(h => h.Teacher)
                            select s;
 
             if (!String.IsNullOrEmpty(searchString))
@@ -85,7 +84,7 @@ namespace AvondaleCollegeClinic.Controllers
             }
 
             var student = await _context.Students
-                .Include(s => s.Caregiver)
+                .Include(s => s.Caregivers)                                    
                 .Include(s => s.Homeroom).ThenInclude(h => h.Teacher)
                 .FirstOrDefaultAsync(m => m.StudentID == id);
 
@@ -97,216 +96,195 @@ namespace AvondaleCollegeClinic.Controllers
             return View(student);
         }
         [Authorize(Roles = "Admin,Teacher")]
-        // GET: Students/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             var student = new Student
             {
                 StudentID = GenerateStudentID(),
-                DOB = DateTime.Now
+                DOB = DateTime.Today
             };
 
-            ViewData["CaregiverID"] = new SelectList(
-                _context.Caregivers.Select(c => new
-                {
-                    c.CaregiverID,
-                    FullName = c.FirstName + " " + c.LastName
-                }).ToList(),
-                "CaregiverID",
-                "FullName"
-            );
+            var caregivers = await _context.Caregivers
+                .Select(c => new { c.CaregiverID, FullName = c.FirstName + " " + c.LastName })
+                .OrderBy(c => c.FullName)
+                .ToListAsync();
 
-            ViewData["HomeroomID"] = new SelectList(
-                _context.Homerooms.Include(h => h.Teacher).Select(h => new
+            ViewData["CaregiverID"] = new SelectList(caregivers, "CaregiverID", "FullName");
+            ViewData["ExtraCaregiverID"] = new SelectList(caregivers, "CaregiverID", "FullName"); // optional
+
+            var homerooms = await _context.Homerooms
+                .Include(h => h.Teacher)
+                .Select(h => new
                 {
                     h.HomeroomID,
                     DisplayName = h.Teacher.FirstName + " " + h.Teacher.LastName + " - " + h.Teacher.TeacherCode
-                }).ToList(),
-                "HomeroomID",
-                "DisplayName"
-            );
+                })
+                .OrderBy(h => h.DisplayName)
+                .ToListAsync();
+            ViewData["HomeroomID"] = new SelectList(homerooms, "HomeroomID", "DisplayName");
 
             return View(student);
         }
-        [Authorize(Roles = "Admin,Teacher")]
-        // POST: Students/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        // POST: Students/Create
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("StudentID,FirstName,LastName,Photo,DOB,Email,HomeroomID,CaregiverID,ImageFile,ImagePath")] Student student)
+        [Authorize(Roles = "Admin,Teacher")]
+        public async Task<IActionResult> Create(
+            [Bind("StudentID,FirstName,LastName,DOB,Email,HomeroomID,ImageFile,ImagePath")] Student student,
+            string caregiverId,              // required
+            string? extraCaregiverId)        // optional
         {
-            if (!ModelState.IsValid)
+            // simple validation: main caregiver required
+            if (string.IsNullOrWhiteSpace(caregiverId))
+                ModelState.AddModelError("CaregiverID", "Please select a caregiver.");
+
+            // (keep any uniqueness checks you already had)
+            if (await _context.Students.AnyAsync(s => s.Email == student.Email))
+                ModelState.AddModelError("Email", "This email is already in use by another student.");
+
+            if (ModelState.IsValid)
             {
-                string uniqueFileName = null;
+                // repopulate dropdowns
+                var caregivers = await _context.Caregivers
+                    .Select(c => new { c.CaregiverID, FullName = c.FirstName + " " + c.LastName })
+                    .OrderBy(c => c.FullName).ToListAsync();
+                ViewData["CaregiverID"] = new SelectList(caregivers, "CaregiverID", "FullName", caregiverId);
+                ViewData["ExtraCaregiverID"] = new SelectList(caregivers, "CaregiverID", "FullName", extraCaregiverId);
 
-                // Check email
-                if (await _context.Students.AnyAsync(s => s.Email == student.Email))
-                {
-                    ModelState.AddModelError("Email", "This email is already in use by another student.");
-                    return View(student);
-                }
-
-                // Check full name
-                if (await _context.Students.AnyAsync(s => s.FirstName == student.FirstName && s.LastName == student.LastName))
-                {
-                    ModelState.AddModelError("", "A student with the same name already exists.");
-                    return View(student);
-                }
-
-                if (student.ImageFile != null)
-                {
-                    // Ensure directory exists
-                    string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/students");
-                    Directory.CreateDirectory(uploadsFolder);
-
-                    // Generate unique filename
-                    uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(student.ImageFile.FileName);
-                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                    // Save file
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await student.ImageFile.CopyToAsync(fileStream);
-                    }
-
-                    // Store relative path
-                    student.ImagePath = "/images/students/" + uniqueFileName;
-                }
-
-                _context.Add(student);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var homerooms = await _context.Homerooms.Include(h => h.Teacher)
+                    .Select(h => new { h.HomeroomID, DisplayName = h.Teacher.FirstName + " " + h.Teacher.LastName + " - " + h.Teacher.TeacherCode })
+                    .OrderBy(h => h.DisplayName).ToListAsync();
+                ViewData["HomeroomID"] = new SelectList(homerooms, "HomeroomID", "DisplayName", student.HomeroomID);
+                return View(student);
             }
 
-            // Repopulate dropdowns if validation fails
-            ViewData["CaregiverID"] = new SelectList(
-                _context.Caregivers.Select(c => new
-                {
-                    c.CaregiverID,
-                    FullName = c.FirstName + " " + c.LastName
-                }).ToList(),
-                "CaregiverID",
-                "FullName",
-                student.CaregiverID
-            );
+            // image upload (unchanged)
+            if (student.ImageFile != null && student.ImageFile.Length > 0)
+            {
+                var uploads = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/students");
+                Directory.CreateDirectory(uploads);
+                var fileName = Guid.NewGuid() + "_" + Path.GetFileName(student.ImageFile.FileName);
+                using var fs = new FileStream(Path.Combine(uploads, fileName), FileMode.Create);
+                await student.ImageFile.CopyToAsync(fs);
+                student.ImagePath = "/images/students/" + fileName;
+            }
 
-            ViewData["HomeroomID"] = new SelectList(
-                _context.Homerooms.Include(h => h.Teacher).Select(h => new
-                {
-                    h.HomeroomID,
-                    DisplayName = h.Teacher.FirstName + " " + h.Teacher.LastName + " - " + h.Teacher.TeacherCode
-                }).ToList(),
-                "HomeroomID",
-                "DisplayName",
-                student.HomeroomID
-            );
-            return View(student);
+            // attach up to 2 caregivers
+            student.Caregivers = new List<Caregiver>();
+            var main = await _context.Caregivers.FindAsync(caregiverId);
+            if (main != null) student.Caregivers.Add(main);
+
+            if (!string.IsNullOrWhiteSpace(extraCaregiverId) && extraCaregiverId != caregiverId)
+            {
+                var extra = await _context.Caregivers.FindAsync(extraCaregiverId);
+                if (extra != null) student.Caregivers.Add(extra);
+            }
+
+            _context.Add(student);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
+
+
+
         [Authorize(Roles = "Admin,Teacher")]
-        // GET: Students/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
-            if (id == null)
-                return NotFound();
+            if (string.IsNullOrWhiteSpace(id)) return NotFound();
 
-            var student = await _context.Students.FindAsync(id);
-            if (student == null)
-                return NotFound();
+            var student = await _context.Students
+                .Include(s => s.Caregivers)
+                .FirstOrDefaultAsync(s => s.StudentID == id);
+            if (student == null) return NotFound();
 
-            ViewData["CaregiverID"] = new SelectList(
-                _context.Caregivers.Select(c => new
-                {
-                    c.CaregiverID,
-                    FullName = c.FirstName + " " + c.LastName
-                }).ToList(),
-                "CaregiverID",
-                "FullName",
-                student.CaregiverID
-            );
+            // preselect up to two caregivers
+            var primaryId = student.Caregivers.Select(c => c.CaregiverID).FirstOrDefault();
+            var extraId = student.Caregivers.Select(c => c.CaregiverID).Skip(1).FirstOrDefault();
 
-            ViewData["HomeroomID"] = new SelectList(
-                _context.Homerooms.Include(h => h.Teacher).Select(h => new
-                {
-                    h.HomeroomID,
-                    DisplayName = h.Teacher.FirstName + " " + h.Teacher.LastName + " - " + h.Teacher.TeacherCode
-                }).ToList(),
-                "HomeroomID",
-                "DisplayName",
-                student.HomeroomID
-            );
+            var caregivers = await _context.Caregivers
+                .Select(c => new { c.CaregiverID, FullName = c.FirstName + " " + c.LastName })
+                .OrderBy(c => c.FullName).ToListAsync();
+            ViewData["CaregiverID"] = new SelectList(caregivers, "CaregiverID", "FullName", primaryId);
+            ViewData["ExtraCaregiverID"] = new SelectList(caregivers, "CaregiverID", "FullName", extraId);
+
+            var homerooms = await _context.Homerooms.Include(h => h.Teacher)
+                .Select(h => new { h.HomeroomID, DisplayName = h.Teacher.FirstName + " " + h.Teacher.LastName + " - " + h.Teacher.TeacherCode })
+                .OrderBy(h => h.DisplayName).ToListAsync();
+            ViewData["HomeroomID"] = new SelectList(homerooms, "HomeroomID", "DisplayName", student.HomeroomID);
 
             return View(student);
         }
 
-
-        [Authorize(Roles = "Admin,Teacher")]
-        // POST: Students/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        // POST: Students/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id,[Bind("StudentID,FirstName,LastName,Photo,DOB,Email,HomeroomID,CaregiverID,ImageFile")]Student form)
+        [Authorize(Roles = "Admin,Teacher")]
+        public async Task<IActionResult> Edit(
+            string id,
+            [Bind("StudentID,FirstName,LastName,DOB,Email,HomeroomID,ImageFile,ImagePath")] Student form,
+            string caregiverId,          // required
+            string? extraCaregiverId)    // optional
         {
-            if (id != form.StudentID)
-                return NotFound();
+            if (id != form.StudentID) return NotFound();
 
-            // Save only when valid
-            if (!ModelState.IsValid)
+            var student = await _context.Students
+                .Include(s => s.Caregivers)
+                .FirstOrDefaultAsync(s => s.StudentID == id);
+            if (student == null) return NotFound();
+
+            if (string.IsNullOrWhiteSpace(caregiverId))
+                ModelState.AddModelError("CaregiverID", "Please select a caregiver.");
+
+            if (ModelState.IsValid)
             {
-                // Load the existing student so we can preserve the current ImagePath
-                var student = await _context.Students.FirstOrDefaultAsync(s => s.StudentID == id);
-                if (student == null) return NotFound();
+                var caregivers = await _context.Caregivers
+                    .Select(c => new { c.CaregiverID, FullName = c.FirstName + " " + c.LastName })
+                    .OrderBy(c => c.FullName).ToListAsync();
+                ViewData["CaregiverID"] = new SelectList(caregivers, "CaregiverID", "FullName", caregiverId);
+                ViewData["ExtraCaregiverID"] = new SelectList(caregivers, "CaregiverID", "FullName", extraCaregiverId);
 
-                // Update simple fields
-                student.FirstName = form.FirstName;
-                student.LastName = form.LastName;
-                student.DOB = form.DOB;
-                student.Email = form.Email;
-                student.HomeroomID = form.HomeroomID;
-                student.CaregiverID = form.CaregiverID;
+                var homerooms = await _context.Homerooms.Include(h => h.Teacher)
+                    .Select(h => new { h.HomeroomID, DisplayName = h.Teacher.FirstName + " " + h.Teacher.LastName + " - " + h.Teacher.TeacherCode })
+                    .OrderBy(h => h.DisplayName).ToListAsync();
+                ViewData["HomeroomID"] = new SelectList(homerooms, "HomeroomID", "DisplayName", form.HomeroomID);
 
-
-                // If a new image was uploaded, save it and update ImagePath
-                if (form.ImageFile != null && form.ImageFile.Length > 0)
-                {
-                    string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/students");
-                    Directory.CreateDirectory(uploadsFolder);
-
-                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(form.ImageFile.FileName);
-                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await form.ImageFile.CopyToAsync(fileStream);
-                    }
-
-                    student.ImagePath = "/images/students/" + uniqueFileName;
-                     
-                }
-    
-
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return View(form);
             }
 
-         
-            ViewData["CaregiverID"] = new SelectList(
-                _context.Caregivers.Select(c => new { c.CaregiverID, FullName = c.FirstName + " " + c.LastName }).ToList(),
-                "CaregiverID", "FullName", form.CaregiverID);
+            // scalar updates
+            student.FirstName = form.FirstName;
+            student.LastName = form.LastName;
+            student.DOB = form.DOB;
+            student.Email = form.Email;
+            student.HomeroomID = form.HomeroomID;
 
-            ViewData["HomeroomID"] = new SelectList(
-                _context.Homerooms.Include(h => h.Teacher).Select(h => new
-                {
-                    h.HomeroomID,
-                    DisplayName = h.Teacher.FirstName + " " + h.Teacher.LastName + " - " + h.Teacher.TeacherCode
-                }).ToList(),
-                "HomeroomID", "DisplayName", form.HomeroomID);
+            // image upload (unchanged)
+            if (form.ImageFile != null && form.ImageFile.Length > 0)
+            {
+                var uploads = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/students");
+                Directory.CreateDirectory(uploads);
+                var fileName = Guid.NewGuid() + "_" + Path.GetFileName(form.ImageFile.FileName);
+                using var fs = new FileStream(Path.Combine(uploads, fileName), FileMode.Create);
+                await form.ImageFile.CopyToAsync(fs);
+                student.ImagePath = "/images/students/" + fileName;
+            }
 
-            return View(form);
+            // replace caregivers with up to two chosen
+            student.Caregivers.Clear();
+
+            var main = await _context.Caregivers.FindAsync(caregiverId);
+            if (main != null) student.Caregivers.Add(main);
+
+            if (!string.IsNullOrWhiteSpace(extraCaregiverId) && extraCaregiverId != caregiverId)
+            {
+                var extra = await _context.Caregivers.FindAsync(extraCaregiverId);
+                if (extra != null) student.Caregivers.Add(extra);
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
+
 
 
 
@@ -320,7 +298,7 @@ namespace AvondaleCollegeClinic.Controllers
             }
 
             var student = await _context.Students
-                .Include(s => s.Caregiver)
+                .Include(s => s.Caregivers)                                  
                 .Include(s => s.Homeroom)
                 .FirstOrDefaultAsync(m => m.StudentID == id);
 

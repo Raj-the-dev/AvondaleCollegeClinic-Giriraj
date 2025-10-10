@@ -1,6 +1,7 @@
 ﻿@model AvondaleCollegeClinic.Models.Appointment
 @{
     ViewData["Title"] = "Create Appointment";
+    bool lockStudent = ViewBag.LockStudent == true; // if Student role, lock to themselves
 }
 
 <section class="wrap page">
@@ -8,35 +9,68 @@
 
     <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
 
-    <form asp-action="Create">
+    <form asp-action="Create" method="post">
         <div class="form-row">
-            <label asp-for="StudentID" class="form-label"></label>
-            <select asp-for="StudentID" class="form-control" asp-items="ViewBag.StudentID"></select>
-            <span asp-validation-for="StudentID" class="text-danger"></span>
+            <label asp-for="StudentID"></label>
+
+            @if (lockStudent)
+            {
+                <!-- Disabled dropdown (user can’t change it) -->
+                <select asp-for="StudentID"
+                        class="input-line"
+                        asp-items="ViewBag.StudentID"
+                        disabled="disabled"></select>
+
+                <!-- Hidden input so the selected value is still posted to the server -->
+                <input type="hidden" name="StudentID" value="@ViewBag.StudentID.SelectedValue" />
+                <div class="hint">You are booking as this student.</div>
+            }
+            else
+            {
+                <!-- Normal editable dropdown -->
+                <select asp-for="StudentID"
+                        class="input-line"
+                        asp-items="ViewBag.StudentID"></select>
+            }
+
+            <span asp-validation-for="StudentID" class="error-summary"></span>
+        </div>
+
+        <!-- Doctor -->
+        <div class="form-row">
+            <label asp-for="DoctorID"></label>
+            <select asp-for="DoctorID" id="DoctorID" class="input-line" asp-items="ViewBag.DoctorID"></select>
+            <span asp-validation-for="DoctorID" class="error-summary"></span>
+        </div>
+
+        <!-- Date -->
+        <div class="form-row">
+            <label>Date</label>
+            <input type="date"
+                   id="selectedDate"
+                   name="selectedDate"
+                   class="input-line"
+                   value="@(ViewBag.SelectedDate ?? DateTime.Today.ToString("yyyy-MM-dd"))" />
+        </div>
+
+        <!-- Time slot -->
+        <div class="form-row">
+            <label>Time slot</label>
+            <select name="selectedSlot" id="selectedSlot" class="input-line" asp-items="ViewBag.Slots"></select>
+            <span class="error-summary">@Html.ValidationMessage("AppointmentDateTime")</span>
+        </div>
+
+        <!-- Reason & Status -->
+        <div class="form-row">
+            <label asp-for="Reason"></label>
+            <input asp-for="Reason" class="input-line" />
+            <span asp-validation-for="Reason" class="error-summary"></span>
         </div>
 
         <div class="form-row">
-            <label asp-for="DoctorID" class="form-label"></label>
-            <select asp-for="DoctorID" class="form-control" asp-items="ViewBag.DoctorID"></select>
-            <span asp-validation-for="DoctorID" class="text-danger"></span>
-        </div>
-
-        <div class="form-row">
-            <label asp-for="AppointmentDateTime" class="form-label"></label>
-            <input asp-for="AppointmentDateTime" class="form-control" />
-            <span asp-validation-for="AppointmentDateTime" class="text-danger"></span>
-        </div>
-
-        <div class="form-row">
-            <label asp-for="Status" class="form-label"></label>
-            <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<AppointmentStatus>()"></select>
-            <span asp-validation-for="Status" class="text-danger"></span>
-        </div>
-
-        <div class="form-row">
-            <label asp-for="Reason" class="form-label"></label>
-            <input asp-for="Reason" class="form-control" />
-            <span asp-validation-for="Reason" class="text-danger"></span>
+            <label asp-for="Status"></label>
+            <select asp-for="Status" class="input-line" asp-items="Html.GetEnumSelectList<AppointmentStatus>()"></select>
+            <span asp-validation-for="Status" class="error-summary"></span>
         </div>
 
         <div class="form-buttons">
@@ -47,5 +81,35 @@
 </section>
 
 @section Scripts {
+    <script>
+        // When doctor or date changes, fetch fresh slots and refill the dropdown.
+        async function loadSlots() {
+            const doctorId = document.getElementById('DoctorID').value;
+            const date = document.getElementById('selectedDate').value;
+            const slotSel = document.getElementById('selectedSlot');
+
+            slotSel.innerHTML = ""; // clear current options
+
+            if (!doctorId || !date) return;
+
+            const url = `@Url.Action("GetSlots","Appointments")?doctorId=${encodeURIComponent(doctorId)}&date=${encodeURIComponent(date)}`;
+            const res = await fetch(url, { cache: 'no-store' });
+            const data = await res.json(); // [{value,text}, ...]
+
+            data.forEach(x => {
+                const opt = document.createElement('option');
+                opt.value = x.value;
+                opt.text = x.text;
+                slotSel.appendChild(opt);
+            });
+        }
+
+        document.getElementById('DoctorID').addEventListener('change', loadSlots);
+        document.getElementById('selectedDate').addEventListener('change', loadSlots);
+
+        // Do an initial load on first render
+        document.addEventListener('DOMContentLoaded', loadSlots);
+    </script>
+
     @await Html.PartialAsync("_ValidationScriptsPartial")
 }

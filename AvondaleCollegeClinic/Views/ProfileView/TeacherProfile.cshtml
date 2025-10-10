@@ -4,7 +4,7 @@
 }
 <section class="wrap page">
     <div class="eyebrow">Profile</div>
-    <h1>My Teacher Profile</h1>
+    <h2>My Teacher Profile</h2>
 
     <div class="profile-card">
         <img src="@(string.IsNullOrWhiteSpace(Model.ImagePath) ? "/images/placeholder-user.png" : Model.ImagePath)"
@@ -19,16 +19,24 @@
             <div class="profile-line"><span>Teacher Code:</span><span>@Model.TeacherCode</span></div>
         </div>
 
-        @if (Model.Homerooms != null && Model.Homerooms.Any())
+        @if (Model.Homeroom != null)
         {
             <hr style="margin:24px 0" />
-            <h3 style="font-size:16px;font-weight:600;margin-bottom:10px;">Assigned Homerooms</h3>
+            <h3 style="font-size:16px;font-weight:600;margin-bottom:10px;">Assigned Homeroom</h3>
             <div class="profile-info">
-                @foreach (var h in Model.Homerooms)
-                {
-                    <div class="profile-line"><span>Year @((int)h.YearLevel)</span><span>Block @h.Block • Class @((int)h.ClassNumber)</span></div>
-                }
+                <div class="profile-line">
+                    <span>Year @((int)Model.Homeroom.YearLevel)</span>
+                    <span>Block @Model.Homeroom.Block • Class @((int)Model.Homeroom.ClassNumber)</span>
+                </div>
             </div>
         }
+        else
+        {
+            <hr style="margin:24px 0" />
+            <div class="profile-info">
+                <div class="profile-line"><span>Assigned Homeroom:</span><span>Not assigned</span></div>
+            </div>
+        }
+
     </div>
 </section>

@@ -4,13 +4,13 @@
 }
 
 <section class="wrap page">
-    <h2>Appointment</h2>
+    <h2>Appointments</h2>
 
-    <!-- Toolbar: search + create -->
+    <!-- Simple search + Create -->
     <form asp-action="Index" method="get" class="toolbar">
         <div class="left">
-            <label for="search" class="form-label" style="margin:0">Search</label>
-            <input id="search" type="text" name="searchString" value="@ViewData["CurrentFilter"]" class="form-control" />
+            <label for="search" style="margin:0">Search</label>
+            <input id="search" type="text" name="searchString" value="@ViewData["CurrentFilter"]" class="input-line" />
             <button type="submit" class="btn">Search</button>
             <a asp-action="Index" class="link-quiet">Clear</a>
         </div>
@@ -32,7 +32,7 @@
                        asp-route-sortOrder="@ViewData["StatusSortParm"]"
                        asp-route-searchString="@ViewData["CurrentFilter"]">Status</a>
                 </th>
-                <th>@Html.DisplayNameFor(model => model[0].Reason)</th>
+                <th>Reason</th>
                 <th>Student</th>
                 <th>Doctor</th>
                 <th class="actions">Actions</th>
@@ -42,9 +42,9 @@
             @foreach (var item in Model)
             {
                 <tr>
-                    <td>@Html.DisplayFor(modelItem => item.AppointmentDateTime)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Status)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Reason)</td>
+                    <td>@item.AppointmentDateTime.ToString("ddd, dd MMM yyyy • h:mm tt")</td>
+                    <td>@item.Status</td>
+                    <td>@item.Reason</td>
                     <td>@($"{item.Student?.FirstName} {item.Student?.LastName}")</td>
                     <td>@($"{item.Doctor?.FirstName} {item.Doctor?.LastName}")</td>
                     <td class="actions">
@@ -57,7 +57,6 @@
         </tbody>
     </table>
 
-    <!-- Simple pager -->
     <div class="belt" style="padding-top:16px">
         <div>Page @Model.PageIndex of @Model.TotalPages</div>
         <div>

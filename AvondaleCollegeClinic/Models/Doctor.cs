@@ -62,7 +62,24 @@ namespace AvondaleCollegeClinic.Models
         [ForeignKey("IdentityUserId")]
         public AvondaleCollegeClinicUser? AvondaleCollegeClinicUserAccount { get; set; }
 
-        public ICollection<DoctorAvailability> Availabilities { get; set; } // Linked availability slots
+        public bool WorksMon { get; set; } = true;
+        public bool WorksTue { get; set; } = true;
+        public bool WorksWed { get; set; } = true;
+        public bool WorksThu { get; set; } = true;
+        public bool WorksFri { get; set; } = true;
+        public bool WorksSat { get; set; } = false;
+        public bool WorksSun { get; set; } = false;
+
+        // Daily window (local office time)
+        [DataType(DataType.Time)]
+        public TimeSpan DailyStartTime { get; set; } = new TimeSpan(9, 0, 0);
+
+        [DataType(DataType.Time)]
+        public TimeSpan DailyEndTime { get; set; } = new TimeSpan(17, 0, 0);
+
+        // Slot size in minutes (e.g., 30)
+        public int SlotMinutes { get; set; } = 30;
+
         public ICollection<Appointment> Appointments { get; set; } // Appointments assigned
         public ICollection<MedicalRecord> MedicalRecords { get; set; } // Medical records created by this doctor
     }

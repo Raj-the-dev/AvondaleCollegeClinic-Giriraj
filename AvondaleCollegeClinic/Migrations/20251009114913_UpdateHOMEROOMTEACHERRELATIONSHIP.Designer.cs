@@ -4,6 +4,7 @@ using AvondaleCollegeClinic.Areas.Identity.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AvondaleCollegeClinic.Migrations
 {
     [DbContext(typeof(AvondaleCollegeClinicContext))]
-    partial class AvondaleCollegeClinicContextModelSnapshot : ModelSnapshot
+    [Migration("20251009114913_UpdateHOMEROOMTEACHERRELATIONSHIP")]
+    partial class UpdateHOMEROOMTEACHERRELATIONSHIP
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -115,7 +118,7 @@ namespace AvondaleCollegeClinic.Migrations
                         {
                             Id = "00000000-0000-0000-0000-000000000001",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "4c659892-568b-41ea-83e9-f77b6a87db12",
+                            ConcurrencyStamp = "28a04f25-60d9-491e-b6cc-4aca0664741b",
                             Email = "admin@avondaleclinic.com",
                             EmailConfirmed = true,
                             FirstName = "System",
@@ -124,9 +127,9 @@ namespace AvondaleCollegeClinic.Migrations
                             MustSetPassword = false,
                             NormalizedEmail = "ADMIN@AVONDALECLINIC.COM",
                             NormalizedUserName = "ADMIN@AVONDALECLINIC.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEM0hT57UjL+EF/fcWtvdqajKypjZdZshqi2sBiIb+tKDBo2eksp/521t8BhQdshT1Q==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEI1Wmf9yRxMd+SVmVsY0a/YTNSlElbLfQtsObkZL6BFoL4GOqSnaQCtSiG1CS7CaSA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "00148619-0ca5-4b23-9ca2-74f357bb6f87",
+                            SecurityStamp = "d5bd2a6c-2555-4ac9-9308-3c3d80e59bef",
                             TwoFactorEnabled = false,
                             UserKind = 0,
                             UserName = "admin@avondaleclinic.com"
@@ -523,12 +526,6 @@ namespace AvondaleCollegeClinic.Migrations
                         .HasMaxLength(12)
                         .HasColumnType("nvarchar(12)");
 
-                    b.Property<TimeSpan>("DailyEndTime")
-                        .HasColumnType("time");
-
-                    b.Property<TimeSpan>("DailyStartTime")
-                        .HasColumnType("time");
-
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -553,32 +550,8 @@ namespace AvondaleCollegeClinic.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("SlotMinutes")
-                        .HasColumnType("int");
-
                     b.Property<int>("Specialization")
                         .HasColumnType("int");
-
-                    b.Property<bool>("WorksFri")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("WorksMon")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("WorksSat")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("WorksSun")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("WorksThu")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("WorksTue")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("WorksWed")
-                        .HasColumnType("bit");
 
                     b.HasKey("DoctorID");
 
@@ -592,202 +565,212 @@ namespace AvondaleCollegeClinic.Migrations
                         new
                         {
                             DoctorID = "acd250001",
-                            DailyEndTime = new TimeSpan(0, 17, 0, 0, 0),
-                            DailyStartTime = new TimeSpan(0, 9, 0, 0, 0),
                             Email = "anna.roberts@avondaleclinic.com",
                             FirstName = "Anna",
                             ImagePath = "/images/doctors/1.jpg",
                             LastName = "Roberts",
                             Phone = "021-111-2345",
-                            SlotMinutes = 30,
-                            Specialization = 0,
-                            WorksFri = true,
-                            WorksMon = true,
-                            WorksSat = false,
-                            WorksSun = false,
-                            WorksThu = true,
-                            WorksTue = true,
-                            WorksWed = true
+                            Specialization = 0
                         },
                         new
                         {
                             DoctorID = "acd250002",
-                            DailyEndTime = new TimeSpan(0, 17, 0, 0, 0),
-                            DailyStartTime = new TimeSpan(0, 9, 0, 0, 0),
                             Email = "ben.morris@avondaleclinic.com",
                             FirstName = "Ben",
                             ImagePath = "/images/doctors/2.jpg",
                             LastName = "Morris",
                             Phone = "021-222-3456",
-                            SlotMinutes = 30,
-                            Specialization = 1,
-                            WorksFri = true,
-                            WorksMon = true,
-                            WorksSat = false,
-                            WorksSun = false,
-                            WorksThu = true,
-                            WorksTue = true,
-                            WorksWed = true
+                            Specialization = 1
                         },
                         new
                         {
                             DoctorID = "acd250003",
-                            DailyEndTime = new TimeSpan(0, 17, 0, 0, 0),
-                            DailyStartTime = new TimeSpan(0, 9, 0, 0, 0),
                             Email = "claire.nguyen@avondaleclinic.com",
                             FirstName = "Claire",
                             ImagePath = "/images/doctors/3.png",
                             LastName = "Nguyen",
                             Phone = "021-333-4567",
-                            SlotMinutes = 30,
-                            Specialization = 2,
-                            WorksFri = true,
-                            WorksMon = true,
-                            WorksSat = false,
-                            WorksSun = false,
-                            WorksThu = true,
-                            WorksTue = true,
-                            WorksWed = true
+                            Specialization = 2
                         },
                         new
                         {
                             DoctorID = "acd250004",
-                            DailyEndTime = new TimeSpan(0, 17, 0, 0, 0),
-                            DailyStartTime = new TimeSpan(0, 9, 0, 0, 0),
                             Email = "david.chen@avondaleclinic.com",
                             FirstName = "David",
                             ImagePath = "/images/doctors/4.png",
                             LastName = "Chen",
                             Phone = "021-444-5678",
-                            SlotMinutes = 30,
-                            Specialization = 3,
-                            WorksFri = true,
-                            WorksMon = true,
-                            WorksSat = false,
-                            WorksSun = false,
-                            WorksThu = true,
-                            WorksTue = true,
-                            WorksWed = true
+                            Specialization = 3
                         },
                         new
                         {
                             DoctorID = "acd250005",
-                            DailyEndTime = new TimeSpan(0, 17, 0, 0, 0),
-                            DailyStartTime = new TimeSpan(0, 9, 0, 0, 0),
                             Email = "ella.turner@avondaleclinic.com",
                             FirstName = "Ella",
                             ImagePath = "/images/doctors/5.jpg",
                             LastName = "Turner",
                             Phone = "021-555-6789",
-                            SlotMinutes = 30,
-                            Specialization = 4,
-                            WorksFri = true,
-                            WorksMon = true,
-                            WorksSat = false,
-                            WorksSun = false,
-                            WorksThu = true,
-                            WorksTue = true,
-                            WorksWed = true
+                            Specialization = 4
                         },
                         new
                         {
                             DoctorID = "acd250006",
-                            DailyEndTime = new TimeSpan(0, 17, 0, 0, 0),
-                            DailyStartTime = new TimeSpan(0, 9, 0, 0, 0),
                             Email = "frank.white@avondaleclinic.com",
                             FirstName = "Frank",
                             ImagePath = "/images/doctors/6.png",
                             LastName = "White",
                             Phone = "021-666-7890",
-                            SlotMinutes = 30,
-                            Specialization = 0,
-                            WorksFri = true,
-                            WorksMon = true,
-                            WorksSat = false,
-                            WorksSun = false,
-                            WorksThu = true,
-                            WorksTue = true,
-                            WorksWed = true
+                            Specialization = 0
                         },
                         new
                         {
                             DoctorID = "acd250007",
-                            DailyEndTime = new TimeSpan(0, 17, 0, 0, 0),
-                            DailyStartTime = new TimeSpan(0, 9, 0, 0, 0),
                             Email = "grace.lee@avondaleclinic.com",
                             FirstName = "Grace",
                             ImagePath = "/images/doctors/7.jpg",
                             LastName = "Lee",
                             Phone = "021-777-8901",
-                            SlotMinutes = 30,
-                            Specialization = 1,
-                            WorksFri = true,
-                            WorksMon = true,
-                            WorksSat = false,
-                            WorksSun = false,
-                            WorksThu = true,
-                            WorksTue = true,
-                            WorksWed = true
+                            Specialization = 1
                         },
                         new
                         {
                             DoctorID = "acd250008",
-                            DailyEndTime = new TimeSpan(0, 17, 0, 0, 0),
-                            DailyStartTime = new TimeSpan(0, 9, 0, 0, 0),
                             Email = "harry.singh@avondaleclinic.com",
                             FirstName = "Harry",
                             ImagePath = "/images/doctors/8.jpg",
                             LastName = "Singh",
                             Phone = "021-888-9012",
-                            SlotMinutes = 30,
-                            Specialization = 2,
-                            WorksFri = true,
-                            WorksMon = true,
-                            WorksSat = false,
-                            WorksSun = false,
-                            WorksThu = true,
-                            WorksTue = true,
-                            WorksWed = true
+                            Specialization = 2
                         },
                         new
                         {
                             DoctorID = "acd250009",
-                            DailyEndTime = new TimeSpan(0, 17, 0, 0, 0),
-                            DailyStartTime = new TimeSpan(0, 9, 0, 0, 0),
                             Email = "isla.walker@avondaleclinic.com",
                             FirstName = "Isla",
                             ImagePath = "/images/doctors/9.jpg",
                             LastName = "Walker",
                             Phone = "021-999-0123",
-                            SlotMinutes = 30,
-                            Specialization = 3,
-                            WorksFri = true,
-                            WorksMon = true,
-                            WorksSat = false,
-                            WorksSun = false,
-                            WorksThu = true,
-                            WorksTue = true,
-                            WorksWed = true
+                            Specialization = 3
                         },
                         new
                         {
                             DoctorID = "acd250010",
-                            DailyEndTime = new TimeSpan(0, 17, 0, 0, 0),
-                            DailyStartTime = new TimeSpan(0, 9, 0, 0, 0),
                             Email = "jack.patel@avondaleclinic.com",
                             FirstName = "Jack",
                             ImagePath = "/images/doctors/10.jpg",
                             LastName = "Patel",
                             Phone = "021-000-1234",
-                            SlotMinutes = 30,
-                            Specialization = 4,
-                            WorksFri = true,
-                            WorksMon = true,
-                            WorksSat = false,
-                            WorksSun = false,
-                            WorksThu = true,
-                            WorksTue = true,
-                            WorksWed = true
+                            Specialization = 4
+                        });
+                });
+
+            modelBuilder.Entity("AvondaleCollegeClinic.Models.DoctorAvailability", b =>
+                {
+                    b.Property<int>("DoctorAvailabilityID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DoctorAvailabilityID"));
+
+                    b.Property<DateTime>("AvailableDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DoctorID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(12)");
+
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("DoctorAvailabilityID");
+
+                    b.HasIndex("DoctorID");
+
+                    b.ToTable("DoctorAvailabilities");
+
+                    b.HasData(
+                        new
+                        {
+                            DoctorAvailabilityID = 1,
+                            AvailableDate = new DateTime(2025, 4, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DoctorID = "acd250001",
+                            EndTime = new DateTime(2025, 4, 15, 12, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartTime = new DateTime(2025, 4, 15, 9, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            DoctorAvailabilityID = 2,
+                            AvailableDate = new DateTime(2025, 4, 16, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DoctorID = "acd250002",
+                            EndTime = new DateTime(2025, 4, 16, 13, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartTime = new DateTime(2025, 4, 16, 10, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            DoctorAvailabilityID = 3,
+                            AvailableDate = new DateTime(2025, 4, 17, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DoctorID = "acd250003",
+                            EndTime = new DateTime(2025, 4, 17, 11, 30, 0, 0, DateTimeKind.Unspecified),
+                            StartTime = new DateTime(2025, 4, 17, 8, 30, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            DoctorAvailabilityID = 4,
+                            AvailableDate = new DateTime(2025, 4, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DoctorID = "acd250004",
+                            EndTime = new DateTime(2025, 4, 18, 16, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartTime = new DateTime(2025, 4, 18, 13, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            DoctorAvailabilityID = 5,
+                            AvailableDate = new DateTime(2025, 4, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DoctorID = "acd250005",
+                            EndTime = new DateTime(2025, 4, 19, 12, 30, 0, 0, DateTimeKind.Unspecified),
+                            StartTime = new DateTime(2025, 4, 19, 9, 30, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            DoctorAvailabilityID = 6,
+                            AvailableDate = new DateTime(2025, 4, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DoctorID = "acd250006",
+                            EndTime = new DateTime(2025, 4, 20, 17, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartTime = new DateTime(2025, 4, 20, 14, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            DoctorAvailabilityID = 7,
+                            AvailableDate = new DateTime(2025, 4, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DoctorID = "acd250007",
+                            EndTime = new DateTime(2025, 4, 21, 14, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartTime = new DateTime(2025, 4, 21, 11, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            DoctorAvailabilityID = 8,
+                            AvailableDate = new DateTime(2025, 4, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DoctorID = "acd250008",
+                            EndTime = new DateTime(2025, 4, 22, 18, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartTime = new DateTime(2025, 4, 22, 15, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            DoctorAvailabilityID = 9,
+                            AvailableDate = new DateTime(2025, 4, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DoctorID = "acd250009",
+                            EndTime = new DateTime(2025, 4, 23, 11, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartTime = new DateTime(2025, 4, 23, 8, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            DoctorAvailabilityID = 10,
+                            AvailableDate = new DateTime(2025, 4, 24, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DoctorID = "acd250010",
+                            EndTime = new DateTime(2025, 4, 24, 15, 0, 0, 0, DateTimeKind.Unspecified),
+                            StartTime = new DateTime(2025, 4, 24, 12, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
 
@@ -1257,6 +1240,10 @@ namespace AvondaleCollegeClinic.Migrations
                     b.Property<string>("StudentID")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("CaregiverID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(9)");
+
                     b.Property<DateTime>("DOB")
                         .HasColumnType("datetime2");
 
@@ -1286,6 +1273,8 @@ namespace AvondaleCollegeClinic.Migrations
 
                     b.HasKey("StudentID");
 
+                    b.HasIndex("CaregiverID");
+
                     b.HasIndex("HomeroomID");
 
                     b.HasIndex("IdentityUserId")
@@ -1298,6 +1287,7 @@ namespace AvondaleCollegeClinic.Migrations
                         new
                         {
                             StudentID = "ac250001",
+                            CaregiverID = "acc250001",
                             DOB = new DateTime(2007, 10, 14, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "sam.hill@school.com",
                             FirstName = "Sam",
@@ -1308,6 +1298,7 @@ namespace AvondaleCollegeClinic.Migrations
                         new
                         {
                             StudentID = "ac250002",
+                            CaregiverID = "acc250001",
                             DOB = new DateTime(2008, 12, 26, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "lily.evans@school.com",
                             FirstName = "Lily",
@@ -1318,6 +1309,7 @@ namespace AvondaleCollegeClinic.Migrations
                         new
                         {
                             StudentID = "ac250003",
+                            CaregiverID = "acc250001",
                             DOB = new DateTime(2009, 11, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "jake.smith@school.com",
                             FirstName = "Jake",
@@ -1328,6 +1320,7 @@ namespace AvondaleCollegeClinic.Migrations
                         new
                         {
                             StudentID = "ac250004",
+                            CaregiverID = "acc250001",
                             DOB = new DateTime(2007, 9, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "emma.johnson@school.com",
                             FirstName = "Emma",
@@ -1338,6 +1331,7 @@ namespace AvondaleCollegeClinic.Migrations
                         new
                         {
                             StudentID = "ac250005",
+                            CaregiverID = "acc250004",
                             DOB = new DateTime(2008, 1, 7, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "mia.brown@school.com",
                             FirstName = "Mia",
@@ -1348,6 +1342,7 @@ namespace AvondaleCollegeClinic.Migrations
                         new
                         {
                             StudentID = "ac250006",
+                            CaregiverID = "acc250002",
                             DOB = new DateTime(2009, 1, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "noah.taylor@school.com",
                             FirstName = "Noah",
@@ -1358,6 +1353,7 @@ namespace AvondaleCollegeClinic.Migrations
                         new
                         {
                             StudentID = "ac250007",
+                            CaregiverID = "acc250001",
                             DOB = new DateTime(2007, 12, 23, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "olivia.anderson@school.com",
                             FirstName = "Olivia",
@@ -1368,6 +1364,7 @@ namespace AvondaleCollegeClinic.Migrations
                         new
                         {
                             StudentID = "ac250008",
+                            CaregiverID = "acc250001",
                             DOB = new DateTime(2008, 12, 7, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "liam.thomas@school.com",
                             FirstName = "Liam",
@@ -1378,6 +1375,7 @@ namespace AvondaleCollegeClinic.Migrations
                         new
                         {
                             StudentID = "ac250009",
+                            CaregiverID = "acc250005",
                             DOB = new DateTime(2009, 4, 26, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "ava.jackson@school.com",
                             FirstName = "Ava",
@@ -1388,6 +1386,7 @@ namespace AvondaleCollegeClinic.Migrations
                         new
                         {
                             StudentID = "ac250010",
+                            CaregiverID = "acc250001",
                             DOB = new DateTime(2007, 7, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "ethan.white@school.com",
                             FirstName = "Ethan",
@@ -1676,73 +1675,6 @@ namespace AvondaleCollegeClinic.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("StudentCaregivers", b =>
-                {
-                    b.Property<string>("StudentID")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("CaregiverID")
-                        .HasColumnType("nvarchar(9)");
-
-                    b.HasKey("StudentID", "CaregiverID");
-
-                    b.HasIndex("CaregiverID");
-
-                    b.ToTable("StudentCaregivers", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            StudentID = "ac250001",
-                            CaregiverID = "acc250001"
-                        },
-                        new
-                        {
-                            StudentID = "ac250002",
-                            CaregiverID = "acc250001"
-                        },
-                        new
-                        {
-                            StudentID = "ac250003",
-                            CaregiverID = "acc250001"
-                        },
-                        new
-                        {
-                            StudentID = "ac250004",
-                            CaregiverID = "acc250001"
-                        },
-                        new
-                        {
-                            StudentID = "ac250005",
-                            CaregiverID = "acc250004"
-                        },
-                        new
-                        {
-                            StudentID = "ac250006",
-                            CaregiverID = "acc250002"
-                        },
-                        new
-                        {
-                            StudentID = "ac250007",
-                            CaregiverID = "acc250001"
-                        },
-                        new
-                        {
-                            StudentID = "ac250008",
-                            CaregiverID = "acc250001"
-                        },
-                        new
-                        {
-                            StudentID = "ac250009",
-                            CaregiverID = "acc250005"
-                        },
-                        new
-                        {
-                            StudentID = "ac250010",
-                            CaregiverID = "acc250001"
-                        });
-                });
-
             modelBuilder.Entity("AvondaleCollegeClinic.Models.Appointment", b =>
                 {
                     b.HasOne("AvondaleCollegeClinic.Models.Doctor", "Doctor")
@@ -1791,6 +1723,17 @@ namespace AvondaleCollegeClinic.Migrations
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("AvondaleCollegeClinicUserAccount");
+                });
+
+            modelBuilder.Entity("AvondaleCollegeClinic.Models.DoctorAvailability", b =>
+                {
+                    b.HasOne("AvondaleCollegeClinic.Models.Doctor", "Doctor")
+                        .WithMany("Availabilities")
+                        .HasForeignKey("DoctorID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Doctor");
                 });
 
             modelBuilder.Entity("AvondaleCollegeClinic.Models.Homeroom", b =>
@@ -1847,6 +1790,12 @@ namespace AvondaleCollegeClinic.Migrations
 
             modelBuilder.Entity("AvondaleCollegeClinic.Models.Student", b =>
                 {
+                    b.HasOne("AvondaleCollegeClinic.Models.Caregiver", "Caregiver")
+                        .WithMany("Students")
+                        .HasForeignKey("CaregiverID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("AvondaleCollegeClinic.Models.Homeroom", "Homeroom")
                         .WithMany("Students")
                         .HasForeignKey("HomeroomID")
@@ -1859,6 +1808,8 @@ namespace AvondaleCollegeClinic.Migrations
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("AvondaleCollegeClinicUserAccount");
+
+                    b.Navigation("Caregiver");
 
                     b.Navigation("Homeroom");
                 });
@@ -1924,23 +1875,6 @@ namespace AvondaleCollegeClinic.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("StudentCaregivers", b =>
-                {
-                    b.HasOne("AvondaleCollegeClinic.Models.Caregiver", null)
-                        .WithMany()
-                        .HasForeignKey("CaregiverID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_StudentCaregivers_Caregiver");
-
-                    b.HasOne("AvondaleCollegeClinic.Models.Student", null)
-                        .WithMany()
-                        .HasForeignKey("StudentID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_StudentCaregivers_Student");
-                });
-
             modelBuilder.Entity("AvondaleCollegeClinic.Areas.Identity.Data.AvondaleCollegeClinicUser", b =>
                 {
                     b.Navigation("CaregiverProfile");
@@ -1958,6 +1892,11 @@ namespace AvondaleCollegeClinic.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("AvondaleCollegeClinic.Models.Caregiver", b =>
+                {
+                    b.Navigation("Students");
+                });
+
             modelBuilder.Entity("AvondaleCollegeClinic.Models.Diagnosis", b =>
                 {
                     b.Navigation("Prescriptions");
@@ -1966,6 +1905,8 @@ namespace AvondaleCollegeClinic.Migrations
             modelBuilder.Entity("AvondaleCollegeClinic.Models.Doctor", b =>
                 {
                     b.Navigation("Appointments");
+
+                    b.Navigation("Availabilities");
 
                     b.Navigation("MedicalRecords");
                 });

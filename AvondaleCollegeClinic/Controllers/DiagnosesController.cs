@@ -62,7 +62,8 @@ namespace AvondaleCollegeClinic.Controllers
             }
             else if (User.IsInRole("Caregiver") && !string.IsNullOrEmpty(caregiverId))
             {
-                query = query.Where(d => d.Appointment.Student.CaregiverID == caregiverId);
+                query = query.Where(d => d.Appointment.Student.Caregivers
+                    .Any(c => c.CaregiverID == caregiverId));
             }
             else if (User.IsInRole("Doctor"))
             {

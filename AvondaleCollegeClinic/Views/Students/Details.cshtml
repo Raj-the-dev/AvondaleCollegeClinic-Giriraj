@@ -27,8 +27,18 @@
             <dt class="col-sm-3 muted">Homeroom</dt>
             <dd class="col-sm-9">@Model.Homeroom?.HomeroomID</dd>
 
-            <dt class="col-sm-3 muted">Caregiver</dt>
-            <dd class="col-sm-9">@Model.Caregiver?.CaregiverID</dd>
+            <dt class="col-sm-3 muted">Caregivers</dt>
+            <dd class="col-sm-9">
+                @if (Model.Caregivers != null && Model.Caregivers.Any())
+                {
+                    @string.Join(", ", Model.Caregivers.Select(c => $"{c.CaregiverID} - {c.FirstName} {c.LastName}"))
+                }
+                else
+                {
+                    <span class="text-muted">None linked</span>
+                }
+            </dd>
+
 
             @if (!string.IsNullOrEmpty(Model.ImagePath))
             {

@@ -44,6 +44,6 @@ namespace AvondaleCollegeClinic.Models
         [ForeignKey("IdentityUserId")]
         public AvondaleCollegeClinicUser? AvondaleCollegeClinicUserAccount { get; set; }
 
-        public ICollection<Homeroom> Homerooms { get; set; } // link to teacher homeroom
+        public Homeroom? Homeroom { get; set; }
     }
 }

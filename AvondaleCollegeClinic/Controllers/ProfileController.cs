@@ -29,7 +29,7 @@ namespace AvondaleCollegeClinic.Controllers
 
             var model = await _db.Students
                 .Include(s => s.Homeroom).ThenInclude(h => h.Teacher)
-                .Include(s => s.Caregiver)
+                .Include(s => s.Caregivers)           
                 .AsNoTracking()
                 .FirstOrDefaultAsync(s => s.IdentityUserId == u.Id || s.Email == u.Email);
 
@@ -49,11 +49,14 @@ namespace AvondaleCollegeClinic.Controllers
             if (await _users.IsInRoleAsync(u, "Student"))
             {
                 var student = await _db.Students
-                    .Include(s => s.Caregiver).ThenInclude(c => c.Students)
+                    .Include(s => s.Caregivers)        // ⬅️ CHANGED
                     .AsNoTracking()
                     .FirstOrDefaultAsync(s => s.IdentityUserId == u.Id || s.Email == u.Email);
+                if (student == null) return NotFound();
 
-                model = student?.Caregiver;
+                // Show a list of their caregivers
+                var caregivers = student.Caregivers?.ToList() ?? new List<Caregiver>();
+                return View("~/Views/ProfileView/CaregiverList.cshtml", caregivers);
             }
             else
             {
@@ -74,7 +77,7 @@ namespace AvondaleCollegeClinic.Controllers
             var u = await _users.GetUserAsync(User);
 
             var model = await _db.Teachers
-                .Include(t => t.Homerooms)
+                .Include(t => t.Homeroom)    // <- single nav (1:1)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(t => t.IdentityUserId == u.Id || t.Email == u.Email);
 
@@ -89,12 +92,12 @@ namespace AvondaleCollegeClinic.Controllers
             var u = await _users.GetUserAsync(User);
 
             var model = await _db.Doctors
-                .Include(d => d.Availabilities)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(d => d.IdentityUserId == u.Id || d.Email == u.Email);
 
             if (model == null) return NotFound();
             return View("~/Views/ProfileView/DoctorProfile.cshtml", model);
         }
+
     }
 }

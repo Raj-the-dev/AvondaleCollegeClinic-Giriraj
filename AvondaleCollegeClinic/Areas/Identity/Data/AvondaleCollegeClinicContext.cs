@@ -13,7 +13,6 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
         : base(options)
     { }
     public DbSet<Doctor> Doctors { get; set; }
-    public DbSet<DoctorAvailability> DoctorAvailabilities { get; set; }
     public DbSet<Appointment> Appointments { get; set; }
     public DbSet<Diagnosis> Diagnoses { get; set; }
     public DbSet<Prescription> Prescriptions { get; set; }
@@ -97,19 +96,19 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             UserId = ADMIN_USER_ID
         });
 
-        base.OnModelCreating(modelBuilder);
         modelBuilder.Entity<Student>().HasData(
-            new Student {  FirstName = "Sam", LastName = "Hill", ImagePath = "/images/students/1.jpg", DOB = new DateTime(2007, 10, 14), Email = "sam.hill@school.com", HomeroomID = "hr250001", CaregiverID = "acc250001", StudentID = "ac250001" },
-            new Student {  FirstName = "Lily", LastName = "Evans", ImagePath = "/images/students/1.jpg", DOB = new DateTime(2008, 12, 26), Email = "lily.evans@school.com", HomeroomID = "hr250003", CaregiverID = "acc250001", StudentID = "ac250002" },
-            new Student {  FirstName = "Jake", LastName = "Smith", ImagePath = "/images/students/1.jpg", DOB = new DateTime(2009, 11, 28), Email = "jake.smith@school.com", HomeroomID = "hr250003", CaregiverID = "acc250001", StudentID = "ac250003" },
-            new Student {  FirstName = "Emma", LastName = "Johnson", ImagePath = "/images/students/1.jpg", DOB = new DateTime(2007, 9, 4), Email = "emma.johnson@school.com", HomeroomID = "hr250001", CaregiverID = "acc250001", StudentID = "ac250004" },
-            new Student {  FirstName = "Mia", LastName = "Brown", ImagePath = "/images/students/1.jpg", DOB = new DateTime(2008, 1, 7), Email = "mia.brown@school.com", HomeroomID = "hr250003", CaregiverID = "acc250004", StudentID = "ac250005" },
-            new Student {  FirstName = "Noah", LastName = "Taylor", ImagePath = "/images/students/1.jpg", DOB = new DateTime(2009, 1, 22), Email = "noah.taylor@school.com", HomeroomID = "hr250002", CaregiverID = "acc250002", StudentID = "ac250006" },
-            new Student {  FirstName = "Olivia", LastName = "Anderson", ImagePath = "/images/students/1.jpg", DOB = new DateTime(2007, 12, 23), Email = "olivia.anderson@school.com", HomeroomID = "hr250001", CaregiverID = "acc250001", StudentID = "ac250007" },
-            new Student {  FirstName = "Liam", LastName = "Thomas", ImagePath = "/images/students/1.jpg", DOB = new DateTime(2008, 12, 7), Email = "liam.thomas@school.com", HomeroomID = "hr250001", CaregiverID = "acc250001", StudentID = "ac250008" },
-            new Student {  FirstName = "Ava", LastName = "Jackson", ImagePath = "/images/students/1.jpg", DOB = new DateTime(2009, 4, 26), Email = "ava.jackson@school.com", HomeroomID = "hr250002", CaregiverID = "acc250005", StudentID = "ac250009" },
-            new Student {  FirstName = "Ethan", LastName = "White", ImagePath = "/images/students/1.jpg", DOB = new DateTime(2007, 7, 4), Email = "ethan.white@school.com", HomeroomID = "hr250002", CaregiverID = "acc250001", StudentID = "ac250010" }
+            new Student { StudentID = "ac250001", FirstName = "Sam", LastName = "Hill", ImagePath = "/images/students/1.jpg", DOB = new DateTime(2007, 10, 14), Email = "sam.hill@school.com", HomeroomID = "hr250001" },
+            new Student { StudentID = "ac250002", FirstName = "Lily", LastName = "Evans", ImagePath = "/images/students/1.jpg", DOB = new DateTime(2008, 12, 26), Email = "lily.evans@school.com", HomeroomID = "hr250003" },
+            new Student { StudentID = "ac250003", FirstName = "Jake", LastName = "Smith", ImagePath = "/images/students/1.jpg", DOB = new DateTime(2009, 11, 28), Email = "jake.smith@school.com", HomeroomID = "hr250003" },
+            new Student { StudentID = "ac250004", FirstName = "Emma", LastName = "Johnson", ImagePath = "/images/students/1.jpg", DOB = new DateTime(2007, 9, 4), Email = "emma.johnson@school.com", HomeroomID = "hr250001" },
+            new Student { StudentID = "ac250005", FirstName = "Mia", LastName = "Brown", ImagePath = "/images/students/1.jpg", DOB = new DateTime(2008, 1, 7), Email = "mia.brown@school.com", HomeroomID = "hr250003" },
+            new Student { StudentID = "ac250006", FirstName = "Noah", LastName = "Taylor", ImagePath = "/images/students/1.jpg", DOB = new DateTime(2009, 1, 22), Email = "noah.taylor@school.com", HomeroomID = "hr250002" },
+            new Student { StudentID = "ac250007", FirstName = "Olivia", LastName = "Anderson", ImagePath = "/images/students/1.jpg", DOB = new DateTime(2007, 12, 23), Email = "olivia.anderson@school.com", HomeroomID = "hr250001" },
+            new Student { StudentID = "ac250008", FirstName = "Liam", LastName = "Thomas", ImagePath = "/images/students/1.jpg", DOB = new DateTime(2008, 12, 7), Email = "liam.thomas@school.com", HomeroomID = "hr250001" },
+            new Student { StudentID = "ac250009", FirstName = "Ava", LastName = "Jackson", ImagePath = "/images/students/1.jpg", DOB = new DateTime(2009, 4, 26), Email = "ava.jackson@school.com", HomeroomID = "hr250002" },
+            new Student { StudentID = "ac250010", FirstName = "Ethan", LastName = "White", ImagePath = "/images/students/1.jpg", DOB = new DateTime(2007, 7, 4), Email = "ethan.white@school.com", HomeroomID = "hr250002" }
         );
+
 
         modelBuilder.Entity<Caregiver>().HasData(
             new Caregiver
@@ -225,100 +224,209 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
         );
 
         modelBuilder.Entity<Doctor>().HasData(
-            new Doctor { DoctorID = "acd250001", FirstName = "Anna", LastName = "Roberts", Specialization = SpecializationType.General, Email = "anna.roberts@avondaleclinic.com", Phone = "021-111-2345", ImagePath = "/images/doctors/1.jpg" },
-            new Doctor { DoctorID = "acd250002", FirstName = "Ben", LastName = "Morris", Specialization = SpecializationType.Pediatric, Email = "ben.morris@avondaleclinic.com", Phone = "021-222-3456", ImagePath = "/images/doctors/2.jpg" },
-            new Doctor { DoctorID = "acd250003", FirstName = "Claire", LastName = "Nguyen", Specialization = SpecializationType.MentalHealth, Email = "claire.nguyen@avondaleclinic.com", Phone = "021-333-4567", ImagePath = "/images/doctors/3.png" },
-            new Doctor { DoctorID = "acd250004", FirstName = "David", LastName = "Chen", Specialization = SpecializationType.SportsMedicine, Email = "david.chen@avondaleclinic.com", Phone = "021-444-5678" , ImagePath = "/images/doctors/4.png" },
-            new Doctor { DoctorID = "acd250005", FirstName = "Ella", LastName = "Turner", Specialization = SpecializationType.Dermatology, Email = "ella.turner@avondaleclinic.com", Phone = "021-555-6789", ImagePath = "/images/doctors/5.jpg" },
-            new Doctor { DoctorID = "acd250006", FirstName = "Frank", LastName = "White", Specialization = SpecializationType.General, Email = "frank.white@avondaleclinic.com", Phone = "021-666-7890" , ImagePath = "/images/doctors/6.png" },
-            new Doctor { DoctorID = "acd250007", FirstName = "Grace", LastName = "Lee", Specialization = SpecializationType.Pediatric, Email = "grace.lee@avondaleclinic.com", Phone = "021-777-8901", ImagePath = "/images/doctors/7.jpg" },
-            new Doctor { DoctorID = "acd250008", FirstName = "Harry", LastName = "Singh", Specialization = SpecializationType.MentalHealth, Email = "harry.singh@avondaleclinic.com", Phone = "021-888-9012" , ImagePath = "/images/doctors/8.jpg" },
-            new Doctor { DoctorID = "acd250009", FirstName = "Isla", LastName = "Walker", Specialization = SpecializationType.SportsMedicine, Email = "isla.walker@avondaleclinic.com", Phone = "021-999-0123" , ImagePath = "/images/doctors/9.jpg" },
-            new Doctor { DoctorID = "acd250010", FirstName = "Jack", LastName = "Patel", Specialization = SpecializationType.Dermatology, Email = "jack.patel@avondaleclinic.com", Phone = "021-000-1234" , ImagePath = "/images/doctors/10.jpg" }
-        );
-
-        modelBuilder.Entity<DoctorAvailability>().HasData(
-            new DoctorAvailability
+            new Doctor
             {
-                DoctorAvailabilityID = 1,
                 DoctorID = "acd250001",
-                AvailableDate = new DateTime(2025, 4, 15),
-                StartTime = new DateTime(2025, 4, 15, 9, 0, 0),
-                EndTime = new DateTime(2025, 4, 15, 12, 0, 0)
+                FirstName = "Anna",
+                LastName = "Roberts",
+                Specialization = SpecializationType.General,
+                Email = "anna.roberts@avondaleclinic.com",
+                Phone = "021-111-2345",
+                ImagePath = "/images/doctors/1.jpg",
+                WorksMon = true,
+                WorksTue = true,
+                WorksWed = true,
+                WorksThu = true,
+                WorksFri = true,
+                WorksSat = false,
+                WorksSun = false,
+                DailyStartTime = new TimeSpan(9, 0, 0),
+                DailyEndTime = new TimeSpan(17, 0, 0),
+                SlotMinutes = 30
             },
-            new DoctorAvailability
+            new Doctor
             {
-                DoctorAvailabilityID = 2,
                 DoctorID = "acd250002",
-                AvailableDate = new DateTime(2025, 4, 16),
-                StartTime = new DateTime(2025, 4, 16, 10, 0, 0),
-                EndTime = new DateTime(2025, 4, 16, 13, 0, 0)
+                FirstName = "Ben",
+                LastName = "Morris",
+                Specialization = SpecializationType.Pediatric,
+                Email = "ben.morris@avondaleclinic.com",
+                Phone = "021-222-3456",
+                ImagePath = "/images/doctors/2.jpg",
+                WorksMon = true,
+                WorksTue = true,
+                WorksWed = true,
+                WorksThu = true,
+                WorksFri = true,
+                WorksSat = false,
+                WorksSun = false,
+                DailyStartTime = new TimeSpan(9, 0, 0),
+                DailyEndTime = new TimeSpan(17, 0, 0),
+                SlotMinutes = 30
             },
-            new DoctorAvailability
+            new Doctor
             {
-                DoctorAvailabilityID = 3,
                 DoctorID = "acd250003",
-                AvailableDate = new DateTime(2025, 4, 17),
-                StartTime = new DateTime(2025, 4, 17, 8, 30, 0),
-                EndTime = new DateTime(2025, 4, 17, 11, 30, 0)
+                FirstName = "Claire",
+                LastName = "Nguyen",
+                Specialization = SpecializationType.MentalHealth,
+                Email = "claire.nguyen@avondaleclinic.com",
+                Phone = "021-333-4567",
+                ImagePath = "/images/doctors/3.png",
+                WorksMon = true,
+                WorksTue = true,
+                WorksWed = true,
+                WorksThu = true,
+                WorksFri = true,
+                WorksSat = false,
+                WorksSun = false,
+                DailyStartTime = new TimeSpan(9, 0, 0),
+                DailyEndTime = new TimeSpan(17, 0, 0),
+                SlotMinutes = 30
             },
-            new DoctorAvailability
+            new Doctor
             {
-                DoctorAvailabilityID = 4,
                 DoctorID = "acd250004",
-                AvailableDate = new DateTime(2025, 4, 18),
-                StartTime = new DateTime(2025, 4, 18, 13, 0, 0),
-                EndTime = new DateTime(2025, 4, 18, 16, 0, 0)
+                FirstName = "David",
+                LastName = "Chen",
+                Specialization = SpecializationType.SportsMedicine,
+                Email = "david.chen@avondaleclinic.com",
+                Phone = "021-444-5678",
+                ImagePath = "/images/doctors/4.png",
+                WorksMon = true,
+                WorksTue = true,
+                WorksWed = true,
+                WorksThu = true,
+                WorksFri = true,
+                WorksSat = false,
+                WorksSun = false,
+                DailyStartTime = new TimeSpan(9, 0, 0),
+                DailyEndTime = new TimeSpan(17, 0, 0),
+                SlotMinutes = 30
             },
-            new DoctorAvailability
+            new Doctor
             {
-                DoctorAvailabilityID = 5,
                 DoctorID = "acd250005",
-                AvailableDate = new DateTime(2025, 4, 19),
-                StartTime = new DateTime(2025, 4, 19, 9, 30, 0),
-                EndTime = new DateTime(2025, 4, 19, 12, 30, 0)
+                FirstName = "Ella",
+                LastName = "Turner",
+                Specialization = SpecializationType.Dermatology,
+                Email = "ella.turner@avondaleclinic.com",
+                Phone = "021-555-6789",
+                ImagePath = "/images/doctors/5.jpg",
+                WorksMon = true,
+                WorksTue = true,
+                WorksWed = true,
+                WorksThu = true,
+                WorksFri = true,
+                WorksSat = false,
+                WorksSun = false,
+                DailyStartTime = new TimeSpan(9, 0, 0),
+                DailyEndTime = new TimeSpan(17, 0, 0),
+                SlotMinutes = 30
             },
-            new DoctorAvailability
+            new Doctor
             {
-                DoctorAvailabilityID = 6,
                 DoctorID = "acd250006",
-                AvailableDate = new DateTime(2025, 4, 20),
-                StartTime = new DateTime(2025, 4, 20, 14, 0, 0),
-                EndTime = new DateTime(2025, 4, 20, 17, 0, 0)
+                FirstName = "Frank",
+                LastName = "White",
+                Specialization = SpecializationType.General,
+                Email = "frank.white@avondaleclinic.com",
+                Phone = "021-666-7890",
+                ImagePath = "/images/doctors/6.png",
+                WorksMon = true,
+                WorksTue = true,
+                WorksWed = true,
+                WorksThu = true,
+                WorksFri = true,
+                WorksSat = false,
+                WorksSun = false,
+                DailyStartTime = new TimeSpan(9, 0, 0),
+                DailyEndTime = new TimeSpan(17, 0, 0),
+                SlotMinutes = 30
             },
-            new DoctorAvailability
+            new Doctor
             {
-                DoctorAvailabilityID = 7,
                 DoctorID = "acd250007",
-                AvailableDate = new DateTime(2025, 4, 21),
-                StartTime = new DateTime(2025, 4, 21, 11, 0, 0),
-                EndTime = new DateTime(2025, 4, 21, 14, 0, 0)
+                FirstName = "Grace",
+                LastName = "Lee",
+                Specialization = SpecializationType.Pediatric,
+                Email = "grace.lee@avondaleclinic.com",
+                Phone = "021-777-8901",
+                ImagePath = "/images/doctors/7.jpg",
+                WorksMon = true,
+                WorksTue = true,
+                WorksWed = true,
+                WorksThu = true,
+                WorksFri = true,
+                WorksSat = false,
+                WorksSun = false,
+                DailyStartTime = new TimeSpan(9, 0, 0),
+                DailyEndTime = new TimeSpan(17, 0, 0),
+                SlotMinutes = 30
             },
-            new DoctorAvailability
+            new Doctor
             {
-                DoctorAvailabilityID = 8,
                 DoctorID = "acd250008",
-                AvailableDate = new DateTime(2025, 4, 22),
-                StartTime = new DateTime(2025, 4, 22, 15, 0, 0),
-                EndTime = new DateTime(2025, 4, 22, 18, 0, 0)
+                FirstName = "Harry",
+                LastName = "Singh",
+                Specialization = SpecializationType.MentalHealth,
+                Email = "harry.singh@avondaleclinic.com",
+                Phone = "021-888-9012",
+                ImagePath = "/images/doctors/8.jpg",
+                WorksMon = true,
+                WorksTue = true,
+                WorksWed = true,
+                WorksThu = true,
+                WorksFri = true,
+                WorksSat = false,
+                WorksSun = false,
+                DailyStartTime = new TimeSpan(9, 0, 0),
+                DailyEndTime = new TimeSpan(17, 0, 0),
+                SlotMinutes = 30
             },
-            new DoctorAvailability
+            new Doctor
             {
-                DoctorAvailabilityID = 9,
                 DoctorID = "acd250009",
-                AvailableDate = new DateTime(2025, 4, 23),
-                StartTime = new DateTime(2025, 4, 23, 8, 0, 0),
-                EndTime = new DateTime(2025, 4, 23, 11, 0, 0)
+                FirstName = "Isla",
+                LastName = "Walker",
+                Specialization = SpecializationType.SportsMedicine,
+                Email = "isla.walker@avondaleclinic.com",
+                Phone = "021-999-0123",
+                ImagePath = "/images/doctors/9.jpg",
+                WorksMon = true,
+                WorksTue = true,
+                WorksWed = true,
+                WorksThu = true,
+                WorksFri = true,
+                WorksSat = false,
+                WorksSun = false,
+                DailyStartTime = new TimeSpan(9, 0, 0),
+                DailyEndTime = new TimeSpan(17, 0, 0),
+                SlotMinutes = 30
             },
-            new DoctorAvailability
+            new Doctor
             {
-                DoctorAvailabilityID = 10,
                 DoctorID = "acd250010",
-                AvailableDate = new DateTime(2025, 4, 24),
-                StartTime = new DateTime(2025, 4, 24, 12, 0, 0),
-                EndTime = new DateTime(2025, 4, 24, 15, 0, 0)
+                FirstName = "Jack",
+                LastName = "Patel",
+                Specialization = SpecializationType.Dermatology,
+                Email = "jack.patel@avondaleclinic.com",
+                Phone = "021-000-1234",
+                ImagePath = "/images/doctors/10.jpg",
+                WorksMon = true,
+                WorksTue = true,
+                WorksWed = true,
+                WorksThu = true,
+                WorksFri = true,
+                WorksSat = false,
+                WorksSun = false,
+                DailyStartTime = new TimeSpan(9, 0, 0),
+                DailyEndTime = new TimeSpan(17, 0, 0),
+                SlotMinutes = 30
             }
         );
+
+
 
         modelBuilder.Entity<Appointment>().HasData(
             new Appointment
@@ -496,97 +604,18 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
         );
 
         modelBuilder.Entity<Teacher>().HasData(
-            new Teacher
-            {
-                TeacherID = "act250001",
-                FirstName = "Mr. Vijay",
-                LastName = "Prasad",
-                Email = "v.Prasad@avondale.school.nz",
-                TeacherCode = "OPA",
-                ImagePath = "/images/teachers/MrPrasad.jpg"
-            },
-            new Teacher
-            {
-                TeacherID = "act250002",
-                FirstName = "James",
-                LastName = "Ngata",
-                Email = "james.ngata@avondale.school.nz",
-                TeacherCode = "JNG",
-                ImagePath = "/images/teachers/Principle.jpeg"
-            },
-            new Teacher
-            {
-                TeacherID = "act250003",
-                FirstName = "Sophia",
-                LastName = "Lee",
-                Email = "sophia.lee@avondale.school.nz",
-                TeacherCode = "SLE",
-                ImagePath = "/images/teachers/5.jpg"
-            },
-            new Teacher
-            {
-                TeacherID = "act250004",
-                FirstName = "Ethan",
-                LastName = "White",
-                Email = "ethan.white@avondale.school.nz",
-                TeacherCode = "EWH",
-                ImagePath = "/images/teachers/6.jpg"
-            },
-            new Teacher
-            {
-                TeacherID = "act250005",
-                FirstName = "Ava",
-                LastName = "Singh",
-                Email = "ava.singh@avondale.school.nz",
-                TeacherCode = "ASI",
-                ImagePath = "/images/teachers/7.jpg"
-            },
-            new Teacher
-            {
-                TeacherID = "act250006",
-                FirstName = "William",
-                LastName = "Morris",
-                Email = "william.morris@avondale.school.nz",
-                TeacherCode = "WMO",
-                ImagePath = "/images/teachers/8.jpg"
-            },
-            new Teacher
-            {
-                TeacherID = "act250007",
-                FirstName = "Isabella",
-                LastName = "Tao",
-                Email = "isabella.tao@avondale.school.nz",
-                TeacherCode = "ITA",
-                ImagePath = "/images/teachers/9.jpg"
-            },
-            new Teacher
-            {
-                TeacherID = "act250008",
-                FirstName = "Lucas",
-                LastName = "Patel",
-                Email = "lucas.patel@avondale.school.nz",
-                TeacherCode = "LPA",
-                ImagePath = "/images/teachers/10.jpg"
-            },
-            new Teacher
-            {
-                TeacherID = "act250009",
-                FirstName = "Emily",
-                LastName = "Brown",
-                Email = "emily.brown@avondale.school.nz",
-                TeacherCode = "EBR",
-                ImagePath = "/images/teachers/2.jpg"
-            },
-            new Teacher
-            {
-                TeacherID = "act250010",
-                FirstName = "Daniel",
-                LastName = "King",
-                Email = "daniel.king@avondale.school.nz",
-                TeacherCode = "DKG",
-                ImagePath = "/images/teachers/3.jpg"
-            }
+            new Teacher { TeacherID = "act250001", FirstName = "Mr. Vijay", LastName = "Prasad", Email = "v.Prasad@avondale.school.nz", TeacherCode = "OPA", ImagePath = "/images/teachers/MrPrasad.jpg" },
+            new Teacher { TeacherID = "act250002", FirstName = "James", LastName = "Ngata", Email = "james.ngata@avondale.school.nz", TeacherCode = "JNG", ImagePath = "/images/teachers/Principle.jpeg" },
+            new Teacher { TeacherID = "act250003", FirstName = "Sophia", LastName = "Lee", Email = "sophia.lee@avondale.school.nz", TeacherCode = "SLE", ImagePath = "/images/teachers/5.jpg" },
+            new Teacher { TeacherID = "act250004", FirstName = "Ethan", LastName = "White", Email = "ethan.white@avondale.school.nz", TeacherCode = "EWH", ImagePath = "/images/teachers/6.jpg" },
+            new Teacher { TeacherID = "act250005", FirstName = "Ava", LastName = "Singh", Email = "ava.singh@avondale.school.nz", TeacherCode = "ASI", ImagePath = "/images/teachers/7.jpg" },
+            new Teacher { TeacherID = "act250006", FirstName = "William", LastName = "Morris", Email = "william.morris@avondale.school.nz", TeacherCode = "WMO", ImagePath = "/images/teachers/8.jpg" },
+            new Teacher { TeacherID = "act250007", FirstName = "Isabella", LastName = "Tao", Email = "isabella.tao@avondale.school.nz", TeacherCode = "ITA", ImagePath = "/images/teachers/9.jpg" },
+            new Teacher { TeacherID = "act250008", FirstName = "Lucas", LastName = "Patel", Email = "lucas.patel@avondale.school.nz", TeacherCode = "LPA", ImagePath = "/images/teachers/10.jpg" },
+            new Teacher { TeacherID = "act250009", FirstName = "Emily", LastName = "Brown", Email = "emily.brown@avondale.school.nz", TeacherCode = "EBR", ImagePath = "/images/teachers/2.jpg" },
+            new Teacher { TeacherID = "act250010", FirstName = "Daniel", LastName = "King", Email = "daniel.king@avondale.school.nz", TeacherCode = "DKG", ImagePath = "/images/teachers/3.jpg" }
         );
+
         modelBuilder.Entity<Homeroom>().HasData(
             new Homeroom
             {
@@ -915,12 +944,44 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             }
         );
 
-        // Composite or custom relationships if needed
         modelBuilder.Entity<Student>()
-            .HasOne(s => s.Caregiver)
+            .HasMany(s => s.Caregivers)
             .WithMany(c => c.Students)
-            .HasForeignKey(s => s.CaregiverID)
-            .OnDelete(DeleteBehavior.Restrict);
+            .UsingEntity<Dictionary<string, object>>(
+                "StudentCaregivers",
+                j => j.HasOne<Caregiver>()
+                      .WithMany()
+                      .HasForeignKey("CaregiverID")
+                      .HasConstraintName("FK_StudentCaregivers_Caregiver")
+                      .OnDelete(DeleteBehavior.Cascade),
+                j => j.HasOne<Student>()
+                      .WithMany()
+                      .HasForeignKey("StudentID")
+                      .HasConstraintName("FK_StudentCaregivers_Student")
+                      .OnDelete(DeleteBehavior.Cascade),
+                j =>
+                {
+                    j.ToTable("StudentCaregivers");
+                    j.HasKey("StudentID", "CaregiverID");
+
+                    // seed relationships (adjust/add as you like)
+                    j.HasData(
+                        new { StudentID = "ac250001", CaregiverID = "acc250001" },
+                        new { StudentID = "ac250002", CaregiverID = "acc250001" },
+                        new { StudentID = "ac250003", CaregiverID = "acc250001" },
+                        new { StudentID = "ac250004", CaregiverID = "acc250001" },
+                        new { StudentID = "ac250005", CaregiverID = "acc250004" },
+                        new { StudentID = "ac250006", CaregiverID = "acc250002" },
+                        new { StudentID = "ac250007", CaregiverID = "acc250001" },
+                        new { StudentID = "ac250008", CaregiverID = "acc250001" },
+                        new { StudentID = "ac250009", CaregiverID = "acc250005" },
+                        new { StudentID = "ac250010", CaregiverID = "acc250001" }
+                    );
+                }
+            );
+
+
+
 
         modelBuilder.Entity<Student>()
             .HasOne(s => s.Homeroom)
@@ -948,10 +1009,6 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             .WithMany(d => d.Prescriptions)
             .HasForeignKey(p => p.DiagnosisID);
 
-        modelBuilder.Entity<DoctorAvailability>()
-            .HasOne(d => d.Doctor)
-            .WithMany(a => a.Availabilities)
-            .HasForeignKey(d => d.DoctorID);
 
         modelBuilder.Entity<MedicalRecord>()
             .HasOne(m => m.Student)
@@ -968,11 +1025,12 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             .WithMany(r => r.Labtests)
             .HasForeignKey(l => l.RecordID);
 
-        modelBuilder.Entity<Homeroom>()
-            .HasOne(h => h.Teacher)
-            .WithMany(t => t.Homerooms)
-            .HasForeignKey(h => h.TeacherID);
-
+        modelBuilder.Entity<Teacher>()
+            .HasOne(t => t.Homeroom)
+            .WithOne(h => h.Teacher)
+            .HasForeignKey<Homeroom>(h => h.TeacherID)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Restrict);
 
 
 

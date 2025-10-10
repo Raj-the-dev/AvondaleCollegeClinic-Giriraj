@@ -49,9 +49,18 @@
         </div>
 
         <div class="form-row">
-            <label asp-for="CaregiverID">Caregiver</label>
-            <select asp-for="CaregiverID" class="input-line" asp-items="ViewBag.CaregiverID"></select>
-            <span asp-validation-for="CaregiverID" class="error-summary"></span>
+            <label>Caregiver</label>
+            <select name="caregiverId" class="input-line" asp-items="ViewBag.CaregiverID"></select>
+            @* optional validation message slot *@
+            <span class="error-summary">@Html.ValidationMessage("CaregiverID")</span>
+        </div>
+
+        <!-- Extra caregiver (optional) -->
+        <div class="form-row">
+            <label>Extra Caregiver (optional)</label>
+            <select name="extraCaregiverId" class="input-line" asp-items="ViewBag.ExtraCaregiverID">
+                <option value="">-- None --</option>
+            </select>
         </div>
 
         <div class="form-row">

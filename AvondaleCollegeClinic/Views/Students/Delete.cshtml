@@ -25,8 +25,22 @@
             <dt class="col-sm-3 muted">Homeroom</dt>
             <dd class="col-sm-9">@Model.Homeroom?.HomeroomID</dd>
 
-            <dt class="col-sm-3 muted">Caregiver</dt>
-            <dd class="col-sm-9">@Model.Caregiver?.CaregiverID</dd>
+            <dt class="col-sm-3 muted">Caregivers</dt>
+            <dd class="col-sm-9">
+                @if (Model.Caregivers?.Any() == true)
+                {
+                    <ul class="list-unstyled mb-0">
+                        @foreach (var c in Model.Caregivers)
+                        {
+                            <li>@c.FirstName @c.LastName (@c.CaregiverID)</li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <span class="text-muted">None linked</span>
+                }
+            </dd>
 
             @if (!string.IsNullOrEmpty(Model.ImagePath))
             {

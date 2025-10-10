@@ -59,10 +59,11 @@
                     {
                         <span> · @HomeroomLabel(s.Homeroom)</span>
                     }
-                    @if (s.Caregiver != null)
+                    @if (s.Caregivers != null && s.Caregivers.Any())
                     {
-                        <span> · @s.Caregiver.FirstName @s.Caregiver.LastName</span>
+                        <span> · @string.Join(", ", s.Caregivers.Select(c => $"{c.FirstName} {c.LastName}"))</span>
                     }
+
                 </p>
 
                 <div class="cg-actions">

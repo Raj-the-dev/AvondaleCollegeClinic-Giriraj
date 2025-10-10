@@ -39,19 +39,13 @@ namespace AvondaleCollegeClinic.Models
         [EmailAddress]
         public string Email { get; set; }
 
-        [Required]
-        [Display(Name = "Homeroom")]
+        [Required, Display(Name = "Homeroom")]
         public string HomeroomID { get; set; }
-
-        [Required]
-        [Display(Name = "Caregiver")]
-        public string CaregiverID { get; set; }
-
         public Homeroom Homeroom { get; set; }
-        public Caregiver Caregiver { get; set; }
-        public string? IdentityUserId { get; set; }
 
-        [ForeignKey("IdentityUserId")]
+        public ICollection<Caregiver> Caregivers { get; set; } = new List<Caregiver>();
+
+        public string? IdentityUserId { get; set; }
         public AvondaleCollegeClinicUser? AvondaleCollegeClinicUserAccount { get; set; }
 
         public ICollection<Appointment> Appointments { get; set; }

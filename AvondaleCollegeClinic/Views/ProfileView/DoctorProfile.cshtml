@@ -4,7 +4,7 @@
 }
 <section class="wrap page">
     <div class="eyebrow">Profile</div>
-    <h1>My Doctor Profile</h1>
+    <h2>My Doctor Profile</h2>
 
     <div class="profile-card">
         <img src="@(string.IsNullOrWhiteSpace(Model.ImagePath) ? "/images/placeholder-user.png" : Model.ImagePath)"
@@ -20,16 +20,50 @@
             <div class="profile-line"><span>Phone:</span><span>@Model.Phone</span></div>
         </div>
 
-        @if (Model.Availabilities != null && Model.Availabilities.Any())
-        {
-            <hr style="margin:24px 0" />
-            <h3 style="font-size:16px;font-weight:600;margin-bottom:10px;">Availability</h3>
-            <div class="profile-info">
-                @foreach (var a in Model.Availabilities.OrderBy(a => a.AvailableDate))
-                {
-                    <div class="profile-line"><span>@a.AvailableDate.ToShortDateString()</span><span>@a.StartTime.ToShortTimeString() - @a.EndTime.ToShortTimeString()</span></div>
-                }
-            </div>
+        @{
+            // Small helper to format the “Mon–Fri 9:00 AM–5:00 PM” style text
+            Func<DayOfWeek, bool> works = d => d switch
+            {
+                DayOfWeek.Monday => Model.WorksMon,
+                DayOfWeek.Tuesday => Model.WorksTue,
+                DayOfWeek.Wednesday => Model.WorksWed,
+                DayOfWeek.Thursday => Model.WorksThu,
+                DayOfWeek.Friday => Model.WorksFri,
+                DayOfWeek.Saturday => Model.WorksSat,
+                DayOfWeek.Sunday => Model.WorksSun,
+                _ => false
+            };
+
+            var allDays = new[]
+            {
+        DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday,
+        DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday, DayOfWeek.Sunday
+        };
+
+            string fmt(TimeSpan t) => DateTime.Today.Add(t).ToString("h:mm tt");
+            string dayName(DayOfWeek d) => d.ToString(); // “Monday”, “Tuesday”, ...
         }
+
+        <hr style="margin:24px 0" />
+        <h3 style="font-size:16px;font-weight:600;margin-bottom:10px;">Weekly Availability</h3>
+
+        <div class="profile-info">
+            <div class="profile-line">
+                <span>Daily Window:</span>
+                <span>@fmt(Model.DailyStartTime) – @fmt(Model.DailyEndTime)</span>
+            </div>
+            <div class="profile-line">
+                <span>Slot Length:</span>
+                <span>@Model.SlotMinutes minutes</span>
+            </div>
+
+            @foreach (var d in allDays)
+            {
+                <div class="profile-line">
+                    <span>@dayName(d)</span>
+                    <span>@(works(d) ? "Working" : "Off")</span>
+                </div>
+            }
+        </div>
     </div>
 </section>

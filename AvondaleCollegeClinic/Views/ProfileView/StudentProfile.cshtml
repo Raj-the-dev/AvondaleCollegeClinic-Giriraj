@@ -4,7 +4,7 @@
 }
 <section class="wrap page">
     <div class="eyebrow">Profile</div>
-    <h1>My Student Record</h1>
+    <h2>My Student Record</h2>
 
     <div class="profile-card">
         <img src="@(string.IsNullOrWhiteSpace(Model.ImagePath) ? "/images/placeholder-user.png" : Model.ImagePath)"
@@ -24,15 +24,34 @@
             }
         </div>
 
-        @if (Model.Caregiver != null)
+        @if (Model.Caregivers != null && Model.Caregivers.Any())
         {
             <hr style="margin:24px 0" />
-            <h3 style="font-size:16px;font-weight:600;margin-bottom:10px;">Caregiver</h3>
+            <h3 style="font-size:16px;font-weight:600;margin-bottom:10px;">Caregivers</h3>
             <div class="profile-info">
-                <div class="profile-line"><span>Name:</span><span>@Model.Caregiver.FirstName @Model.Caregiver.LastName</span></div>
-                <div class="profile-line"><span>Relationship:</span><span>@Model.Caregiver.Relationship</span></div>
-                <div class="profile-line"><span>Email:</span><span>@Model.Caregiver.Email</span></div>
-                <div class="profile-line"><span>Phone:</span><span>@Model.Caregiver.Phone</span></div>
+                @foreach (var cg in Model.Caregivers)
+                {
+                    <div class="profile-line">
+                        <span>Name:</span><span>@cg.FirstName @cg.LastName</span>
+                    </div>
+                    <div class="profile-line">
+                        <span>Relationship:</span><span>@cg.Relationship</span>
+                    </div>
+                    <div class="profile-line">
+                        <span>Email:</span><span>@cg.Email</span>
+                    </div>
+                    <div class="profile-line">
+                        <span>Phone:</span><span>@cg.Phone</span>
+                    </div>
+                    <hr />
+                }
+            </div>
+        }
+        else
+        {
+            <hr style="margin:24px 0" />
+            <div class="profile-info">
+                <div class="profile-line"><span>Caregivers:</span><span>None linked</span></div>
             </div>
         }
     </div>
