@@ -166,7 +166,7 @@ namespace AvondaleCollegeClinic.Migrations
 
                     b.HasIndex("StudentID");
 
-                    b.ToTable("Appointments");
+                    b.ToTable("Appointments", (string)null);
 
                     b.HasData(
                         new
@@ -303,7 +303,7 @@ namespace AvondaleCollegeClinic.Migrations
                         .IsUnique()
                         .HasFilter("[IdentityUserId] IS NOT NULL");
 
-                    b.ToTable("Caregivers");
+                    b.ToTable("Caregivers", (string)null);
 
                     b.HasData(
                         new
@@ -442,7 +442,7 @@ namespace AvondaleCollegeClinic.Migrations
                     b.HasIndex("AppointmentID")
                         .IsUnique();
 
-                    b.ToTable("Diagnoses");
+                    b.ToTable("Diagnoses", (string)null);
 
                     b.HasData(
                         new
@@ -586,7 +586,7 @@ namespace AvondaleCollegeClinic.Migrations
                         .IsUnique()
                         .HasFilter("[IdentityUserId] IS NOT NULL");
 
-                    b.ToTable("Doctors");
+                    b.ToTable("Doctors", (string)null);
 
                     b.HasData(
                         new
@@ -814,7 +814,7 @@ namespace AvondaleCollegeClinic.Migrations
                     b.HasIndex("TeacherID")
                         .IsUnique();
 
-                    b.ToTable("Homerooms");
+                    b.ToTable("Homerooms", (string)null);
 
                     b.HasData(
                         new
@@ -926,7 +926,7 @@ namespace AvondaleCollegeClinic.Migrations
 
                     b.HasIndex("RecordID");
 
-                    b.ToTable("LabTests");
+                    b.ToTable("LabTests", (string)null);
 
                     b.HasData(
                         new
@@ -1041,7 +1041,7 @@ namespace AvondaleCollegeClinic.Migrations
 
                     b.HasIndex("StudentID");
 
-                    b.ToTable("MedicalRecords");
+                    b.ToTable("MedicalRecords", (string)null);
 
                     b.HasData(
                         new
@@ -1157,7 +1157,7 @@ namespace AvondaleCollegeClinic.Migrations
 
                     b.HasIndex("DiagnosisID");
 
-                    b.ToTable("Prescriptions");
+                    b.ToTable("Prescriptions", (string)null);
 
                     b.HasData(
                         new
@@ -1292,7 +1292,7 @@ namespace AvondaleCollegeClinic.Migrations
                         .IsUnique()
                         .HasFilter("[IdentityUserId] IS NOT NULL");
 
-                    b.ToTable("Students");
+                    b.ToTable("Students", (string)null);
 
                     b.HasData(
                         new
@@ -1433,7 +1433,7 @@ namespace AvondaleCollegeClinic.Migrations
                         .IsUnique()
                         .HasFilter("[IdentityUserId] IS NOT NULL");
 
-                    b.ToTable("Teachers");
+                    b.ToTable("Teachers", (string)null);
 
                     b.HasData(
                         new

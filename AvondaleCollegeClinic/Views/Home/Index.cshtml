@@ -1,78 +1,113 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Identity
+@using AvondaleCollegeClinic.Areas.Identity.Data
+@inject SignInManager<AvondaleCollegeClinicUser> SignInManager
+@inject UserManager<AvondaleCollegeClinicUser> UserManager
+
+@{
     ViewData["Title"] = "Home";
+    var isSignedIn = SignInManager.IsSignedIn(User);
 }
 
 <section class="wrap hero">
     <div class="eyebrow">Avondale College • Auckland, NZ</div>
-    <h1>School-day care, without the noise.</h1>
-    <p class="sub">Minimal portal for students and caregivers. Book appointments, read notes, and keep track of results — clearly.</p>
+    <h1>wellness begins right where you learn.</h1>
+    <p class="sub">
+        We aim to create a smooth and supportive clinic experience by helping students, caregivers, and doctors manage appointments and health information with ease.
+    </p>
 </section>
 
 <section id="services" class="hair">
     <div class="wrap" style="padding-top:40px; padding-bottom:8px">
         <div class="grid" id="grid">
-            <a class="tile span-6" href="/Appointments">
-                <div><h3>Appointments</h3><p>Find a time that fits your timetable.</p></div>
-                <span class="go">Open</span>
-            </a>
 
+            @if (!isSignedIn)
+            {
+                <!-- Public / guest -->
+                <a class="tile span-12" href="/Identity/Account/Login">
+                    <div>
+                        <h3>Sign in</h3>
+                        <p>sign in with your school credentials to book and review care.</p>
+                    </div>
+                    <span class="go">Sign in</span>
+                </a>
+
+                <a class="tile span-12" href="/Identity/Account/FirstTime">
+                    <div>
+                        <h3>First-time setup</h3>
+                        <p>Use your school ID to create access. It takes about a minute.</p>
+                    </div>
+                    <span class="go">Start</span>
+                </a>
+            }
+            else
+            {
+                <!-- Signed-in: tiles that are valid for ALL roles -->
+                <a class="tile span-6" href="/Appointments">
+                    <div>
+                        <h3>Appointments</h3>
+                        <p>
+                            Check available slots and book or manage your clinic appointments.
+                        </p>
+                    </div>
+                    <span class="go">Open</span>
+                </a>
+
+                <a class="tile span-6" href="/Profile">
+                    <div>
+                        <h3>My profile</h3>
+                        <p>See your basic details and linked records in one place. Read-only and privacy-aware.</p>
+                    </div>
+                    <span class="go">View</span>
+                </a>
+            }
+
+            <!-- These two are safe for everyone (public directory + info) -->
             <a class="tile span-6" href="/Doctors">
-                <div><h3>Clinic Team</h3><p>Meet the on-site clinicians.</p></div>
+                <div>
+                    <h3>Clinic team</h3>
+                    <p>Get to know the dedicated clinicians on campus, what they do, and how they work to keep students healthy and supported.</p>
+                </div>
                 <span class="go">Browse</span>
             </a>
 
-            <a class="tile span-4" href="/Students/Portal">
-                <div><h3>Student Portal</h3><p>Your notes, prescriptions, and tests.</p></div>
-                <span class="go">Enter</span>
-            </a>
-
-            <a class="tile span-4" href="/Caregivers">
-                <div><h3>Caregivers</h3><p>Linked access with school oversight.</p></div>
+            <a class="tile span-6" href="/Home/About">
+                <div>
+                    <h3>About the clinic</h3>
+                    <p>About our school and values. Contact information for easy communication</p>
+                </div>
                 <span class="go">Learn</span>
             </a>
-
-            <a class="tile span-4" href="/Homerooms">
-                <div><h3>Homerooms</h3><p>View by class/teacher.</p></div>
-                <span class="go">View</span>
-            </a>
-
-            <!-- Make Sign in full-width like First-time setup -->
-            <a class="tile span-12" href="/Identity/Account/Login">
-                <div><h3>Sign in</h3><p>Students & caregivers — secure access.</p></div>
-                <span class="go">Sign in</span>
-            </a>
-
-            <a class="tile span-12" href="/Identity/Account/FirstTime">
-                <div><h3>First-time setup</h3><p>Use your school ID to create access. One minute.</p></div>
-                <span class="go">Start</span>
-            </a>
         </div>
     </div>
 </section>
-
 
 <section id="info" class="wrap belt">
-    <div><strong>Location</strong> <span class="muted">On-campus near Student Services</span></div>
-    <div><strong>Hours</strong> <span class="muted">Mon–Fri 8:30–16:00 (term time)</span></div>
-    <div><strong>Contact</strong> <span class="muted">clinic@avondale.school.nz</span></div>
-</section>
-
-<section id="about" class="hair">
-    <div class="wrap" style="padding-top:56px">
-        <div style="display:grid; grid-template-columns:repeat(12,1fr); gap:2px; background:var(--hair)">
-            <div class="tile span-8"><div><h3>Why minimal?</h3><p>Clarity is care. Fewer clicks, fewer distractions, faster help.</p></div></div>
-            <div class="tile span-4"><div><h3>Privacy</h3><p>Student-first access rules. Caregivers see what’s shared.</p></div></div>
-            <div class="tile span-12"><div><h3>How it works</h3><p>Book → Visit → Read notes. Repeat only if needed.</p></div></div>
-        </div>
+    <div>
+        <strong>Location</strong>
+        <span class="muted">On-campus near Student Services. Easy to find between classes.</span>
+    </div>
+    <div>
+        <strong>Hours</strong>
+        <span class="muted">Mon–Fri 8:30–16:00 (term time). Same-day bookings often available.</span>
+    </div>
+    <div>
+        <strong>Contact</strong>
+        <span class="muted">clinic@avondale.school.nz — we’ll reply during clinic hours.</span>
     </div>
 </section>
+
 
 <section id="visit">
     <div class="wrap">
         <div class="hair" style="padding:24px 0">
             <div class="belt">
-                <div><strong>Ready to visit?</strong> <span class="muted">Book a time that fits your day.</span></div>
-                <div><a class="go" href="/Appointments/Create">Book now</a></div>
+                <div>
+                    <strong>Ready to visit?</strong>
+                    <span class="muted">Pick a time that works for you. It takes less than a minute.</span>
+                </div>
+                <div>
+                    <a class="go" href="/Appointments/Create">Book now</a>
+                </div>
             </div>
         </div>
     </div>
