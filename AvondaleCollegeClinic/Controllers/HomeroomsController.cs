@@ -119,50 +119,46 @@ namespace AvondaleCollegeClinic.Controllers
         [Authorize(Roles = "Admin,Teacher")]
         public async Task<IActionResult> Create([Bind("YearLevel,TeacherID,Block,ClassNumber")] Homeroom homeroom)
         {
-            // Simple pre-check against the unique TeacherID constraint
-            if (await _context.Homerooms.AnyAsync(h => h.TeacherID == homeroom.TeacherID))
+            // Build new HomeroomID (same logic you had)
+            string year = DateTime.Now.Year.ToString().Substring(2);
+            var lastId = await _context.Homerooms
+                .Where(h => h.HomeroomID.StartsWith($"hr{year}"))
+                .OrderByDescending(h => h.HomeroomID)
+                .Select(h => h.HomeroomID)
+                .FirstOrDefaultAsync();
+
+            int nextNumber = 1;
+            if (!string.IsNullOrEmpty(lastId))
+            {
+                int.TryParse(lastId.Substring(4), out nextNumber);
+                nextNumber++;
+            }
+            homeroom.HomeroomID = $"hr{year}{nextNumber:D4}";
+
+            // SIMPLE duplicate check: one homeroom per teacher
+            bool teacherAlreadyHasHomeroom =
+                await _context.Homerooms.AnyAsync(h => h.TeacherID == homeroom.TeacherID);
+
+            if (teacherAlreadyHasHomeroom)
                 ModelState.AddModelError("TeacherID", "This teacher already has a homeroom.");
 
-            // (optional) also prevent duplicate class in same year/block combo
-            // if (await _context.Homerooms.AnyAsync(h =>
-            //     h.YearLevel == homeroom.YearLevel && h.Block == homeroom.Block && h.ClassNumber == homeroom.ClassNumber))
-            //     ModelState.AddModelError("ClassNumber", "That class already exists for this year/block.");
-
-            // Generate new id only when we’re going to save
             if (!ModelState.IsValid)
             {
-                try
-                {
-                    string year = DateTime.Now.Year.ToString().Substring(2);
-                    var lastId = await _context.Homerooms
-                        .Where(h => h.HomeroomID.StartsWith($"hr{year}"))
-                        .OrderByDescending(h => h.HomeroomID)
-                        .Select(h => h.HomeroomID)
-                        .FirstOrDefaultAsync();
-
-                    int nextNumber = 1;
-                    if (!string.IsNullOrEmpty(lastId) && int.TryParse(lastId.Substring(4), out var n)) nextNumber = n + 1;
-
-                    homeroom.HomeroomID = $"hr{year}{nextNumber:D4}";
-
-                    _context.Add(homeroom);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (DbUpdateException)
-                {
-                    // If DB unique index is hit (race condition), show same friendly error
-                    ModelState.AddModelError("TeacherID", "This teacher already has a homeroom.");
-                }
+                _context.Homerooms.Add(homeroom);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
 
-            // Rebuild dropdown and return view with errors
+            // Rebuild dropdown and show errors
             ViewData["TeacherID"] = new SelectList(
                 _context.Teachers.Select(t => new { t.TeacherID, FullName = t.FirstName + " " + t.LastName }),
                 "TeacherID", "FullName", homeroom.TeacherID);
 
             return View(homeroom);
         }
+
+
+
         [Authorize(Roles = "Admin,Teacher")]
         // GET: Homerooms/Edit/5
         public async Task<IActionResult> Edit(string id)
@@ -189,7 +185,6 @@ namespace AvondaleCollegeClinic.Controllers
             );
             return View(homeroom);
         }
-        [Authorize(Roles = "Admin,Teacher")]
         // POST: Homerooms/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -200,46 +195,31 @@ namespace AvondaleCollegeClinic.Controllers
         {
             if (id != homeroom.HomeroomID) return NotFound();
 
-            // Pre-check: same TeacherID on a different row?
-            bool duplicateTeacher = await _context.Homerooms
-                .AnyAsync(h => h.TeacherID == homeroom.TeacherID && h.HomeroomID != homeroom.HomeroomID);
-            if (duplicateTeacher)
-                ModelState.AddModelError("TeacherID", "This teacher already has a homeroom.");
+            // SIMPLE duplicate check: exclude the current row
+            bool teacherAlreadyHasAnother =
+                await _context.Homerooms.AnyAsync(h =>
+                    h.TeacherID == homeroom.TeacherID && h.HomeroomID != homeroom.HomeroomID);
 
-            // (optional) prevent duplicate class tuple on other rows
-            // bool duplicateClass = await _context.Homerooms.AnyAsync(h =>
-            //     h.HomeroomID != homeroom.HomeroomID &&
-            //     h.YearLevel == homeroom.YearLevel && h.Block == homeroom.Block && h.ClassNumber == homeroom.ClassNumber);
-            // if (duplicateClass)
-            //     ModelState.AddModelError("ClassNumber", "That class already exists for this year/block.");
+            if (teacherAlreadyHasAnother)
+                ModelState.AddModelError("TeacherID", "This teacher already has a homeroom.");
 
             if (!ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(homeroom);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (DbUpdateException)
-                {
-                    ModelState.AddModelError("TeacherID", "This teacher already has a homeroom.");
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!_context.Homerooms.Any(e => e.HomeroomID == homeroom.HomeroomID))
-                        return NotFound();
-                    throw;
-                }
+                _context.Entry(homeroom).State = EntityState.Modified; // straightforward update
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
 
-            // Rebuild dropdown and return view with errors
+            // Rebuild dropdown and show errors
             ViewData["TeacherID"] = new SelectList(
                 _context.Teachers.Select(t => new { t.TeacherID, FullName = t.FirstName + " " + t.LastName }),
                 "TeacherID", "FullName", homeroom.TeacherID);
 
             return View(homeroom);
         }
+
+
+
         [Authorize(Roles = "Admin,Teacher")]
         // GET: Homerooms/Delete/5
         public async Task<IActionResult> Delete(string id)
