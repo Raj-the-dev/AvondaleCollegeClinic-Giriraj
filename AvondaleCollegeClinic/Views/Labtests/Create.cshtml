@@ -26,11 +26,10 @@
             <span asp-validation-for="PDFFile" class="text-danger"></span>
         </div>
 
-        <div class="form-row">
-            <label asp-for="ResultDate" class="form-label"></label>
-            <input asp-for="ResultDate" class="form-control" />
-            <span asp-validation-for="ResultDate" class="text-danger"></span>
-        </div>
+        @{
+            var today = DateTime.Today.ToString("yyyy-MM-dd");
+        }
+        <input asp-for="ResultDate" class="form-control" type="date" max="@today" />
 
         <div class="form-buttons">
             <button type="submit" class="btn">Create</button>

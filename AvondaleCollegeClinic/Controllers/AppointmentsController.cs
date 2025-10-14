@@ -276,27 +276,24 @@ namespace AvondaleCollegeClinic.Controllers
         [Authorize]
         public async Task<IActionResult> Create()
         {
-            var model = new Appointment { Status = AppointmentStatus.Pending };
-
-            // Build students list with role-based restriction
             await PopulateStudentSelectAsync();
-
-            // Build doctors list
             await PopulateDoctorSelectAsync();
 
-            // default date is today
-            var date = DateTime.Today;
-            ViewBag.SelectedDate = date.ToString("yyyy-MM-dd");
+            var dateOptions = Next30Weekdays();
+            ViewBag.DateOptions = new SelectList(dateOptions, "Value", "Text");
 
-            // default doctor is first doctor (if any), and pre-load slots
+            // Preload slots for the first allowed date (optional but nice)
+            var firstAllowed = dateOptions.FirstOrDefault()?.Value;
+            List<SelectListItem> slotItems = new();
             var defaultDoctorId = (string?)ViewBag.FirstDoctorId;
-            var slotItems = new List<SelectListItem>();
-            if (!string.IsNullOrEmpty(defaultDoctorId))
-                slotItems = await BuildSlotsAsync(defaultDoctorId, date);
-
+            if (!string.IsNullOrEmpty(defaultDoctorId) && firstAllowed != null)
+            {
+                var d = DateTime.Parse(firstAllowed).Date;
+                slotItems = await BuildSlotsAsync(defaultDoctorId, d);
+            }
             ViewBag.Slots = new SelectList(slotItems, "Value", "Text");
 
-            return View(model);
+            return View(new Appointment { Status = AppointmentStatus.Pending });
         }
 
         // =========================
@@ -570,7 +567,22 @@ namespace AvondaleCollegeClinic.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-
+        private static List<SelectListItem> Next30Weekdays()
+        {
+            var items = new List<SelectListItem>();
+            var today = DateTime.Today;
+            var end = today.AddDays(30);
+            for (var d = today; d <= end; d = d.AddDays(1))
+            {
+                if (d.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday) continue;
+                items.Add(new SelectListItem
+                {
+                    Value = d.ToString("yyyy-MM-dd"),
+                    Text = d.ToString("ddd, dd MMM yyyy")
+                });
+            }
+            return items;
+        }
 
 
 

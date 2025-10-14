@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using AvondaleCollegeClinic.Validation;
+using System.ComponentModel.DataAnnotations;
+using AvondaleCollegeClinic.Validation;
 
 namespace AvondaleCollegeClinic.Models
 {
@@ -19,6 +21,7 @@ namespace AvondaleCollegeClinic.Models
         [Required]
         [DataType(DataType.Date)]
         [Display(Name = "Diagnosis Date")]
+        [NotFuture(ErrorMessage = "Diagnosis date cannot be in the future.")]
         public DateTime DateDiagnosed { get; set; } // When the diagnosis was made
 
         public Appointment Appointment { get; set; } // Navigation to appointment

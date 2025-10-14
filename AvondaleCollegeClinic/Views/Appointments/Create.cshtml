@@ -43,14 +43,14 @@
             <span asp-validation-for="DoctorID" class="error-summary"></span>
         </div>
 
-        <!-- Date -->
+        <!-- Hidden field so server receives the selected slot as AppointmentDateTime (ISO) -->
+        <input asp-for="AppointmentDateTime" type="hidden" id="apptDateTimeHidden" />
+
+        <!-- Date (weekdays only, next 30 days) -->
         <div class="form-row">
             <label>Date</label>
-            <input type="date"
-                   id="selectedDate"
-                   name="selectedDate"
-                   class="input-line"
-                   value="@(ViewBag.SelectedDate ?? DateTime.Today.ToString("yyyy-MM-dd"))" />
+            <select id="selectedDate" name="selectedDate" class="input-line" asp-items="ViewBag.DateOptions"></select>
+            <small class="hint">Weekdays only, up to 30 days ahead.</small>
         </div>
 
         <!-- Time slot -->
@@ -109,6 +109,13 @@
 
         // Do an initial load on first render
         document.addEventListener('DOMContentLoaded', loadSlots);
+
+        // On submit, put the selected slot (ISO) into the hidden AppointmentDateTime
+        document.querySelector('form[asp-action="Create"]')
+            .addEventListener('submit', function () {
+                document.getElementById('apptDateTimeHidden').value =
+                    document.getElementById('selectedSlot').value || "";
+            });
     </script>
 
     @await Html.PartialAsync("_ValidationScriptsPartial")

@@ -1,7 +1,9 @@
 ﻿using AvondaleCollegeClinic.Areas.Identity.Data;
+using AvondaleCollegeClinic.Validation;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using AvondaleCollegeClinic.Validation;
 
 namespace AvondaleCollegeClinic.Models
 {
@@ -41,7 +43,9 @@ namespace AvondaleCollegeClinic.Models
         [Required]
         [DataType(DataType.Date)]
         [Display(Name = "Date of Birth")]
-        public DateTime DOB { get; set; } // Date of birth
+        [NotFuture(ErrorMessage = "Date of birth cannot be in the future.")]
+        [AgeRange(18, ErrorMessage = "Caregivers must be at least 18 years old.")]
+        public DateTime DOB { get; set; }
 
         [Required]
         [EmailAddress]

@@ -28,11 +28,11 @@
             <span asp-validation-for="Notes" class="text-danger"></span>
         </div>
 
-        <div class="form-row">
-            <label asp-for="Date" class="form-label"></label>
-            <input asp-for="Date" class="form-control" />
-            <span asp-validation-for="Date" class="text-danger"></span>
-        </div>
+        @{
+            var today = DateTime.Today.ToString("yyyy-MM-dd");
+        }
+        <input asp-for="Date" class="form-control" type="date" max="@today" />
+
 
         <div class="form-buttons">
             <button type="submit" class="btn">Save</button>

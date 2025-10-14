@@ -1,5 +1,7 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using AvondaleCollegeClinic.Validation;
+using Microsoft.CodeAnalysis;
 using System.ComponentModel.DataAnnotations;
+using AvondaleCollegeClinic.Validation;
 
 namespace AvondaleCollegeClinic.Models
 {
@@ -26,7 +28,10 @@ namespace AvondaleCollegeClinic.Models
         [Required]
         [DataType(DataType.DateTime)]
         [Display(Name = "Appointment Date & Time")]
-        public DateTime AppointmentDateTime { get; set; } // Scheduled appointment datetime
+        [NotPast(ErrorMessage = "Appointments cannot be in the past.")]
+        [WithinNextDays(30, ErrorMessage = "Appointments can only be up to 30 days ahead.")]
+        [NotWeekend(ErrorMessage = "No weekend appointments.")]
+        public DateTime AppointmentDateTime { get; set; }
 
         [Required]
         [Display(Name = "Status")]

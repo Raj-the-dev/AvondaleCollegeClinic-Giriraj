@@ -26,15 +26,19 @@
             <span asp-validation-for="Dosage" class="text-danger"></span>
         </div>
 
+        @{
+            var today = DateTime.Today.ToString("yyyy-MM-dd");
+        }
+
         <div class="form-row">
             <label asp-for="StartDate" class="form-label"></label>
-            <input asp-for="StartDate" class="form-control" />
+            <input asp-for="StartDate" class="form-control" type="date" id="prescStart" max="@today" />
             <span asp-validation-for="StartDate" class="text-danger"></span>
         </div>
 
         <div class="form-row">
             <label asp-for="EndDate" class="form-label"></label>
-            <input asp-for="EndDate" class="form-control" />
+            <input asp-for="EndDate" class="form-control" type="date" id="prescEnd" />
             <span asp-validation-for="EndDate" class="text-danger"></span>
         </div>
 
@@ -46,5 +50,15 @@
 </section>
 
 @section Scripts {
+    <script>
+        // when Start changes, End cannot be before Start
+        const s = document.getElementById('prescStart');
+        const e = document.getElementById('prescEnd');
+        if (s && e) {
+            const sync = () => { e.min = s.value || ''; if (e.value && s.value && e.value < s.value) e.value = ''; };
+            s.addEventListener('change', sync);
+            document.addEventListener('DOMContentLoaded', sync);
+        }
+    </script>
     @await Html.PartialAsync("_ValidationScriptsPartial")
 }

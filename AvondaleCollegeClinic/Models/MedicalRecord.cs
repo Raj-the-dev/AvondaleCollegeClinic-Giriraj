@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using AvondaleCollegeClinic.Validation;
+using System.ComponentModel.DataAnnotations;
+using AvondaleCollegeClinic.Validation;
 
 namespace AvondaleCollegeClinic.Models
 {
@@ -19,10 +21,10 @@ namespace AvondaleCollegeClinic.Models
         [StringLength(500)]
         [Display(Name = "Doctor's Notes")]
         public string Notes { get; set; } // Summary of the visit or notes
-
         [Required]
         [DataType(DataType.Date)]
         [Display(Name = "Record Date")]
+        [NotFuture(ErrorMessage = "Record date cannot be in the future.")]
         public DateTime Date { get; set; } // Date of entry
 
         public Student Student { get; set; }

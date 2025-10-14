@@ -1,6 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using AvondaleCollegeClinic.Validation;
 using Microsoft.AspNetCore.Http;
+using AvondaleCollegeClinic.Validation;
 
 namespace AvondaleCollegeClinic.Models
 {
@@ -25,6 +27,7 @@ namespace AvondaleCollegeClinic.Models
         [Required]
         [DataType(DataType.Date)]
         [Display(Name = "Result Date")]
+        [NotFuture(ErrorMessage = "Result date cannot be in the future.")]
         public DateOnly ResultDate { get; set; }
 
         [NotMapped]
