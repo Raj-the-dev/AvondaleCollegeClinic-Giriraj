@@ -52,7 +52,8 @@ namespace AvondaleCollegeClinic.Controllers
             var query = _context.Diagnoses
                 .Include(d => d.Appointment)
                     .ThenInclude(a => a.Student)
-                .Include(d => d.Appointment.Doctor)
+                .Include(d => d.Appointment)
+                    .ThenInclude(a => a.Doctor)
                 .AsQueryable();
 
             // Ownership filter

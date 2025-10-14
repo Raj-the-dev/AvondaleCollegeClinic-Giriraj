@@ -2,6 +2,7 @@
 @{
     ViewData["Title"] = "Create Appointment";
     bool lockStudent = ViewBag.LockStudent == true; // if Student role, lock to themselves
+    bool canEditStatus = User.IsInRole("Admin") || User.IsInRole("Doctor") || User.IsInRole("Teacher");
 }
 
 <section class="wrap page">
@@ -69,7 +70,15 @@
 
         <div class="form-row">
             <label asp-for="Status"></label>
-            <select asp-for="Status" class="input-line" asp-items="Html.GetEnumSelectList<AppointmentStatus>()"></select>
+            @if (canEditStatus)
+            {
+                <select asp-for="Status" class="input-line" asp-items="Html.GetEnumSelectList<AppointmentStatus>()"></select>
+            }
+            else
+            {
+                <input type="text" class="input-line" value="@Model.Status" disabled />
+                <input type="hidden" asp-for="Status" />
+            }
             <span asp-validation-for="Status" class="error-summary"></span>
         </div>
 

@@ -5,7 +5,6 @@
 <section class="wrap page">
     <h2>Lab Tests</h2>
 
-    <!-- Toolbar: search + create -->
     <form asp-action="Index" method="get" class="toolbar">
         <div class="left">
             <label for="search" class="form-label" style="margin:0">Search</label>
@@ -33,20 +32,19 @@
                 </th>
                 <th>Report</th>
                 <th>@Html.DisplayNameFor(model => model[0].ResultDate)</th>
-                <th>Medical Record</th>
-                <div class="actions">
-                    @if (User.IsInRole("Admin") || User.IsInRole("Doctor"))
-                    {
+                <th>Student</th>
+                <th>Doctor</th>
+                @if (User.IsInRole("Admin") || User.IsInRole("Doctor"))
+                {
                     <th class="actions">Actions</th>
-                    }
-                </div>
+                }
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model)
             {
                 <tr>
-                    <td>@Html.DisplayFor(_ => item.TestType)</td>
+                    <td>@item.TestType</td>
                     <td>
                         @if (!string.IsNullOrEmpty(item.File))
                         {
@@ -58,25 +56,29 @@
                         }
                     </td>
                     <td>@item.ResultDate.ToShortDateString()</td>
-                    <td>@item.MedicalRecord?.MedicalRecordID</td>
-                    <td class="actions">
-                        @if (User.IsInRole("Admin") || User.IsInRole("Doctor"))
-                        {
-                            <a asp-action="Details" asp-route-id="@item.LabtestID">Details</a>
-
-                            <a asp-action="Edit" asp-route-id="@item.LabtestID">Edit</a>
-
-
-
-                            <a asp-action="Delete" asp-route-id="@item.LabtestID">Delete</a>
-                        }
+                    <td>
+                        @(item.MedicalRecord?.Student != null
+                            ? item.MedicalRecord.Student.FirstName + " " + item.MedicalRecord.Student.LastName
+                            : "—")
                     </td>
+                    <td>
+                        @(item.MedicalRecord?.Doctor != null
+                            ? item.MedicalRecord.Doctor.FirstName + " " + item.MedicalRecord.Doctor.LastName
+                            : "—")
+                    </td>
+                    @if (User.IsInRole("Admin") || User.IsInRole("Doctor"))
+                    {
+                        <td class="actions">
+                            <a asp-action="Details" asp-route-id="@item.LabtestID">Details</a>
+                            <a asp-action="Edit" asp-route-id="@item.LabtestID">Edit</a>
+                            <a asp-action="Delete" asp-route-id="@item.LabtestID">Delete</a>
+                        </td>
+                    }
                 </tr>
             }
         </tbody>
     </table>
 
-    <!-- Simple pager -->
     <div class="belt" style="padding-top:16px">
         <div>Page @Model.PageIndex of @Model.TotalPages</div>
         <div>

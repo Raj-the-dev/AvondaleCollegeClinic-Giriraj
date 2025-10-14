@@ -32,33 +32,38 @@
                         Date Diagnosed
                     </a>
                 </th>
-                <th>Appointment</th>
-                <div class="actions">
-                    @if (User.IsInRole("Admin") || User.IsInRole("Doctor"))
-                    {
+                <th>Student</th>
+                <th>Doctor</th>
+                @if (User.IsInRole("Admin") || User.IsInRole("Doctor"))
+                {
                     <th class="actions">Actions</th>
-                    }
-                </div>
+                }
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model)
             {
                 <tr>
-                    <td>@Html.DisplayFor(_ => item.Description)</td>
-                    <td>@Html.DisplayFor(_ => item.DateDiagnosed)</td>
-                    <td>@item.Appointment?.AppointmentID</td>
-                    <td class="actions">
-                        @if (User.IsInRole("Admin") || User.IsInRole("Doctor"))
-                        {
+                    <td>@item.Description</td>
+                    <td>@item.DateDiagnosed.ToShortDateString()</td>
+                    <td>
+                        @(item.Appointment?.Student != null
+                            ? item.Appointment.Student.FirstName + " " + item.Appointment.Student.LastName
+                            : "—")
+                    </td>
+                    <td>
+                        @(item.Appointment?.Doctor != null
+                            ? item.Appointment.Doctor.FirstName + " " + item.Appointment.Doctor.LastName
+                            : "—")
+                    </td>
+                    @if (User.IsInRole("Admin") || User.IsInRole("Doctor"))
+                    {
+                        <td class="actions">
                             <a asp-action="Details" asp-route-id="@item.DiagnosisID">Details</a>
                             <a asp-action="Edit" asp-route-id="@item.DiagnosisID">Edit</a>
-
-
-
                             <a asp-action="Delete" asp-route-id="@item.DiagnosisID">Delete</a>
-                        }
-                    </td>
+                        </td>
+                    }
                 </tr>
             }
         </tbody>

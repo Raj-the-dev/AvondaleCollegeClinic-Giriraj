@@ -35,9 +35,8 @@ namespace AvondaleCollegeClinic.Models
         public string Email { get; set; }
 
         [Required]
-        [StringLength(3)]
-        [Display(Name = "Teacher Code")]
-        [RegularExpression(@"^[A-Za-z\s]+$", ErrorMessage = "Only letters and spaces are allowed.")]
+        [StringLength(3, MinimumLength = 3)]
+        [RegularExpression(@"^[A-Za-z]{3}$", ErrorMessage = "Code must be exactly 3 letters.")]
         public string TeacherCode { get; set; } // User-entered code
         public string? IdentityUserId { get; set; }
 

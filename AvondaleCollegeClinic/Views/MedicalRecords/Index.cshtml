@@ -34,13 +34,10 @@
                 </th>
                 <th>Student</th>
                 <th>Doctor</th>
-                <div class="actions">
-                    @if (User.IsInRole("Admin") || User.IsInRole("Doctor"))
-                    {
+                @if (User.IsInRole("Admin") || User.IsInRole("Doctor"))
+                {
                     <th class="actions">Actions</th>
-                    }
-                </div>
-
+                }
             </tr>
         </thead>
         <tbody>

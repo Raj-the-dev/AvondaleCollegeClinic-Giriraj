@@ -26,6 +26,7 @@ namespace AvondaleCollegeClinic.Controllers
         }
 
         // GET: Labtests
+        // GET: Labtests
         public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
             ViewData["CurrentSort"] = sortOrder;
@@ -49,10 +50,12 @@ namespace AvondaleCollegeClinic.Controllers
                 .Select(c => c.CaregiverID)
                 .FirstOrDefaultAsync();
 
-            // Link to Student via MedicalRecord
+            // Include Student AND Doctor through MedicalRecord
             var query = _context.LabTests
                 .Include(l => l.MedicalRecord)
                     .ThenInclude(m => m.Student)
+                .Include(l => l.MedicalRecord)
+                    .ThenInclude(m => m.Doctor)
                 .AsQueryable();
 
             // Ownership filter
@@ -65,27 +68,18 @@ namespace AvondaleCollegeClinic.Controllers
                 query = query.Where(l => l.MedicalRecord.Student.Caregivers
                     .Any(c => c.CaregiverID == caregiverId));
             }
-            else if (User.IsInRole("Doctor"))
-            {
-                // leave unfiltered or tie to doctor via MedicalRecord.DoctorID if present
-            }
-            else if (User.IsInRole("Admin"))
-            {
-                // see all
-            }
-            else
-            {
-                return Forbid();
-            }
+            // Doctor/Admin: see all (or restrict if you want)
 
-            // Search
+            // Search (now includes doctor name)
             if (!string.IsNullOrWhiteSpace(searchString))
             {
                 var term = $"%{searchString.Trim()}%";
                 query = query.Where(l =>
                     EF.Functions.Like(l.TestType, term) ||
                     EF.Functions.Like(l.MedicalRecord.Student.FirstName, term) ||
-                    EF.Functions.Like(l.MedicalRecord.Student.LastName, term));
+                    EF.Functions.Like(l.MedicalRecord.Student.LastName, term) ||
+                    EF.Functions.Like(l.MedicalRecord.Doctor.FirstName, term) ||
+                    EF.Functions.Like(l.MedicalRecord.Doctor.LastName, term));
             }
 
             // Sort
@@ -95,18 +89,17 @@ namespace AvondaleCollegeClinic.Controllers
                 _ => query.OrderBy(l => l.TestType)
             };
 
-            // Paging
             const int pageSize = 5;
             int page = pageNumber ?? 1;
             var total = await query.CountAsync();
             var rows = await query.AsNoTracking()
-                                   .Skip((page - 1) * pageSize)
-                                   .Take(pageSize)
-                                   .ToListAsync();
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
 
-            // NOTE: use your actual entity type name (Labtest vs LabTest) to match your project
             return View(new PaginatedList<Labtest>(rows, total, page, pageSize));
         }
+
 
 
 
