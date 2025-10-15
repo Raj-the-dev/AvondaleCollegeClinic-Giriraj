@@ -18,13 +18,13 @@
 
         <div class="form-row">
             <label asp-for="Medication" class="form-label"></label>
-            <input asp-for="Medication" class="form-control" />
+            <input asp-for="Medication" class="form-control" required maxlength="200"/>
             <span asp-validation-for="Medication" class="text-danger"></span>
         </div>
 
         <div class="form-row">
             <label asp-for="Dosage" class="form-label"></label>
-            <input asp-for="Dosage" class="form-control" />
+            <input asp-for="Dosage" class="form-control" required maxlength="200"/>
             <span asp-validation-for="Dosage" class="text-danger"></span>
         </div>
 
@@ -34,13 +34,13 @@
 
         <div class="form-row">
             <label asp-for="StartDate" class="form-label"></label>
-            <input asp-for="StartDate" class="form-control" type="date" id="prescStart" max="@today" />
+            <input asp-for="StartDate" class="form-control" type="date" id="prescStart" max="@today" required/>
             <span asp-validation-for="StartDate" class="text-danger"></span>
         </div>
 
         <div class="form-row">
             <label asp-for="EndDate" class="form-label"></label>
-            <input asp-for="EndDate" class="form-control" type="date" id="prescEnd" />
+            <input asp-for="EndDate" class="form-control" type="date" id="prescEnd"required />
             <span asp-validation-for="EndDate" class="text-danger"></span>
         </div>
 

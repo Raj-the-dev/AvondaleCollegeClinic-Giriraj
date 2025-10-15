@@ -14,32 +14,32 @@
 <section class="wrap page">
     <h1>@ViewData["Title"]</h1>
 
-    <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+    <div asp-validation-summary="All" class="validation-summary-errors"></div>
 
-    <form asp-action="Edit">
+    <form asp-action="Edit" method="post">
         <input type="hidden" asp-for="HomeroomID" />
 
         <div class="form-row">
             <label asp-for="YearLevel" class="form-label"></label>
-            <select asp-for="YearLevel" class="form-control" asp-items="yearOptions"></select>
+            <select asp-for="YearLevel" class="form-control" asp-items="yearOptions" required></select>
             <span asp-validation-for="YearLevel" class="text-danger"></span>
         </div>
 
         <div class="form-row">
             <label asp-for="TeacherID" class="form-label"></label>
-            <select asp-for="TeacherID" class="form-control" asp-items="ViewBag.TeacherID"></select>
+            <select asp-for="TeacherID" class="form-control" asp-items="ViewBag.TeacherID" required></select>
             <span asp-validation-for="TeacherID" class="text-danger"></span>
         </div>
 
         <div class="form-row">
             <label asp-for="Block" class="form-label"></label>
-            <select asp-for="Block" class="form-control" asp-items="Html.GetEnumSelectList<Block>()"></select>
+            <select asp-for="Block" class="form-control" asp-items="Html.GetEnumSelectList<Block>()" required></select>
             <span asp-validation-for="Block" class="text-danger"></span>
         </div>
 
         <div class="form-row">
             <label asp-for="ClassNumber" class="form-label"></label>
-            <select asp-for="ClassNumber" class="form-control" asp-items="classOptions"></select>
+            <select asp-for="ClassNumber" class="form-control" asp-items="classOptions" required></select>
             <span asp-validation-for="ClassNumber" class="text-danger"></span>
         </div>
 

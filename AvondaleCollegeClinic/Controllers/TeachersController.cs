@@ -174,65 +174,55 @@ namespace AvondaleCollegeClinic.Controllers
                 "TeacherID", "FullName");
             return View(teacher);
         }
-        [Authorize(Roles = "Admin,Teacher")]
+
         // POST: Teachers/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Teacher")]
         public async Task<IActionResult> Edit(string id, [Bind("TeacherID,FirstName,LastName,Email,TeacherCode,ImageFile")] Teacher form)
         {
-            if (id != form.TeacherID)
-            {
-                return NotFound();
-            }
+            if (id != form.TeacherID) return NotFound();
 
-            // keep your pattern: save when !ModelState.IsValid
             if (!ModelState.IsValid)
             {
-                // load existing so we can preserve ImagePath
                 var teacher = await _context.Teachers.FirstOrDefaultAsync(t => t.TeacherID == id);
                 if (teacher == null) return NotFound();
 
-                // update simple fields
                 teacher.FirstName = form.FirstName;
                 teacher.LastName = form.LastName;
                 teacher.Email = form.Email;
                 teacher.TeacherCode = form.TeacherCode;
 
-                // Check email
-                if (await _context.Teachers.AnyAsync(t => t.Email == teacher.Email))
+                // ✅ exclude current teacher
+                bool emailInUse = await _context.Teachers
+                    .AnyAsync(t => t.Email == teacher.Email && t.TeacherID != teacher.TeacherID);
+                if (emailInUse)
                 {
                     ModelState.AddModelError("Email", "This email is already in use by another teacher.");
                     return View(teacher);
                 }
 
-                // Check full name
-                if (await _context.Teachers.AnyAsync(t => t.FirstName == teacher.FirstName && t.LastName == teacher.LastName))
+                bool sameNameExists = await _context.Teachers
+                    .AnyAsync(t => t.FirstName == teacher.FirstName
+                                && t.LastName == teacher.LastName
+                                && t.TeacherID != teacher.TeacherID);
+                if (sameNameExists)
                 {
                     ModelState.AddModelError("", "A teacher with the same name already exists.");
                     return View(teacher);
                 }
 
-
-                // handle new upload (optional)
                 if (form.ImageFile != null && form.ImageFile.Length > 0)
                 {
                     string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/teachers");
                     Directory.CreateDirectory(uploadsFolder);
-
-                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(form.ImageFile.FileName);
-                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                    using (var fs = new FileStream(filePath, FileMode.Create))
-                    {
-                        await form.ImageFile.CopyToAsync(fs);
-                    }
-
+                    string uniqueFileName = Guid.NewGuid() + "_" + Path.GetFileName(form.ImageFile.FileName);
+                    using var fs = new FileStream(Path.Combine(uploadsFolder, uniqueFileName), FileMode.Create);
+                    await form.ImageFile.CopyToAsync(fs);
                     teacher.ImagePath = "/images/teachers/" + uniqueFileName;
-                    // (optional) delete old file here if you want to clean up
                 }
-                // else keep existing teacher.ImagePath
 
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -240,6 +230,7 @@ namespace AvondaleCollegeClinic.Controllers
 
             return View(form);
         }
+
         [Authorize(Roles = "Admin,Teacher")]
         // GET: Teachers/Delete/5
         public async Task<IActionResult> Delete(string id)

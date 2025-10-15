@@ -1,19 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using AvondaleCollegeClinic.Areas.Identity.Data;
-using AvondaleCollegeClinic.Models;
 using AvondaleCollegeClinic.Helpers;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+using AvondaleCollegeClinic.Models;
+using AvondaleCollegeClinic.Areas.Identity.Data;
 
 namespace AvondaleCollegeClinic.Controllers
 {
-
     public class HomeroomsController : Controller
     {
         private readonly AvondaleCollegeClinicContext _context;
@@ -22,110 +19,135 @@ namespace AvondaleCollegeClinic.Controllers
         {
             _context = context;
         }
+
+        // -----------------------------
+        // Helpers
+        // -----------------------------
+        private SelectList BuildTeacherSelectList(string? selected = null)
+        {
+            var teachers = _context.Teachers
+                .Select(t => new
+                {
+                    t.TeacherID,
+                    FullName = t.FirstName + " " + t.LastName
+                })
+                .OrderBy(t => t.FullName)
+                .ToList();
+
+            return new SelectList(teachers, "TeacherID", "FullName", selected);
+        }
+
+        private static string GenerateHomeroomId(string? lastIdForYear)
+        {
+            string yy = DateTime.Now.Year.ToString().Substring(2); // "25" for 2025
+            int next = 1;
+
+            if (!string.IsNullOrEmpty(lastIdForYear))
+            {
+                // lastId is like "hr250012"
+                // index 0..1 = "hr", 2..3 = "yy", number starts at index 4
+                int.TryParse(lastIdForYear.Substring(4), out next);
+                next++;
+            }
+
+            return $"hr{yy}{next:D4}";
+        }
+
+        // -----------------------------
+        // Index
+        // -----------------------------
         [Authorize(Roles = "Admin,Teacher,Doctor,Caregiver,Student")]
-        // GET: Homerooms
         public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
             ViewData["CurrentSort"] = sortOrder;
-            ViewData["BlockSortParm"] = String.IsNullOrEmpty(sortOrder) ? "block_desc" : "";
+            ViewData["BlockSortParm"] = string.IsNullOrEmpty(sortOrder) ? "block_desc" : "";
             ViewData["TeacherSortParm"] = sortOrder == "Teacher" ? "teacher_desc" : "Teacher";
+
+            if (searchString != null)
+                pageNumber = 1;
+            else
+                searchString = currentFilter;
+
             ViewData["CurrentFilter"] = searchString;
 
-            var homerooms = await _context.Homerooms
+            var query = _context.Homerooms
                 .Include(h => h.Teacher)
                 .AsNoTracking()
-                .ToListAsync();
+                .AsQueryable();
 
-            // 🔍 Filter
-            if (!string.IsNullOrEmpty(searchString))
+            // Filter
+            if (!string.IsNullOrWhiteSpace(searchString))
             {
-                searchString = searchString.ToLower();
-                homerooms = homerooms.Where(h =>
-                    h.Teacher.FirstName.ToLower().Contains(searchString) ||
-                    h.Teacher.LastName.ToLower().Contains(searchString) ||
-                    h.Block.ToString().ToLower().Contains(searchString)
-                ).ToList();
+                var term = searchString.Trim().ToLower();
+                query = query.Where(h =>
+                    h.Teacher.FirstName.ToLower().Contains(term) ||
+                    h.Teacher.LastName.ToLower().Contains(term) ||
+                    h.Block.ToString().ToLower().Contains(term));
             }
 
-            // ↕ Sort
-            switch (sortOrder)
+            // Sort
+            query = sortOrder switch
             {
-                case "block_desc":
-                    homerooms = homerooms.OrderByDescending(h => h.Block).ToList();
-                    break;
-                case "Teacher":
-                    homerooms = homerooms.OrderBy(h => h.Teacher.LastName).ToList();
-                    break;
-                case "teacher_desc":
-                    homerooms = homerooms.OrderByDescending(h => h.Teacher.LastName).ToList();
-                    break;
-                default:
-                    homerooms = homerooms.OrderBy(h => h.Block).ToList();
-                    break;
-            }
+                "block_desc" => query.OrderByDescending(h => h.Block),
+                "Teacher" => query.OrderBy(h => h.Teacher.LastName).ThenBy(h => h.Teacher.FirstName),
+                "teacher_desc" => query.OrderByDescending(h => h.Teacher.LastName).ThenByDescending(h => h.Teacher.FirstName),
+                _ => query.OrderBy(h => h.Block)
+            };
 
-            // 📄 Pagination
-            int pageSize = 5;
-            int page = pageNumber ?? 1;
-            var totalCount = homerooms.Count;
-            var pagedHomerooms = homerooms.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-
-            var paginatedList = new PaginatedList<Homeroom>(pagedHomerooms, totalCount, page, pageSize);
-            return View(paginatedList);
+            // Paging
+            const int pageSize = 5;
+            return View(await PaginatedList<Homeroom>.CreateAsync(query, pageNumber ?? 1, pageSize));
         }
-        [Authorize(Roles = "Admin,Teacher")]
 
-        // GET: Homerooms/Details/5
+        // -----------------------------
+        // Details
+        // -----------------------------
+        [Authorize(Roles = "Admin,Teacher")]
         public async Task<IActionResult> Details(string id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var homeroom = await _context.Homerooms
                 .Include(h => h.Teacher)
                 .FirstOrDefaultAsync(m => m.HomeroomID == id);
-            if (homeroom == null)
-            {
-                return NotFound();
-            }
+
+            if (homeroom == null) return NotFound();
 
             return View(homeroom);
         }
+
+        // -----------------------------
+        // Create (GET)
+        // -----------------------------
         [Authorize(Roles = "Admin,Teacher")]
-        // GET: Homerooms/Create
         public IActionResult Create()
         {
-            ViewData["TeacherID"] = new SelectList(
-                _context.Teachers.Select(t => new
-                {
-                    t.TeacherID,
-                    FullName = t.FirstName + " " + t.LastName
-                }),
-                "TeacherID",
-                "FullName"
-            );
-
+            ViewData["TeacherID"] = BuildTeacherSelectList();
             return View();
         }
 
-
-        // POST: Homerooms/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // -----------------------------
+        // Create (POST)
+        // -----------------------------
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Teacher")]
         public async Task<IActionResult> Create([Bind("YearLevel,TeacherID,Block,ClassNumber")] Homeroom homeroom)
         {
-            // Build new HomeroomID (same logic you had)
-            string year = DateTime.Now.Year.ToString().Substring(2);
-            var lastId = await _context.Homerooms
-                .Where(h => h.HomeroomID.StartsWith($"hr{year}"))
-                .OrderByDescending(h => h.HomeroomID)
-                .Select(h => h.HomeroomID)
-                .FirstOrDefaultAsync();
+            // Unique: one homeroom per teacher
+            bool teacherHasHomeroom = await _context.Homerooms.AnyAsync(h => h.TeacherID == homeroom.TeacherID);
+            if (teacherHasHomeroom)
+                ModelState.AddModelError("TeacherID", "This teacher already has a homeroom.");
+
+            if (ModelState.IsValid)
+            {
+                // Generate new ID for the current year
+                string yy = DateTime.Now.Year.ToString().Substring(2);
+                var lastId = await _context.Homerooms
+                    .Where(h => h.HomeroomID.StartsWith($"hr{yy}"))
+                    .OrderByDescending(h => h.HomeroomID)
+                    .Select(h => h.HomeroomID)
+                    .FirstOrDefaultAsync();
 
             int nextNumber = 1;
             if (!string.IsNullOrEmpty(lastId))
@@ -135,56 +157,43 @@ namespace AvondaleCollegeClinic.Controllers
             }
             homeroom.HomeroomID = $"hr{year}{nextNumber:D4}";
 
-                    _context.Add(homeroom);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (DbUpdateException)
-                {
-                    // If DB unique index is hit (race condition), show same friendly error
-                    ModelState.AddModelError("TeacherID", "This teacher already has a homeroom.");
-                }
+            // SIMPLE duplicate check: one homeroom per teacher
+            bool teacherAlreadyHasHomeroom =
+                await _context.Homerooms.AnyAsync(h => h.TeacherID == homeroom.TeacherID);
+
+            if (teacherAlreadyHasHomeroom)
+                ModelState.AddModelError("TeacherID", "This teacher already has a homeroom.");
+
+            if (ModelState.IsValid)
+            {
+                _context.Homerooms.Add(homeroom);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
 
-            // Rebuild dropdown and show errors
-            ViewData["TeacherID"] = new SelectList(
-                _context.Teachers.Select(t => new { t.TeacherID, FullName = t.FirstName + " " + t.LastName }),
-                "TeacherID", "FullName", homeroom.TeacherID);
-
+            // Re-render with errors
+            ViewData["TeacherID"] = BuildTeacherSelectList(homeroom.TeacherID);
             return View(homeroom);
         }
 
-
-
+        // -----------------------------
+        // Edit (GET)
+        // -----------------------------
         [Authorize(Roles = "Admin,Teacher")]
-        // GET: Homerooms/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var homeroom = await _context.Homerooms.FindAsync(id);
-            if (homeroom == null)
-            {
-                return NotFound();
-            }
-            ViewData["TeacherID"] = new SelectList(
-                    _context.Teachers.Select(t => new
-                    {
-                        t.TeacherID,
-                        FullName = t.FirstName + " " + t.LastName
-                    }),
-                "TeacherID",
-                "FullName",
-                homeroom.TeacherID
-            );
+            if (homeroom == null) return NotFound();
+
+            ViewData["TeacherID"] = BuildTeacherSelectList(homeroom.TeacherID);
             return View(homeroom);
         }
-        // POST: Homerooms/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
+        // -----------------------------
+        // Edit (POST)
+        // -----------------------------
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Teacher")]
@@ -192,12 +201,11 @@ namespace AvondaleCollegeClinic.Controllers
         {
             if (id != homeroom.HomeroomID) return NotFound();
 
-            // SIMPLE duplicate check: exclude the current row
-            bool teacherAlreadyHasAnother =
-                await _context.Homerooms.AnyAsync(h =>
-                    h.TeacherID == homeroom.TeacherID && h.HomeroomID != homeroom.HomeroomID);
+            // Unique: one homeroom per teacher (exclude this row)
+            bool teacherHasAnother =
+                await _context.Homerooms.AnyAsync(h => h.TeacherID == homeroom.TeacherID && h.HomeroomID != homeroom.HomeroomID);
 
-            if (teacherAlreadyHasAnother)
+            if (teacherHasAnother)
                 ModelState.AddModelError("TeacherID", "This teacher already has a homeroom.");
 
             // (optional) prevent duplicate class tuple on other rows
@@ -209,72 +217,49 @@ namespace AvondaleCollegeClinic.Controllers
 
             if (!ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(homeroom);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (DbUpdateException)
-                {
-                    ModelState.AddModelError("TeacherID", "This teacher already has a homeroom.");
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!_context.Homerooms.Any(e => e.HomeroomID == homeroom.HomeroomID))
-                        return NotFound();
-                    throw;
-                }
+                _context.Entry(homeroom).State = EntityState.Modified; // straightforward update
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
 
-            // Rebuild dropdown and show errors
-            ViewData["TeacherID"] = new SelectList(
-                _context.Teachers.Select(t => new { t.TeacherID, FullName = t.FirstName + " " + t.LastName }),
-                "TeacherID", "FullName", homeroom.TeacherID);
-
+            // Re-render with errors
+            ViewData["TeacherID"] = BuildTeacherSelectList(homeroom.TeacherID);
             return View(homeroom);
         }
 
-
-
+        // -----------------------------
+        // Delete (GET/POST)
+        // -----------------------------
         [Authorize(Roles = "Admin,Teacher")]
-        // GET: Homerooms/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var homeroom = await _context.Homerooms
                 .Include(h => h.Teacher)
                 .FirstOrDefaultAsync(m => m.HomeroomID == id);
-            if (homeroom == null)
-            {
-                return NotFound();
-            }
+
+            if (homeroom == null) return NotFound();
 
             return View(homeroom);
         }
-        [Authorize(Roles = "Admin,Teacher")]
-        // POST: Homerooms/Delete/5
+
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Teacher")]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var homeroom = await _context.Homerooms.FindAsync(id);
             if (homeroom != null)
             {
                 _context.Homerooms.Remove(homeroom);
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool HomeroomExists(string id)
-        {
-            return _context.Homerooms.Any(e => e.HomeroomID == id);
-        }
+        private bool HomeroomExists(string id) =>
+            _context.Homerooms.Any(e => e.HomeroomID == id);
     }
 }

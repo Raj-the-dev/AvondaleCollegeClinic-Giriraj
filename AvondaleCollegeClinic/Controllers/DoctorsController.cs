@@ -152,58 +152,52 @@ namespace AvondaleCollegeClinic.Controllers
 
             return View(doctor);
         }
-        [Authorize(Roles = "Admin,Doctor")]
-        // POST: Doctors/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Doctor")]
         public async Task<IActionResult> Edit(string id, [Bind("DoctorID,FirstName,LastName,Specialization,Email,Phone,ImageFile")] Doctor form)
         {
             if (id != form.DoctorID) return NotFound();
 
             if (!ModelState.IsValid)
             {
-                // Load existing row so we don't lose current ImagePath
                 var doctor = await _context.Doctors.FirstOrDefaultAsync(d => d.DoctorID == id);
                 if (doctor == null) return NotFound();
 
-                // Update simple fields
                 doctor.FirstName = form.FirstName;
-                doctor.LastName = form.LastName;    
+                doctor.LastName = form.LastName;
                 doctor.Specialization = form.Specialization;
                 doctor.Email = form.Email;
                 doctor.Phone = form.Phone;
-                // Check email
-                if (await _context.Doctors.AnyAsync(d => d.Email == doctor.Email))
+
+                // ✅ exclude current doctor
+                bool emailInUse = await _context.Doctors
+                    .AnyAsync(d => d.Email == doctor.Email && d.DoctorID != doctor.DoctorID);
+                if (emailInUse)
                 {
                     ModelState.AddModelError("Email", "This email is already in use by another doctor.");
                     return View(doctor);
                 }
 
-                // Check full name
-                if (await _context.Doctors.AnyAsync(d => d.FirstName == doctor.FirstName && d.LastName == doctor.LastName))
+                bool sameNameExists = await _context.Doctors
+                    .AnyAsync(d => d.FirstName == doctor.FirstName
+                                && d.LastName == doctor.LastName
+                                && d.DoctorID != doctor.DoctorID);
+                if (sameNameExists)
                 {
                     ModelState.AddModelError("", "A doctor with the same name already exists.");
                     return View(doctor);
                 }
 
-                // Handle new image (optional)
                 if (form.ImageFile != null && form.ImageFile.Length > 0)
                 {
                     string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/doctors");
                     Directory.CreateDirectory(uploadsFolder);
-
-                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(form.ImageFile.FileName);
-                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await form.ImageFile.CopyToAsync(fileStream);
-                    }
-
+                    string uniqueFileName = Guid.NewGuid() + "_" + Path.GetFileName(form.ImageFile.FileName);
+                    using var fs = new FileStream(Path.Combine(uploadsFolder, uniqueFileName), FileMode.Create);
+                    await form.ImageFile.CopyToAsync(fs);
                     doctor.ImagePath = "/images/doctors/" + uniqueFileName;
-                    
                 }
-               
 
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -211,6 +205,7 @@ namespace AvondaleCollegeClinic.Controllers
 
             return View(form);
         }
+
         [Authorize(Roles = "Admin,Doctor")]
         // GET: Doctors/Delete/5
         public async Task<IActionResult> Delete(string id)

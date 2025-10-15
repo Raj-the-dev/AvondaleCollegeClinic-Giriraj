@@ -60,7 +60,7 @@
         <!-- Reason -->
         <div class="form-row">
             <label asp-for="Reason"></label>
-            <input asp-for="Reason" class="input-line" />
+            <input asp-for="Reason" class="input-line" required maxlength="200"/>
             <span asp-validation-for="Reason" class="error-summary"></span>
         </div>
 

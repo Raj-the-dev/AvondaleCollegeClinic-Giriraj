@@ -22,14 +22,14 @@
 
         <div class="form-row">
             <label asp-for="Notes" class="form-label"></label>
-            <input asp-for="Notes" class="form-control" />
+            <input asp-for="Notes" class="form-control" required maxlength="200"/>
             <span asp-validation-for="Notes" class="text-danger"></span>
         </div>
 
         @{
             var today = DateTime.Today.ToString("yyyy-MM-dd");
         }
-        <input asp-for="Date" class="form-control" type="date" max="@today" />
+        <input asp-for="Date" class="form-control" type="date" max="@today" required/>
 
 
         <div class="form-buttons">

@@ -161,12 +161,12 @@ namespace AvondaleCollegeClinic.Controllers
             }
             return View(caregiver);
         }
-        [Authorize(Roles = "Admin,Teacher")]
         // POST: Caregivers/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Teacher")]
         public async Task<IActionResult> Edit(string id, [Bind("CaregiverID,FirstName,LastName,DOB,Email,Phone,Relationship,ImageFile")] Caregiver form)
         {
             if (id != form.CaregiverID) return NotFound();
@@ -176,6 +176,7 @@ namespace AvondaleCollegeClinic.Controllers
                 var caregiver = await _context.Caregivers.FirstOrDefaultAsync(c => c.CaregiverID == id);
                 if (caregiver == null) return NotFound();
 
+                // update simple fields
                 caregiver.FirstName = form.FirstName;
                 caregiver.LastName = form.LastName;
                 caregiver.DOB = form.DOB;
@@ -183,33 +184,35 @@ namespace AvondaleCollegeClinic.Controllers
                 caregiver.Phone = form.Phone;
                 caregiver.Relationship = form.Relationship;
 
-                // Check email
-                if (await _context.Caregivers.AnyAsync(c => c.Email == caregiver.Email))
+                // ✅ EXCLUDE the current record by ID
+                bool emailInUse = await _context.Caregivers
+                    .AnyAsync(c => c.Email == caregiver.Email && c.CaregiverID != caregiver.CaregiverID);
+                if (emailInUse)
                 {
                     ModelState.AddModelError("Email", "This email is already in use by another caregiver.");
                     return View(caregiver);
                 }
 
-                // Check full name
-                if (await _context.Caregivers.AnyAsync(c => c.FirstName == caregiver.FirstName && c.LastName == caregiver.LastName))
+                bool sameNameExists = await _context.Caregivers
+                    .AnyAsync(c => c.FirstName == caregiver.FirstName
+                                && c.LastName == caregiver.LastName
+                                && c.CaregiverID != caregiver.CaregiverID);
+                if (sameNameExists)
                 {
                     ModelState.AddModelError("", "A caregiver with the same name already exists.");
                     return View(caregiver);
                 }
 
+                // optional new image (NOT required)
                 if (form.ImageFile != null && form.ImageFile.Length > 0)
                 {
                     string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/caregivers");
                     Directory.CreateDirectory(uploadsFolder);
-
-                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(form.ImageFile.FileName);
+                    string uniqueFileName = Guid.NewGuid() + "_" + Path.GetFileName(form.ImageFile.FileName);
                     string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                    using (var fs = new FileStream(filePath, FileMode.Create))
-                        await form.ImageFile.CopyToAsync(fs);
-
+                    using var fs = new FileStream(filePath, FileMode.Create);
+                    await form.ImageFile.CopyToAsync(fs);
                     caregiver.ImagePath = "/images/caregivers/" + uniqueFileName;
-                    // (optional) delete old file here
                 }
 
                 await _context.SaveChangesAsync();
@@ -218,6 +221,7 @@ namespace AvondaleCollegeClinic.Controllers
 
             return View(form);
         }
+
         [Authorize(Roles = "Admin,Teacher")]
         //GET: Caregivers/Delete/5
         public async Task<IActionResult> Delete(string? id)

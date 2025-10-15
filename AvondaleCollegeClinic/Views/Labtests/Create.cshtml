@@ -16,20 +16,20 @@
 
         <div class="form-row">
             <label asp-for="TestType" class="form-label"></label>
-            <input asp-for="TestType" class="form-control" />
+            <input asp-for="TestType" class="form-control" required/>
             <span asp-validation-for="TestType" class="text-danger"></span>
         </div>
 
         <div class="form-row">
             <label asp-for="PDFFile" class="form-label">Lab Report (PDF)</label>
-            <input asp-for="PDFFile" type="file" accept="application/pdf,.pdf" class="form-control" />
+            <input asp-for="PDFFile" type="file" accept="application/pdf,.pdf" class="form-control" required/>
             <span asp-validation-for="PDFFile" class="text-danger"></span>
         </div>
 
         @{
             var today = DateTime.Today.ToString("yyyy-MM-dd");
         }
-        <input asp-for="ResultDate" class="form-control" type="date" max="@today" />
+        <input asp-for="ResultDate" class="form-control" type="date" max="@today" required/>
 
         <div class="form-buttons">
             <button type="submit" class="btn">Create</button>

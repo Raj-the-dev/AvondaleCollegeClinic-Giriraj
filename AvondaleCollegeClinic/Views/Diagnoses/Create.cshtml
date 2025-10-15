@@ -17,14 +17,14 @@
 
         <div class="form-row">
             <label asp-for="Description" class="form-label"></label>
-            <input asp-for="Description" class="form-control" />
+            <input asp-for="Description" class="form-control" required maxlength="500"/>
             <span asp-validation-for="Description" class="text-danger"></span>
         </div>
 
         @{
             var today = DateTime.Today.ToString("yyyy-MM-dd");
         }
-        <input asp-for="DateDiagnosed" class="form-control" type="date" max="@today" />
+        <input asp-for="DateDiagnosed" class="form-control" type="date" max="@today" required/>
 
         <div class="form-buttons">
             <button type="submit" class="btn">Create</button>

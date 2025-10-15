@@ -14,13 +14,13 @@
 
         <div class="form-row">
             <label asp-for="FirstName"></label>
-            <input asp-for="FirstName" class="input-line" />
+            <input asp-for="FirstName" class="input-line" required/>
             <span asp-validation-for="FirstName" class="error-summary"></span>
         </div>
 
         <div class="form-row">
             <label asp-for="LastName"></label>
-            <input asp-for="LastName" class="input-line" />
+            <input asp-for="LastName" class="input-line" required/>
             <span asp-validation-for="LastName" class="error-summary"></span>
         </div>
 
@@ -33,7 +33,7 @@
 
         <div class="form-row">
             <label asp-for="ImageFile">Replace photo (optional)</label>
-            <input asp-for="ImageFile" type="file" class="input-line" />
+            <input asp-for="ImageFile" type="file" class="input-line" required/>
             <span asp-validation-for="ImageFile" class="error-summary"></span>
         </div>
 
@@ -42,11 +42,12 @@
             var maxDob = today.AddYears(-12).ToString("yyyy-MM-dd"); // youngest allowed
             var minDob = today.AddYears(-21).ToString("yyyy-MM-dd"); // oldest allowed
         }
-        <input asp-for="DOB" class="input-line" type="date" min="@minDob" max="@maxDob" />
+        <input asp-for="DOB" class="input-line" type="date" min="@minDob" max="@maxDob" required/>
+
 
         <div class="form-row">
             <label asp-for="Email"></label>
-            <input asp-for="Email" class="input-line" />
+            <input asp-for="Email" class="input-line" required/>
             <span asp-validation-for="Email" class="error-summary"></span>
         </div>
 
