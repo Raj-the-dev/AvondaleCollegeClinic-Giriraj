@@ -135,18 +135,15 @@ namespace AvondaleCollegeClinic.Controllers
             }
             homeroom.HomeroomID = $"hr{year}{nextNumber:D4}";
 
-            // SIMPLE duplicate check: one homeroom per teacher
-            bool teacherAlreadyHasHomeroom =
-                await _context.Homerooms.AnyAsync(h => h.TeacherID == homeroom.TeacherID);
-
-            if (teacherAlreadyHasHomeroom)
-                ModelState.AddModelError("TeacherID", "This teacher already has a homeroom.");
-
-            if (ModelState.IsValid)
-            {
-                _context.Homerooms.Add(homeroom);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                    _context.Add(homeroom);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateException)
+                {
+                    // If DB unique index is hit (race condition), show same friendly error
+                    ModelState.AddModelError("TeacherID", "This teacher already has a homeroom.");
+                }
             }
 
             // Rebuild dropdown and show errors
@@ -203,11 +200,31 @@ namespace AvondaleCollegeClinic.Controllers
             if (teacherAlreadyHasAnother)
                 ModelState.AddModelError("TeacherID", "This teacher already has a homeroom.");
 
-            if (ModelState.IsValid)
+            // (optional) prevent duplicate class tuple on other rows
+            // bool duplicateClass = await _context.Homerooms.AnyAsync(h =>
+            //     h.HomeroomID != homeroom.HomeroomID &&
+            //     h.YearLevel == homeroom.YearLevel && h.Block == homeroom.Block && h.ClassNumber == homeroom.ClassNumber);
+            // if (duplicateClass)
+            //     ModelState.AddModelError("ClassNumber", "That class already exists for this year/block.");
+
+            if (!ModelState.IsValid)
             {
-                _context.Entry(homeroom).State = EntityState.Modified; // straightforward update
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    _context.Update(homeroom);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateException)
+                {
+                    ModelState.AddModelError("TeacherID", "This teacher already has a homeroom.");
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!_context.Homerooms.Any(e => e.HomeroomID == homeroom.HomeroomID))
+                        return NotFound();
+                    throw;
+                }
             }
 
             // Rebuild dropdown and show errors
