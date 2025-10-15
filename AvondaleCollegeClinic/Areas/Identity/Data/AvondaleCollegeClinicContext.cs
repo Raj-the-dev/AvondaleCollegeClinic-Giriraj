@@ -29,13 +29,14 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
     {
         base.OnModelCreating(modelBuilder);
 
+        // ---- Link Student -> Identity user (1:1) ----
         modelBuilder.Entity<Student>()
-            .HasOne(s => s.AvondaleCollegeClinicUserAccount)                  // a student has one user
-            .WithOne(u => u.StudentProfile)       // a user can only match one student
-            .HasForeignKey<Student>(s => s.IdentityUserId)// connect using UserId column
-            .OnDelete(DeleteBehavior.SetNull);    // if user deleted, keep student but remove link
-                                                  // Same setup for Teacher, Doctor, Caregiver
-                                                  // So all of them can be linked to login accounts
+            .HasOne(s => s.AvondaleCollegeClinicUserAccount)      // a student has one linked Identity user
+            .WithOne(u => u.StudentProfile)                       // that Identity user has one student profile
+            .HasForeignKey<Student>(s => s.IdentityUserId)        // use Student.IdentityUserId as the FK column
+            .OnDelete(DeleteBehavior.SetNull);                    // if the Identity user is deleted, keep the student and set FK to null
+
+        // Same pattern for Teacher, Doctor, Caregiver
         modelBuilder.Entity<Teacher>()
             .HasOne(t => t.AvondaleCollegeClinicUserAccount)
             .WithOne(u => u.TeacherProfile)
@@ -57,11 +58,12 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
         // ---------------------------
         // Seed Admin role + user
         // ---------------------------
-        // We use fixed IDs (0000...) so we can always refer to them reliably
-        const string ADMIN_ROLE_ID = "00000000-0000-0000-0000-000000000010"; // role ID
-        const string ADMIN_USER_ID = "00000000-0000-0000-0000-000000000001"; // user ID
 
-        // Create the Admin role so the system knows what "Admin" means
+        // Fixed IDs so we can reference them in seed data and future migrations
+        const string ADMIN_ROLE_ID = "00000000-0000-0000-0000-000000000010";
+        const string ADMIN_USER_ID = "00000000-0000-0000-0000-000000000001";
+
+        // Create the Admin role record
         modelBuilder.Entity<IdentityRole>().HasData(new IdentityRole
         {
             Id = ADMIN_ROLE_ID,
@@ -69,7 +71,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             NormalizedName = "ADMIN"
         });
 
-        // Create a default Admin user account with a safe hashed password
+        // Build a default Admin user object
         var hasher = new PasswordHasher<AvondaleCollegeClinicUser>();
         var admin = new AvondaleCollegeClinicUser
         {
@@ -78,24 +80,27 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
             NormalizedUserName = "ADMIN@AVONDALECLINIC.COM",
             Email = "admin@avondaleclinic.com",
             NormalizedEmail = "ADMIN@AVONDALECLINIC.COM",
-            EmailConfirmed = true, // no need to confirm email manually
-            FirstName = "System",  // just labels so we know this is Admin
+            EmailConfirmed = true,     // skip email confirmation for this seed account
+            FirstName = "System",
             LastName = "Admin",
-            UserKind = UserKind.Admin,
-            MustSetPassword = false // admin doesn’t have to reset on first login
+            UserKind = UserKind.Admin, // your custom enum or field that marks this as an Admin
+            MustSetPassword = false    // do not force a reset on first login
         };
-        // Hash the password before saving (never store plain text passwords!)
+
+        // Hash the password before seeding (never store plain text)
         admin.PasswordHash = hasher.HashPassword(admin, "Admin@123");
+
+        // Save the user into the Identity users table
         modelBuilder.Entity<AvondaleCollegeClinicUser>().HasData(admin);
 
-        // Finally, link the Admin user to the Admin role
-        // so this account actually has permission to act as Admin
+        // Give the Admin user the Admin role by inserting into the join table
         modelBuilder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
         {
             RoleId = ADMIN_ROLE_ID,
             UserId = ADMIN_USER_ID
         });
 
+        // SEEDED DATE FOR ALL MODELS
         modelBuilder.Entity<Student>().HasData(
             new Student { StudentID = "ac250001", FirstName = "Sam", LastName = "Hill", ImagePath = "/images/students/1.jpg", DOB = new DateTime(2007, 10, 14), Email = "sam.hill@school.com", HomeroomID = "hr250001" },
             new Student { StudentID = "ac250002", FirstName = "Lily", LastName = "Evans", ImagePath = "/images/students/1.jpg", DOB = new DateTime(2008, 12, 26), Email = "lily.evans@school.com", HomeroomID = "hr250003" },

@@ -185,7 +185,7 @@ namespace AvondaleCollegeClinic.Controllers
         {
             if (id != form.TeacherID) return NotFound();
 
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 var teacher = await _context.Teachers.FirstOrDefaultAsync(t => t.TeacherID == id);
                 if (teacher == null) return NotFound();

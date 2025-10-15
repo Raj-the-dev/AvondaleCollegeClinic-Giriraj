@@ -20,9 +20,10 @@ namespace AvondaleCollegeClinic.Controllers
             _context = context;
         }
 
-        // -----------------------------
+
         // Helpers
-        // -----------------------------
+        // Build the Teacher dropdown list once in one place.
+        // We show "FirstName LastName" but keep the real value as TeacherID.
         private SelectList BuildTeacherSelectList(string? selected = null)
         {
             var teachers = _context.Teachers
@@ -37,6 +38,9 @@ namespace AvondaleCollegeClinic.Controllers
             return new SelectList(teachers, "TeacherID", "FullName", selected);
         }
 
+        // Make a new HomeroomID based on the current year and a running number.
+        // Example: hr250001 for the first homeroom in 2025.
+        // lastIdForYear is the latest id we already have for this year.
         private static string GenerateHomeroomId(string? lastIdForYear)
         {
             string yy = DateTime.Now.Year.ToString().Substring(2); // "25" for 2025
@@ -44,18 +48,18 @@ namespace AvondaleCollegeClinic.Controllers
 
             if (!string.IsNullOrEmpty(lastIdForYear))
             {
-                // lastId is like "hr250012"
-                // index 0..1 = "hr", 2..3 = "yy", number starts at index 4
+                // lastId looks like "hr250012"
+                // "hr" = 0..1, "yy" = 2..3, number starts at 4
                 int.TryParse(lastIdForYear.Substring(4), out next);
-                next++;
+                next++; // move to next number
             }
 
             return $"hr{yy}{next:D4}";
         }
 
-        // -----------------------------
+
         // Index
-        // -----------------------------
+
         [Authorize(Roles = "Admin,Teacher,Doctor,Caregiver,Student")]
         public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
@@ -99,9 +103,9 @@ namespace AvondaleCollegeClinic.Controllers
             return View(await PaginatedList<Homeroom>.CreateAsync(query, pageNumber ?? 1, pageSize));
         }
 
-        // -----------------------------
+
         // Details
-        // -----------------------------
+
         [Authorize(Roles = "Admin,Teacher")]
         public async Task<IActionResult> Details(string id)
         {
@@ -116,9 +120,9 @@ namespace AvondaleCollegeClinic.Controllers
             return View(homeroom);
         }
 
-        // -----------------------------
+
         // Create (GET)
-        // -----------------------------
+
         [Authorize(Roles = "Admin,Teacher")]
         public IActionResult Create()
         {
@@ -126,9 +130,9 @@ namespace AvondaleCollegeClinic.Controllers
             return View();
         }
 
-        // -----------------------------
+
         // Create (POST)
-        // -----------------------------
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Teacher")]
@@ -161,9 +165,9 @@ namespace AvondaleCollegeClinic.Controllers
             return View(homeroom);
         }
 
-        // -----------------------------
+
         // Edit (GET)
-        // -----------------------------
+
         [Authorize(Roles = "Admin,Teacher")]
         public async Task<IActionResult> Edit(string id)
         {
@@ -176,9 +180,9 @@ namespace AvondaleCollegeClinic.Controllers
             return View(homeroom);
         }
 
-        // -----------------------------
+
         // Edit (POST)
-        // -----------------------------
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Teacher")]
@@ -206,9 +210,9 @@ namespace AvondaleCollegeClinic.Controllers
             return View(homeroom);
         }
 
-        // -----------------------------
+
         // Delete (GET/POST)
-        // -----------------------------
+
         [Authorize(Roles = "Admin,Teacher")]
         public async Task<IActionResult> Delete(string id)
         {

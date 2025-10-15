@@ -1,63 +1,73 @@
 /* =========================
    THEME (monochrome minimal)
    ========================= */
+/* These are CSS variables so we can change the whole look in one place. */
 :root {
-    --bg: #fff; /* page background */
-    --fg: #111; /* main text */
-    --muted: #6b6b6b; /* secondary text */
-    --hair: #eaeaea; /* faint lines */
-    --wrap: 1180px; /* max content width */
-    --pad: clamp(16px, 2vw, 28px); /* side gutters responsive */
-    --radius: 0; /* squared look */
+    --bg: #fff; /* page background color (white) */
+    --fg: #111; /* main text color (very dark gray) */
+    --muted: #6b6b6b; /* lighter text for hints/secondary info */
+    --hair: #eaeaea; /* super light gray for thin borders/lines */
+    --wrap: 1180px; /* max width for centered content lines */
+    --pad: clamp(16px, 2vw, 28px); /* side padding that grows with screen */
+    --radius: 0; /* corner radius = 0 for a sharp, squared style */
 }
 
+/* Basic resets so the layout is predictable across browsers */
 * {
-    box-sizing: border-box
+    box-sizing: border-box /* includes padding/border in element width */
 }
 
 html, body {
-    height: 100%
+    height: 100% /* allows full-height sections if needed */
 }
 
+/* Global body styles: simple, crisp text and neutral colors */
 body {
     margin: 0;
     background: var(--bg);
     color: var(--fg);
     font-family: ui-sans-serif,system-ui,-apple-system,Segoe UI,Inter,Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";
     line-height: 1.5;
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased; /* smoother text on WebKit */
+    text-rendering: optimizeLegibility; /* better kerning/ligatures */
 }
 
+/* Images scale down to their container, no random gaps */
 img {
     display: block;
     max-width: 100%
 }
 
+/* Links inherit text color and lose the underline for a clean look */
 a {
     color: inherit;
     text-decoration: none
 }
 
+    /* Keyboard-focus styles for accessibility (visible focus outline) */
     a:focus-visible, button:focus-visible {
         outline: 2px solid #000;
         outline-offset: 2px
     }
 
+/* A centered wrapper to keep content from stretching too wide */
 .wrap {
     max-width: var(--wrap);
     margin: 0 auto;
     padding: 0 var(--pad)
 }
 
+/* A single-pixel top border (hairline) used as a light divider */
 .hair {
     border-top: 1px solid var(--hair)
 }
 
+/* Muted text helper class */
 .muted {
     color: var(--muted)
 }
 
+/* Screen-reader-only text (visible to assistive tech, hidden visually) */
 .sr-only {
     position: absolute !important;
     width: 1px;
@@ -72,14 +82,16 @@ a {
 /* =========================
    HEADER (sticky + minimalist)
    ========================= */
+/* The header sticks to the top when scrolling */
 header {
     position: sticky;
     top: 0;
-    z-index: 50;
+    z-index: 50; /* stays above page content */
     background: var(--bg);
     border-bottom: 1px solid var(--hair);
 }
 
+/* Header row: logo on the left, nav on the right */
 .head {
     display: flex;
     align-items: center;
@@ -87,6 +99,7 @@ header {
     padding: 18px 0
 }
 
+/* Brand text style (logo or site name) */
 .brand {
     font-weight: 600;
     letter-spacing: .02em
@@ -94,9 +107,9 @@ header {
 
 /* Primary nav (desktop) */
 nav.primary ul {
-    display: flex;
-    gap: 28px;
-    list-style: none;
+    display: flex; /* horizontal list */
+    gap: 28px; /* space between items */
+    list-style: none; /* remove bullets */
     padding: 0;
     margin: 0;
     font-size: 14px;
@@ -105,9 +118,10 @@ nav.primary ul {
 }
 
 nav.primary a {
-    opacity: .85
+    opacity: .85 /* slightly faded by default */
 }
 
+    /* On hover or on current page, make links brighter + underline */
     nav.primary a:hover, nav.primary a[aria-current="page"] {
         opacity: 1;
         text-decoration: underline;
@@ -115,16 +129,18 @@ nav.primary a {
     }
 
 /* Hamburger (mobile) */
+/* This shows only on small screens (see media query below) */
 .hamburger {
     width: 42px;
     height: 42px;
-    display: none;
+    display: none; /* hidden on desktop */
     place-items: center;
     border: 1px solid var(--hair);
     background: transparent;
     border-radius: var(--radius);
 }
 
+/* Three bars inside the hamburger button */
 .bars {
     position: relative;
     width: 18px;
@@ -132,6 +148,7 @@ nav.primary a {
     background: var(--fg)
 }
 
+    /* Top and bottom bars created with pseudo-elements */
     .bars:before, .bars:after {
         content: "";
         position: absolute;
@@ -149,6 +166,7 @@ nav.primary a {
         top: 6px
     }
 
+/* When the menu is open, turn bars into an X (close icon) */
 .hamburger[aria-expanded="true"] .bars {
     background: transparent
 }
@@ -163,20 +181,20 @@ nav.primary a {
         transform: rotate(-45deg)
     }
 
-/* Fullscreen overlay menu */
+/* Fullscreen overlay menu for mobile navigation */
 .overlay {
     position: fixed;
-    inset: 0;
+    inset: 0; /* top/right/bottom/left = 0 */
     background: var(--bg);
     display: flex;
     flex-direction: column;
     padding: var(--pad);
-    opacity: 0;
-    pointer-events: none;
+    opacity: 0; /* hidden by default */
+    pointer-events: none; /* clicks go through when hidden */
     transform: translateY(8px);
     transition: opacity .18s ease,transform .18s ease;
 }
-
+    /* Adding the .open class fades and slides it in */
     .overlay.open {
         opacity: 1;
         transform: none;
@@ -193,11 +211,11 @@ nav.primary a {
     }
 
     .overlay nav a {
-        font-size: clamp(20px,4vw,32px)
+        font-size: clamp(20px,4vw,32px) /* bigger, scales on small/large screens */
     }
 
     .overlay .foot {
-        margin-top: auto;
+        margin-top: auto; /* pushes footer text to bottom of overlay */
         font-size: 14px;
         color: var(--muted)
     }
@@ -205,10 +223,12 @@ nav.primary a {
 /* =========================
    HERO (huge type, lots of air)
    ========================= */
+/* Large top section to make a strong first impression */
 .hero {
     padding: clamp(72px,16vw,168px) 0
 }
 
+/* Small label above the main heading */
 .eyebrow {
     text-transform: uppercase;
     letter-spacing: .12em;
@@ -217,15 +237,17 @@ nav.primary a {
     margin-bottom: 12px
 }
 
+/* Main page title: very large, tight line-height */
 h1 {
     margin: 0;
-    font-size: clamp(40px,8vw,110px);
+    font-size: clamp(40px,8vw,110px); /* responsive title size */
     line-height: 1.02;
     letter-spacing: -.02em;
     font-weight: 700;
-    max-width: 18ch;
+    max-width: 18ch; /* keep lines readable (18 characters wide) */
 }
 
+/* Subtitle under the H1 */
 .sub {
     margin: 18px 0 0;
     color: var(--muted);
@@ -236,17 +258,20 @@ h1 {
 /* =========================
    GRID SECTIONS (gallery-like)
    ========================= */
+/* Spacing around each section */
 section {
     padding: 90px 0
 }
 
+/* 12-column grid with tiny gaps (hairline look) */
 .grid {
     display: grid;
     gap: 2px;
-    background: var(--hair);
+    background: var(--hair); /* gap color shows through */
     grid-template-columns: repeat(12,1fr)
 }
 
+/* Each grid tile is a card */
 .tile {
     background: var(--bg);
     padding: 26px;
@@ -267,13 +292,14 @@ section {
         margin: 8px 0 0;
         color: var(--muted)
     }
-
+    /* “Go” link at the bottom-left of a tile */
     .tile .go {
         margin-top: auto;
         align-self: flex-start;
         border-bottom: 1px solid var(--fg)
     }
 
+/* Quick span helpers to control tile width on the grid */
 .span-6 {
     grid-column: span 6
 }
@@ -290,22 +316,24 @@ section {
     grid-column: span 12
 }
 
+/* On tablets/phones: switch to a 6-column grid so spans collapse nicely */
 @media (max-width:900px) {
     .grid {
         grid-template-columns: repeat(6,1fr)
     }
 
     .span-6, .span-4, .span-8, .span-12 {
-        grid-column: span 6
+        grid-column: span 6 /* each tile = full row on small screens */
     }
 }
 
 /* =========================
    BELT (thin info rows)
    ========================= */
+/* A skinny info bar used for facts/counters/filters */
 .belt {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: wrap; /* wraps on small screens */
     gap: 18px;
     align-items: center;
     justify-content: space-between;
@@ -321,7 +349,7 @@ section {
     }
 
 /* =========================
-   FOOTER (super minimal)
+   FOOTER 
    ========================= */
 footer {
     border-top: 1px solid var(--hair);
@@ -343,6 +371,7 @@ footer {
     letter-spacing: .06em
 }
 
+/* Mobile adjustments: hide desktop nav, show hamburger, stack footer */
 @media (max-width:720px) {
     nav.primary {
         display: none
@@ -358,7 +387,8 @@ footer {
     }
 }
 
-/* Optional hover dim on all tiles when one hovered (gallery feel) */
+/* Optional gallery effect: dim all tiles when hovering the grid,
+   but keep the hovered tile bright so it stands out. */
 .grid:hover .tile {
     opacity: .65
 }
@@ -370,18 +400,22 @@ footer {
 /* =========================
    FORMS (Login, First-time, Keyword)
    ========================= */
+/* Main content area spacing for form pages */
 main {
     padding: clamp(72px,10vw,140px) 0
 }
 
+/* Limit authentication forms to a comfortable width */
 form.auth {
     max-width: 560px
 }
 
+/* Basic spacing between form rows */
 .form-row {
     margin: 0 0 18px
 }
 
+/* Label styling: tiny uppercase helper text */
 label {
     display: block;
     font-size: 12px;
@@ -391,6 +425,7 @@ label {
     margin-bottom: 6px
 }
 
+/* “Underline-only” input style to match the minimal theme */
 .input-line {
     width: 100%;
     padding: 12px 0;
@@ -402,14 +437,16 @@ label {
 
     .input-line:focus {
         outline: none;
-        border-bottom-color: #000
+        border-bottom-color: #000 /* darker underline when focused */
     }
 
+/* Two inputs on one row */
 .row-split {
     display: flex;
     gap: 18px
 }
 
+/* Minimal button that inverts on hover */
 .btn {
     display: inline-block;
     border: 1px solid var(--fg);
@@ -426,11 +463,13 @@ label {
         color: #fff
     }
 
+/* Validation summary/error color */
 .error-summary {
     color: #b00020;
     margin: 0 0 12px
 }
 
+/* Extra form links (like “Forgot password?”) */
 .links {
     margin-top: 18px;
     display: flex;
@@ -438,12 +477,14 @@ label {
     flex-wrap: wrap
 }
 
+/* Tiny hint text under inputs */
 .hint {
     font-size: 12px;
     color: var(--muted);
     margin-top: 6px
 }
-/* Simple dropdown (reuses your theme) */
+
+/* Simple dropdown that reuses the site’s neutral look */
 .dropdown {
     position: relative
 }
@@ -460,7 +501,7 @@ label {
     background: var(--bg);
     border: 1px solid var(--hair);
     padding: 12px;
-    display: none;
+    display: none; /* hidden until hover */
     box-shadow: 0 8px 24px rgba(0,0,0,.04);
     z-index: 60;
 }
@@ -470,17 +511,18 @@ label {
         padding: 6px 6px;
         font-size: 14px
     }
-
+/* Show the dropdown when the parent is hovered (simple interaction) */
 .dropdown:hover .drop-panel {
     display: block
 }
 
 /* ===== CRUD PAGES (tables, forms, details) ===== */
+/* Page spacing for index/details/edit pages */
 .page {
     padding: clamp(42px,6vw,72px) 0
 }
 
-/* Toolbar: search + Create New */
+/* Toolbar above tables: search on left, “Create New” on right */
 .toolbar {
     display: flex;
     gap: 14px;
@@ -496,10 +538,10 @@ label {
     }
 
     .toolbar input[type="text"] {
-        min-width: 220px
+        min-width: 220px /* prevents the search box from getting too tiny */
     }
 
-/* Flat table styled to your theme */
+/* Flat table that matches the theme (no heavy borders) */
 .table-flat {
     width: 100%;
     border-collapse: collapse
@@ -522,13 +564,13 @@ label {
     }
 
     .table-flat tbody tr:hover {
-        background: #fafafa
+        background: #fafafa /* subtle row highlight on hover */
     }
 
     .table-flat .num, .table-flat .right {
         text-align: right
     }
-
+    /* Action links in a row (Edit/Details/Delete) */
     .table-flat .actions {
         white-space: nowrap;
         text-align: right
@@ -540,7 +582,7 @@ label {
         }
 
             .table-flat .actions a:hover {
-                border-bottom-color: var(--fg)
+                border-bottom-color: var(--fg) /* underline on hover */
             }
 
     .table-flat img.avatar {
@@ -550,8 +592,8 @@ label {
         object-fit: cover
     }
 
-/* Forms (Bootstrap-free overrides for scaffolded markup) */
-.form-control { /* make scaffolded <input class="form-control"> look like your inputs */
+/* Make Bootstrap-like .form-control inputs match our minimal style */
+.form-control { /* used by .NET scaffolding */
     width: 100%;
     padding: 12px 0;
     border: 0;
@@ -566,6 +608,7 @@ label {
         border-bottom-color: #000
     }
 
+/* Scaffolding label style to match our labels */
 .form-label {
     display: block;
     font-size: 12px;
@@ -575,21 +618,23 @@ label {
     margin-bottom: 6px
 }
 
+/* Validation text (e.g., ModelState errors) */
 .validation-summary-errors, .text-danger {
     color: #b00020;
     font-size: 14px
 }
 
+/* Buttons under forms (Save/Cancel) */
 .form-buttons {
     display: flex;
     gap: 12px;
     margin-top: 18px
 }
 
-/* Details view */
+/* Details view: description list with labels on the left */
 .desc-list {
     display: grid;
-    grid-template-columns: 220px 1fr;
+    grid-template-columns: 220px 1fr; /* label column + value column */
     gap: 10px 18px
 }
 
@@ -602,14 +647,14 @@ label {
         padding-bottom: 10px;
         border-bottom: 1px solid var(--hair)
     }
-
+/* On phones, stack the definition list vertically */
 @media (max-width:720px) {
     .desc-list {
         grid-template-columns: 1fr
     }
 }
 
-/* Helper links */
+/* Quiet link style for less-important actions */
 .link-quiet {
     opacity: .85
 }
@@ -620,7 +665,7 @@ label {
         text-underline-offset: 4px
     }
 
-/* User .grid and .tile */
+/* User .grid and .tile helpers (cards showing people) */
 .cg-portrait {
     width: 100%;
     aspect-ratio: 4/5;
@@ -634,7 +679,7 @@ label {
     width: 100%;
     aspect-ratio: 4/5;
     display: grid;
-    place-items: center;
+    place-items: center; /* centers initials perfectly */
     border: 1px solid var(--hair);
     background: #fafafa;
     color: var(--muted);
@@ -658,6 +703,7 @@ label {
     gap: 14px;
     font-size: 14px
 }
+
 /* Brand image: small, sleek, never stretched */
 .brand {
     display: flex;
@@ -665,36 +711,37 @@ label {
 }
 
 .brand-logo {
-    height: 82px; /* desktop size */
-    width: auto; /* keep aspect ratio */
-    object-fit: contain; /* no stretch, fits inside the height */
+    height: 82px; /* desktop logo height */
+    width: auto; /* keep the image’s aspect ratio */
+    object-fit: contain; /* fit inside the set height without cropping */
     display: block;
 }
-
-/* Slightly smaller on tighter screens */
+/* Smaller logo on phones */
 @media (max-width: 720px) {
     .brand-logo {
         height: 26px;
     }
 }
-
-/* Optional: reduce header padding so the logo sits tighter */
+/* Reduce spacing around the header wrapper so the logo sits tighter */
 .wrap.head {
     padding-top: 4px;
     padding-bottom: 4px;
 }
-/* Only sortable headers (those with <a> inside <th>) */
+
+/* Only make sortable table headers look clickable if they are actual links */
 .table-flat thead th > a {
-    font-weight: 700; /* bold */
-    text-decoration: none; /* no underline by default */
+    font-weight: 700; /* bold to hint interactivity */
+    text-decoration: none; /* no underline until hover */
     cursor: pointer;
 }
 
     .table-flat thead th > a:hover,
     .table-flat thead th > a:focus-visible {
-        text-decoration: underline; /* underline on hover/focus */
+        text-decoration: underline;
         text-underline-offset: 4px;
     }
+
+/* Profile detail card (for a person’s page) */
 .profile-card {
     max-width: 680px;
     margin: 0 auto;
@@ -725,7 +772,8 @@ label {
     padding: 6px 0;
     font-size: 15px;
 }
-.profile-line span:first-child {
-    font-weight: 500;
-    color: var(--muted);
-}
+
+    .profile-line span:first-child {
+        font-weight: 500;
+        color: var(--muted);
+    }

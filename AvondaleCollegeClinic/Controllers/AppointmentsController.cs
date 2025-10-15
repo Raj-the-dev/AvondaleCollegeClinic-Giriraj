@@ -2,22 +2,22 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;               
+using Microsoft.AspNetCore.Identity;                 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using AvondaleCollegeClinic.Areas.Identity.Data;
-using AvondaleCollegeClinic.Helpers;
-using AvondaleCollegeClinic.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;                
+using Microsoft.EntityFrameworkCore;                     // EF Core query extensions
+using AvondaleCollegeClinic.Areas.Identity.Data;        // Identity user type
+using AvondaleCollegeClinic.Helpers;                    // PaginatedList<T>
+using AvondaleCollegeClinic.Models;                  
 
 namespace AvondaleCollegeClinic.Controllers
 {
     [Authorize] // you must be signed in for all actions here
     public class AppointmentsController : Controller
     {
-        private readonly AvondaleCollegeClinicContext _context;
-        private readonly UserManager<AvondaleCollegeClinicUser> _users;
+        private readonly AvondaleCollegeClinicContext _context;         // EF Core DbContext
+        private readonly UserManager<AvondaleCollegeClinicUser> _users;  // Identity user service
 
         public AppointmentsController(
             AvondaleCollegeClinicContext context,
@@ -27,11 +27,11 @@ namespace AvondaleCollegeClinic.Controllers
             _users = users;
         }
 
-        // =========================
-        // Helpers to find "who am I"
-        // =========================
-
-        // If the current user is a Student, return their StudentID; otherwise null
+        // If the current user is a Student, return their StudentID; otherwise null.
+        // We match in three ways to be flexible:
+        // 1) FK link via IdentityUserId
+        // 2) Username equals StudentID (from first-time setup)
+        // 3) Email match
         private async Task<string?> GetCurrentStudentIdAsync()
         {
             var me = await _users.GetUserAsync(User);
@@ -46,7 +46,8 @@ namespace AvondaleCollegeClinic.Controllers
                 .FirstOrDefaultAsync();
         }
 
-        // If the current user is a Caregiver, return their CaregiverID; otherwise null
+        // If the current user is a Caregiver, return their CaregiverID; otherwise null.
+        // Same three matching strategies as above.
         private async Task<string?> GetCurrentCaregiverIdAsync()
         {
             var me = await _users.GetUserAsync(User);
@@ -61,26 +62,27 @@ namespace AvondaleCollegeClinic.Controllers
                 .FirstOrDefaultAsync();
         }
 
-        // Build the Student dropdown based on role:
-        // - Student sees ONLY themselves (and we lock the dropdown)
-        // - Caregiver sees ONLY their students
-        // - Admin/Doctor/Teacher see ALL students
-        // Build the Student dropdown with role-based restriction and "lock" flag
+        // Build the Student dropdown with role-based filtering.
+        // - Student role: only their own record and lock the dropdown in the view
+        // - Caregiver role: only students they are linked to (see note: this version filters only for Student role)
+        // - Others (Admin/Doctor/Teacher): all students
+        // Also sets ViewBag.LockStudent so the view can disable the select and add a hidden field.
         private async Task PopulateStudentSelectAsync(string? selectedStudentId = null)
         {
-            // Default: everyone can see all students
+            // Default query: all students, as "StudentID + FullName", sorted by name
             var studentsQuery = _context.Students
                 .Select(s => new { s.StudentID, FullName = s.FirstName + " " + s.LastName })
                 .OrderBy(s => s.FullName);
 
             bool lockStudent = false;
 
-            // If the signed-in user is a Student, restrict to themselves and lock the dropdown
+            // If the signed-in user is a Student, restrict to just themselves and lock the dropdown
             if (User.IsInRole("Student"))
             {
                 var me = await _users.GetUserAsync(User);
                 if (me != null)
                 {
+                    // We try to find the one Student row that matches this user
                     var myStudentId = await _context.Students
                         .Where(s => s.IdentityUserId == me.Id || s.Email == me.Email || s.StudentID == me.UserName)
                         .Select(s => s.StudentID)
@@ -91,7 +93,7 @@ namespace AvondaleCollegeClinic.Controllers
                         selectedStudentId ??= myStudentId;
                         lockStudent = true;
 
-                        // Only include *me* in the list
+                        // Narrow list down to just "me"
                         studentsQuery = _context.Students
                             .Where(s => s.StudentID == myStudentId)
                             .Select(s => new { s.StudentID, FullName = s.FirstName + " " + s.LastName })
@@ -100,15 +102,18 @@ namespace AvondaleCollegeClinic.Controllers
                 }
             }
 
+            // Execute the query and load the items
             var students = await studentsQuery.ToListAsync();
-            // If nothing selected yet, pick the first row (if any)
+
+            // If nothing is selected yet and we have rows, pick the first as default
             selectedStudentId ??= students.FirstOrDefault()?.StudentID;
 
+            // Pass to the view as a SelectList and a boolean flag for locking
             ViewBag.StudentID = new SelectList(students, "StudentID", "FullName", selectedStudentId);
             ViewBag.LockStudent = lockStudent; // view uses this to render a disabled select + hidden input
         }
 
-        // Build the Doctor dropdown and remember the *first* doctor's id for initial slot load
+        // Build the Doctor dropdown and store the first doctor's ID for initial slot loading in Create()
         private async Task PopulateDoctorSelectAsync(string? selectedDoctorId = null)
         {
             var doctors = await _context.Doctors
@@ -116,27 +121,28 @@ namespace AvondaleCollegeClinic.Controllers
                 .OrderBy(d => d.FullName)
                 .ToListAsync();
 
-            // If nothing selected yet, choose the first doctor (if any)
+            // Pick the first doctor if none selected yet (helps with initial slot preload)
             selectedDoctorId ??= doctors.FirstOrDefault()?.DoctorID;
 
             ViewBag.DoctorID = new SelectList(doctors, "DoctorID", "FullName", selectedDoctorId);
-
-            // This is what your Create() uses to preload slots on first render
-            ViewBag.FirstDoctorId = selectedDoctorId;
+            ViewBag.FirstDoctorId = selectedDoctorId; // used by Create() to preload slots
         }
 
-        // =========================
-        // Slot generator
-        // =========================
-        // Returns a list of SelectListItem: Value = ISO 8601 string (round-trip), Text = "h:mm tt"
-        // If editingAppointmentId is supplied, that appointment’s existing time will not be treated as "booked".
+
+        // Slot generator Build available time slots for a doctor on a given date.Returns list items where:
+        // - Value is an ISO 8601 "round-trip" string (ToString("O")) for precise server parsing later
+        // - Text is a friendly "h:mm tt" time like "9:00 AM"
+        // If editingAppointmentId is supplied, we do NOT treat that appointment's current time as "booked"
+        // so the user can keep their existing time when editing.
         private async Task<List<SelectListItem>> BuildSlotsAsync(string doctorId, DateTime date, int? editingAppointmentId = null)
         {
             var items = new List<SelectListItem>();
+
+            // Load the doctor so we can read working days, hours, and slot size
             var doctor = await _context.Doctors.FirstOrDefaultAsync(d => d.DoctorID == doctorId);
             if (doctor == null) return items;
 
-            // Simple "is this a working day?" switch on the doctor’s weekly flags
+            // Helper function that checks the doctor's weekly availability flags for a given day-of-week
             bool Works(DayOfWeek dow) => dow switch
             {
                 DayOfWeek.Monday => doctor.WorksMon,
@@ -149,42 +155,53 @@ namespace AvondaleCollegeClinic.Controllers
                 _ => false
             };
 
-            if (!Works(date.DayOfWeek)) return items; // not a working day → no slots
+            // If the doctor does not work that day, there are no slots
+            if (!Works(date.DayOfWeek)) return items;
 
-            // Make times for start/end on that date
+            // Build concrete start and end DateTimes using this specific date + doctor's daily window
             var start = date.Date.Add(doctor.DailyStartTime);
             var end = date.Date.Add(doctor.DailyEndTime);
+
+            // Pick the slot step in minutes. Fall back to 30 if misconfigured (0 or negative).
             var step = TimeSpan.FromMinutes(doctor.SlotMinutes <= 0 ? 30 : doctor.SlotMinutes);
 
-            // Find already-booked times for that doctor on that date
+            // Query all booked appointments for this doctor on that date.
+            // If we are editing, exclude the current appointment so we don't block its own time.
             var booked = await _context.Appointments
                 .Where(a => a.DoctorID == doctorId && a.AppointmentDateTime.Date == date.Date)
                 .Where(a => editingAppointmentId == null || a.AppointmentID != editingAppointmentId.Value)
                 .Select(a => a.AppointmentDateTime)
                 .ToListAsync();
+
+            // Use a HashSet for O(1) lookups during the loop below
             var bookedSet = booked.ToHashSet();
 
-            // Build available slot list
+            // Walk through the day in fixed steps and add any time that is not already booked
             for (var t = start; t < end; t = t.Add(step))
             {
                 if (!bookedSet.Contains(t))
                 {
                     items.Add(new SelectListItem
                     {
-                        Value = t.ToString("O"),     // ISO 8601 round-trip
-                        Text = t.ToString("h:mm tt")
+                        Value = t.ToString("O"),     // exact round-trip value for form POST
+                        Text = t.ToString("h:mm tt") // nice display text
                     });
                 }
             }
             return items;
         }
 
+
+        // Index (list with search + sort + pagination)
+
         public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
+            // Track current sort mode for the view
             ViewData["CurrentSort"] = sortOrder;
             ViewData["DateSortParm"] = string.IsNullOrEmpty(sortOrder) ? "date_desc" : "";
             ViewData["StatusSortParm"] = sortOrder == "Status" ? "status_desc" : "Status";
 
+            // Reset to page 1 if the user typed a new search term
             if (searchString != null)
                 pageNumber = 1;
             else
@@ -192,21 +209,20 @@ namespace AvondaleCollegeClinic.Controllers
 
             ViewData["CurrentFilter"] = searchString;
 
+            // Base query includes Student and Doctor for display
             var appointments = _context.Appointments
                 .Include(a => a.Student)
                 .Include(a => a.Doctor)
                 .AsQueryable();
 
-            // (Keep role ownership if you need it; otherwise remove this block)
-            // Example:
-            // if (User.IsInRole("Student")) { var sid = await GetCurrentStudentIdAsync(); appointments = appointments.Where(a => a.StudentID == sid); }
-
-            // ---- Search ----
+            // Search
+            // Try to interpret the search string as an AppointmentStatus
             AppointmentStatus? statusFilter = null;
             if (!string.IsNullOrWhiteSpace(searchString) &&
                 Enum.TryParse<AppointmentStatus>(searchString.Trim(), true, out var st))
                 statusFilter = st;
 
+            // Text search over student name, doctor name, and reason
             if (!string.IsNullOrWhiteSpace(searchString))
             {
                 var term = searchString.Trim();
@@ -218,10 +234,11 @@ namespace AvondaleCollegeClinic.Controllers
                     a.Reason.Contains(term));
             }
 
+            // Apply status filter if present
             if (statusFilter.HasValue)
                 appointments = appointments.Where(a => a.Status == statusFilter.Value);
 
-            // ---- Sort ----
+            // Sort
             switch (sortOrder)
             {
                 case "date_desc":
@@ -238,19 +255,20 @@ namespace AvondaleCollegeClinic.Controllers
                     break;
             }
 
+            // Pagination: fixed 5 rows per page using helper PaginatedList<T>
             int pageSize = 5;
             return View(await PaginatedList<Appointment>.CreateAsync(
                 appointments.AsNoTracking(), pageNumber ?? 1, pageSize));
         }
 
 
-        // =========================
+
         // Details
-        // =========================
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
 
+            // Load a single appointment with related Student and Doctor for display fields
             var appointment = await _context.Appointments
                 .Include(a => a.Doctor)
                 .Include(a => a.Student)
@@ -261,19 +279,19 @@ namespace AvondaleCollegeClinic.Controllers
             return View(appointment);
         }
 
-        // =========================
         // Create (GET)
-        // =========================
         [Authorize]
         public async Task<IActionResult> Create()
         {
+            // Build dropdowns
             await PopulateStudentSelectAsync();
             await PopulateDoctorSelectAsync();
 
+            // Build date options for the next 30 week days only 
             var dateOptions = Next30Weekdays();
             ViewBag.DateOptions = new SelectList(dateOptions, "Value", "Text");
 
-            // Preload slots for the first allowed date (optional but nice)
+            // Preload slots for the first doctor and first allowed date
             var firstAllowed = dateOptions.FirstOrDefault()?.Value;
             List<SelectListItem> slotItems = new();
             var defaultDoctorId = (string?)ViewBag.FirstDoctorId;
@@ -284,37 +302,38 @@ namespace AvondaleCollegeClinic.Controllers
             }
             ViewBag.Slots = new SelectList(slotItems, "Value", "Text");
 
+            // Default status = Confirmed for convenience
             return View(new Appointment { Status = AppointmentStatus.Confirmed });
         }
 
-        // =========================
         // AJAX: Get slots for doctor + date
-        // =========================
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> GetSlots(string doctorId, string date)
         {
+            // Basic input check
             if (string.IsNullOrWhiteSpace(doctorId) || string.IsNullOrWhiteSpace(date))
                 return Json(Array.Empty<object>());
 
+            // Parse date safely. If fail, return empty list
             if (!DateTime.TryParse(date, out var day))
                 return Json(Array.Empty<object>());
 
+            // Build and return a simple JSON array { value, text } for the client
             var items = await BuildSlotsAsync(doctorId, day.Date);
             var payload = items.Select(i => new { value = i.Value, text = i.Text }).ToList();
             return Json(payload);
         }
 
-        // =========================
         // Create (POST)
-        // =========================
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken] // prevents CSRF attacks on form submission
         public async Task<IActionResult> Create(
             [Bind("StudentID,DoctorID,Reason,Status")] Appointment model, // Status is posted too
             string selectedSlot,                                         // ISO string from the slot dropdown
             string selectedDate)                                         // yyyy-MM-dd from date input (for reload)
         {
+            // If the user is a Student, enforce their own StudentID and ignore any posted value
             if (User.IsInRole("Student"))
             {
                 var mySid = await GetCurrentStudentIdAsync();
@@ -322,11 +341,13 @@ namespace AvondaleCollegeClinic.Controllers
                     model.StudentID = mySid;          // ignore any posted StudentID
             }
 
+            // Only Admin / Doctor / Teacher may decide status. Others force Confirmed.
             bool canEditStatus = User.IsInRole("Admin") || User.IsInRole("Doctor") || User.IsInRole("Teacher");
             if (!canEditStatus)
             {
                 model.Status = AppointmentStatus.Confirmed; // lock status for others (incl. Caregivers)
             }
+
             // 1) Basic required checks for dropdowns and slot
             if (string.IsNullOrWhiteSpace(model.DoctorID))
                 ModelState.AddModelError("DoctorID", "Please select a doctor.");
@@ -337,7 +358,7 @@ namespace AvondaleCollegeClinic.Controllers
             if (string.IsNullOrWhiteSpace(selectedSlot))
                 ModelState.AddModelError("AppointmentDateTime", "Please pick a time slot.");
 
-            // Parse the slot string into a DateTime (it was emitted with "O" format)
+            // Parse the slot string into a DateTime (round-trip format "O")
             DateTime slotTime = default;
             if (!string.IsNullOrWhiteSpace(selectedSlot))
             {
@@ -345,18 +366,22 @@ namespace AvondaleCollegeClinic.Controllers
                     ModelState.AddModelError("AppointmentDateTime", "Invalid time slot format.");
             }
 
-            // 2) If basic validation passed, verify the slot is still available
+            // 2) Availability check and save on success.
+            // Note: this project pattern saves when ModelState is NOT valid after we re-check availability.
             if (!ModelState.IsValid)
             {
+                // Build list of valid ISO strings for the target day (prevents race conditions)
                 var available = await BuildSlotsAsync(model.DoctorID, slotTime.Date);
                 var validIsoValues = available.Select(i => i.Value).ToHashSet();
 
                 if (!validIsoValues.Contains(selectedSlot))
                 {
+                    // Slot got taken between page load and submit
                     ModelState.AddModelError("AppointmentDateTime", "That slot is no longer available. Please pick another.");
                 }
                 else
                 {
+                    // Slot still valid -> save and redirect
                     model.AppointmentDateTime = slotTime;
                     _context.Appointments.Add(model);
                     await _context.SaveChangesAsync();
@@ -364,14 +389,15 @@ namespace AvondaleCollegeClinic.Controllers
                 }
             }
 
-            // 3) If we reach here, there were errors → rebuild dropdowns & slot list so the form can re-render
-
+            // 3) If there were errors, rebuild dropdowns and slots so the form can re-render with context
             await PopulateStudentSelectAsync(model.StudentID);
             await PopulateDoctorSelectAsync(model.DoctorID);
 
+            // Keep the user’s chosen date in the date picker
             var date = string.IsNullOrWhiteSpace(selectedDate) ? DateTime.Today : DateTime.Parse(selectedDate).Date;
             ViewBag.SelectedDate = date.ToString("yyyy-MM-dd");
 
+            // Rebuild the slots for the selected doctor/date so the user can try again
             var slotItems = new List<SelectListItem>();
             if (!string.IsNullOrWhiteSpace(model.DoctorID))
                 slotItems = await BuildSlotsAsync(model.DoctorID, date);
@@ -380,15 +406,14 @@ namespace AvondaleCollegeClinic.Controllers
             return View(model);
         }
 
-        // =========================
+
         // Edit (GET)
-        // =========================
         [Authorize(Roles = "Admin,Doctor,Teacher,Student,Caregiver")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
 
-            // Load the row including navs so we can show names in the view
+            // Load the appointment with related names for display
             var appt = await _context.Appointments
                 .Include(a => a.Student)
                 .Include(a => a.Doctor)
@@ -396,9 +421,10 @@ namespace AvondaleCollegeClinic.Controllers
 
             if (appt == null) return NotFound();
 
+            // Student dropdown preselected to current
             await PopulateStudentSelectAsync(appt.StudentID);
 
-            // Build doctor dropdown (preselect current)
+            // Doctor dropdown preselected to current
             ViewBag.DoctorID = new SelectList(
                 await _context.Doctors
                     .Select(d => new { d.DoctorID, FullName = d.FirstName + " " + d.LastName })
@@ -406,17 +432,18 @@ namespace AvondaleCollegeClinic.Controllers
                     .ToListAsync(),
                 "DoctorID", "FullName", appt.DoctorID);
 
-            // Pre-select the current date
+            // Choose the currently booked date
             var chosenDate = appt.AppointmentDateTime.Date;
 
-            // Provide the date dropdown options (weekdays incl. chosenDate)
+            // Provide date options as weekdays including the chosen date
             var dateOptions = Next30WeekdaysIncluding(chosenDate);
             ViewBag.DateOptions = new SelectList(dateOptions, "Value", "Text", chosenDate.ToString("yyyy-MM-dd"));
 
-            // Build available slots for that doctor & date (allow current slot)
+            // Build available slots for that doctor and date.
+            // We pass the appointment ID so the current time is not considered "booked".
             var slots = await BuildSlotsAsync(appt.DoctorID, chosenDate, appt.AppointmentID);
 
-            // Ensure the current selected time is present
+            // Ensure current time appears in the list even if fully booked otherwise
             var currentIso = appt.AppointmentDateTime.ToString("O");
             if (!slots.Any(s => s.Value == currentIso))
             {
@@ -427,13 +454,13 @@ namespace AvondaleCollegeClinic.Controllers
                 });
             }
 
+            // Sort by time text for a friendly order and preselect current slot
             ViewBag.Slots = new SelectList(slots.OrderBy(s => s.Text), "Value", "Text", currentIso);
             return View(appt);
         }
 
-        // =========================
+
         // Edit (POST)
-        // =========================
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Doctor,Teacher,Student,Caregiver")]
@@ -445,10 +472,11 @@ namespace AvondaleCollegeClinic.Controllers
         {
             if (id != form.AppointmentID) return NotFound();
 
+            // Load the tracked entity to update
             var appt = await _context.Appointments.FirstOrDefaultAsync(a => a.AppointmentID == id);
             if (appt == null) return NotFound();
 
-            // Lock Student for Student role (ignore posted StudentID)
+            // If Student role, force the StudentID to their own ID
             if (User.IsInRole("Student"))
             {
                 var mySid = await GetCurrentStudentIdAsync();
@@ -456,20 +484,20 @@ namespace AvondaleCollegeClinic.Controllers
                     form.StudentID = mySid;
             }
 
-            // Always allow these updates:
+            // Always allow these to change
             appt.StudentID = form.StudentID;
             appt.DoctorID = form.DoctorID;
             appt.Reason = form.Reason;
 
-            // Status can ONLY be changed by Admin/Doctor/Teacher
+            // Only Admin/Doctor/Teacher can change Status. Others force Confirmed.
             bool canEditStatus = User.IsInRole("Admin") || User.IsInRole("Doctor") || User.IsInRole("Teacher");
             appt.Status = canEditStatus ? form.Status : AppointmentStatus.Confirmed;
 
-            // ---- Parse inputs safely ----
-            // Initialize to current value so it's ALWAYS assigned (fixes CS0165)
+            // Parse inputs safely Start with existing time so we always have a value
             DateTime newDateTime = appt.AppointmentDateTime;
             bool slotParsed = false;
 
+            // Parse ISO slot into DateTime with round-trip settings
             if (!string.IsNullOrWhiteSpace(selectedSlot) &&
                 DateTime.TryParse(selectedSlot, null,
                     System.Globalization.DateTimeStyles.RoundtripKind, out var parsedSlotDt))
@@ -482,7 +510,7 @@ namespace AvondaleCollegeClinic.Controllers
                 ModelState.AddModelError("AppointmentDateTime", "Please choose a valid time slot.");
             }
 
-            // Default chosenDate to the date we're aiming for; override if a valid selectedDate came in
+            // Default chosenDate to the parsed slot date; override if a valid yyyy-MM-dd was posted
             DateTime chosenDate = newDateTime.Date;
             if (!string.IsNullOrWhiteSpace(selectedDate) &&
                 DateTime.TryParseExact(selectedDate, "yyyy-MM-dd",
@@ -492,7 +520,7 @@ namespace AvondaleCollegeClinic.Controllers
                 chosenDate = parsedDate.Date;
             }
 
-            // ---- Availability check (keep your project’s inverted pattern: save when !ModelState.IsValid) ----
+            //  Availability check and save (same inverted pattern: save when !ModelState.IsValid) 
             if (!ModelState.IsValid && slotParsed)
             {
                 var available = await BuildSlotsAsync(appt.DoctorID, chosenDate, appt.AppointmentID);
@@ -501,19 +529,24 @@ namespace AvondaleCollegeClinic.Controllers
 
                 if (!availableIso.Contains(newIso))
                 {
+                    // Someone else booked it in the meantime
                     ModelState.AddModelError("AppointmentDateTime", "This time is no longer available. Please pick another slot.");
                 }
                 else
                 {
+                    // Still free -> save and go back to list
                     appt.AppointmentDateTime = newDateTime;
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
             }
 
-            // ---- Rebuild dropdowns & lists (on error) ----
+            //  Rebuild dropdowns & lists when there are validation errors
+
+            // Student dropdown
             await PopulateStudentSelectAsync(appt.StudentID);
 
+            // Doctor dropdown
             ViewBag.DoctorID = new SelectList(
                 await _context.Doctors
                     .Select(d => new { d.DoctorID, FullName = d.FirstName + " " + d.LastName })
@@ -521,11 +554,11 @@ namespace AvondaleCollegeClinic.Controllers
                     .ToListAsync(),
                 "DoctorID", "FullName", appt.DoctorID);
 
-            // Date options (weekday list including chosenDate)
+            // Date options include the chosen date
             var dateOptions = Next30WeekdaysIncluding(chosenDate);
             ViewBag.DateOptions = new SelectList(dateOptions, "Value", "Text", chosenDate.ToString("yyyy-MM-dd"));
 
-            // Slot list (include current slot if not in available list)
+            // Build slots again and ensure the current selection stays visible
             var slotsAgain = await BuildSlotsAsync(appt.DoctorID, chosenDate, appt.AppointmentID);
             var keepIso = slotParsed ? newDateTime.ToString("O") : appt.AppointmentDateTime.ToString("O");
             if (!slotsAgain.Any(s => s.Value == keepIso))
@@ -538,12 +571,8 @@ namespace AvondaleCollegeClinic.Controllers
         }
 
 
+        // Delete (GET)
 
-
-
-        // =========================
-        // Delete
-        // =========================
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null) return NotFound();
@@ -558,6 +587,7 @@ namespace AvondaleCollegeClinic.Controllers
             return View(appointment);
         }
 
+        // Actually remove the appointment after the user confirms
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -568,6 +598,8 @@ namespace AvondaleCollegeClinic.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        // Build a list of weekday dates from today to 30 days ahead.
+        // Each item has Value = yyyy-MM-dd and Text = "Mon, 01 Jan 2025".
         private static List<SelectListItem> Next30Weekdays()
         {
             var items = new List<SelectListItem>();
@@ -585,7 +617,8 @@ namespace AvondaleCollegeClinic.Controllers
             return items;
         }
 
-        // Make a weekday list starting from a given date (inclusive) for 30 days.
+        // Build a weekday list starting from a specific date (inclusive) up to 30 days from today.
+        // Useful for Edit where we want to include the already chosen date even if it is not today.
         private static List<SelectListItem> Next30WeekdaysIncluding(DateTime startInclusive)
         {
             var items = new List<SelectListItem>();

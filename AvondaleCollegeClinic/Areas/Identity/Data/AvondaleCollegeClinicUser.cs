@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Identity;
 namespace AvondaleCollegeClinic.Areas.Identity.Data
 {
     // This is the custom user class for people logging in to the clinic system
-    // It is built on top of IdentityUser so it has all the login stuff like Email and Password
+    // It is built on top of IdentityUser so it has all the login stuff like Email and Passwordd
     public class AvondaleCollegeClinicUser : IdentityUser
     {
         // First name of the user (like Student, Teacher, Doctor, or Caregiver)

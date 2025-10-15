@@ -10,7 +10,7 @@ using AvondaleCollegeClinic.Models;
 using AvondaleCollegeClinic.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-
+// Code is basic no major changes
 namespace AvondaleCollegeClinic.Controllers
 {
     [Authorize(Roles = "Admin,Student,Caregiver,Doctor")]

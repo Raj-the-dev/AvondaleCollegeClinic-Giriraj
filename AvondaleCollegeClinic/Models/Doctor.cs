@@ -1,4 +1,4 @@
-﻿using AvondaleCollegeClinic.Areas.Identity.Data;
+﻿using AvondaleCollegeClinic.Areas.Identity.Data; // Identity user type
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -25,43 +25,46 @@ namespace AvondaleCollegeClinic.Models
         [StringLength(50)]
         [RegularExpression(@"^[A-Za-z\s]+$", ErrorMessage = "Only letters and spaces are allowed.")]
         [Display(Name = "First Name")]
-        public string FirstName { get; set; } // Doctor's first name
+        public string FirstName { get; set; }
 
         [Required]
         [StringLength(50)]
         [RegularExpression(@"^[A-Za-z\s]+$", ErrorMessage = "Only letters and spaces are allowed.")]
         [Display(Name = "Last Name")]
-        public string LastName { get; set; } // Doctor's last name
+        public string LastName { get; set; }
 
-
-        // NEW: same pattern as Student
+        // Image upload pattern: file from the form is NOT stored in DB
         [Display(Name = "Upload Image")]
-        [NotMapped]
+        [NotMapped]                       // EF ignores this (no column)
         public IFormFile? ImageFile { get; set; }
 
+        // We store only the path/URL to the saved image in the DB
         [Display(Name = "Profile Image")]
         public string? ImagePath { get; set; }
 
         [Required]
         [Display(Name = "Specialization")]
-        public SpecializationType Specialization { get; set; } // Doctor's area of expertise (enum)
+        public SpecializationType Specialization { get; set; } // enum: fixed set of expertise
 
         [Required]
         [EmailAddress]
         [Display(Name = "Email Address")]
-        public string Email { get; set; } // Doctor's email address
+        public string Email { get; set; }
 
         [Required]
         [Phone]
         [Display(Name = "Phone Number")]
+        // NZ mobile shape: 02X optional separators then 3-4 digits
         [RegularExpression(@"^02\d{1}[- ]?\d{3}[- ]?\d{4}$",
-    ErrorMessage = "Please enter a valid NZ mobile number (e.g., 021-123-4567).")]
-        public string Phone { get; set; } // Contact number for the doctor
-        public string? IdentityUserId { get; set; }
+            ErrorMessage = "Please enter a valid NZ mobile number (e.g., 021-123-4567).")]
+        public string Phone { get; set; }
 
+        // Optional link to ASP.NET Identity account for this doctor
+        public string? IdentityUserId { get; set; }
         [ForeignKey("IdentityUserId")]
         public AvondaleCollegeClinicUser? AvondaleCollegeClinicUserAccount { get; set; }
 
+        // Work pattern (simple booleans for days available)
         public bool WorksMon { get; set; } = true;
         public bool WorksTue { get; set; } = true;
         public bool WorksWed { get; set; } = true;
@@ -70,17 +73,17 @@ namespace AvondaleCollegeClinic.Models
         public bool WorksSat { get; set; } = false;
         public bool WorksSun { get; set; } = false;
 
-        // Daily window (local office time)
+        // Daily clinic window (local time). Used to build bookable slots.
         [DataType(DataType.Time)]
         public TimeSpan DailyStartTime { get; set; } = new TimeSpan(9, 0, 0);
-
         [DataType(DataType.Time)]
         public TimeSpan DailyEndTime { get; set; } = new TimeSpan(17, 0, 0);
 
-        // Slot size in minutes (e.g., 30)
+        // Length of each appointment slot (minutes)
         public int SlotMinutes { get; set; } = 30;
 
-        public ICollection<Appointment> Appointments { get; set; } // Appointments assigned
-        public ICollection<MedicalRecord> MedicalRecords { get; set; } // Medical records created by this doctor
+        // Navigation: what this doctor owns/relates to
+        public ICollection<Appointment> Appointments { get; set; }
+        public ICollection<MedicalRecord> MedicalRecords { get; set; }
     }
 }
