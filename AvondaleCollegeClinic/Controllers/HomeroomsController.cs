@@ -1,13 +1,13 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AvondaleCollegeClinic.Areas.Identity.Data;
+using AvondaleCollegeClinic.Helpers;
+using AvondaleCollegeClinic.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using AvondaleCollegeClinic.Helpers;
-using AvondaleCollegeClinic.Models;
-using AvondaleCollegeClinic.Areas.Identity.Data;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace AvondaleCollegeClinic.Controllers
 {
@@ -149,23 +149,8 @@ namespace AvondaleCollegeClinic.Controllers
                     .Select(h => h.HomeroomID)
                     .FirstOrDefaultAsync();
 
-            int nextNumber = 1;
-            if (!string.IsNullOrEmpty(lastId))
-            {
-                int.TryParse(lastId.Substring(4), out nextNumber);
-                nextNumber++;
-            }
-            homeroom.HomeroomID = $"hr{year}{nextNumber:D4}";
+                homeroom.HomeroomID = GenerateHomeroomId(lastId);
 
-            // SIMPLE duplicate check: one homeroom per teacher
-            bool teacherAlreadyHasHomeroom =
-                await _context.Homerooms.AnyAsync(h => h.TeacherID == homeroom.TeacherID);
-
-            if (teacherAlreadyHasHomeroom)
-                ModelState.AddModelError("TeacherID", "This teacher already has a homeroom.");
-
-            if (ModelState.IsValid)
-            {
                 _context.Homerooms.Add(homeroom);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -208,16 +193,10 @@ namespace AvondaleCollegeClinic.Controllers
             if (teacherHasAnother)
                 ModelState.AddModelError("TeacherID", "This teacher already has a homeroom.");
 
-            // (optional) prevent duplicate class tuple on other rows
-            // bool duplicateClass = await _context.Homerooms.AnyAsync(h =>
-            //     h.HomeroomID != homeroom.HomeroomID &&
-            //     h.YearLevel == homeroom.YearLevel && h.Block == homeroom.Block && h.ClassNumber == homeroom.ClassNumber);
-            // if (duplicateClass)
-            //     ModelState.AddModelError("ClassNumber", "That class already exists for this year/block.");
-
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                _context.Entry(homeroom).State = EntityState.Modified; // straightforward update
+                // Straightforward update
+                _context.Entry(homeroom).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
