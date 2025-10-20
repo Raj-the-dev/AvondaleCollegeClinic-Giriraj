@@ -208,7 +208,6 @@ namespace AvondaleCollegeClinic.Controllers
                 .Include(a => a.Doctor)
                 .AsQueryable();
 
-            // >>> OWNERSHIP FILTER — put this back <<<
             if (User.IsInRole("Student"))
             {
                 var sid = await GetCurrentStudentIdAsync();
@@ -227,40 +226,47 @@ namespace AvondaleCollegeClinic.Controllers
             {
                 return Forbid();
             }
-            // <<< END OWNERSHIP FILTER >>>
 
-            // Search by names, reason, or status
+
             if (!string.IsNullOrWhiteSpace(searchString))
             {
-                var term = $"%{searchString.Trim()}%";
-                query = query.Where(a =>
-                    EF.Functions.Like(a.Student.FirstName, term) ||
-                    EF.Functions.Like(a.Student.LastName, term) ||
-                    EF.Functions.Like(a.Doctor.FirstName, term) ||
-                    EF.Functions.Like(a.Doctor.LastName, term) ||
-                    EF.Functions.Like(a.Reason, term) ||
-                    EF.Functions.Like(a.Status.ToString(), term));
+                var term = searchString.Trim().ToLower();
+
+                var results = await query
+                    .Include(a => a.Student)
+                    .Include(a => a.Doctor)
+                    .AsNoTracking()
+                    .ToListAsync(); // Bring all records into memory
+
+                results = results.Where(a =>
+                    a.Student.FirstName.ToLower().Contains(term) ||
+                    a.Student.LastName.ToLower().Contains(term) ||
+                    a.Doctor.FirstName.ToLower().Contains(term) ||
+                    a.Doctor.LastName.ToLower().Contains(term) ||
+                    a.Reason.ToLower().Contains(term) ||
+                    a.Status.ToString().ToLower().Contains(term)
+                ).ToList();
+
+                // Apply pagination here
+                const int pageSize = 5;
+                int page = pageNumber ?? 1;
+                return View(new PaginatedList<Appointment>(results.Skip((page - 1) * pageSize).Take(pageSize).ToList(), results.Count, page, pageSize));
             }
-
-            // Sort
-            query = sortOrder switch
+            else
             {
-                "date_desc" => query.OrderByDescending(a => a.AppointmentDateTime),
-                "Status" => query.OrderBy(a => a.Status),
-                "status_desc" => query.OrderByDescending(a => a.Status),
-                _ => query.OrderBy(a => a.AppointmentDateTime)
-            };
+                // If no search, fetch paginated list directly from DB
+                query = query
+                    .Include(a => a.Student)
+                    .Include(a => a.Doctor)
+                    .OrderBy(a => a.AppointmentDateTime);
 
-            // Paging
-            const int pageSize = 5;
-            int page = pageNumber ?? 1;
-            var total = await query.CountAsync();
-            var rows = await query.AsNoTracking()
-                                  .Skip((page - 1) * pageSize)
-                                  .Take(pageSize)
-                                  .ToListAsync();
+                const int pageSize = 5;
+                int page = pageNumber ?? 1;
+                var total = await query.CountAsync();
+                var rows = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
 
-            return View(new PaginatedList<Appointment>(rows, total, page, pageSize));
+                return View(new PaginatedList<Appointment>(rows, total, page, pageSize));
+            }
         }
 
 
