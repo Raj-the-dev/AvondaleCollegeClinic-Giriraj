@@ -194,7 +194,7 @@ namespace AvondaleCollegeClinic.Controllers
                 doctor.LastName = form.LastName;
                 doctor.Specialization = form.Specialization;
                 doctor.Email = form.Email;
-                doctor.Phone = form.Phone;
+
 
                 // Unique email check excluding this record
                 bool emailInUse = await _context.Doctors

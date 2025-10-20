@@ -192,73 +192,75 @@ namespace AvondaleCollegeClinic.Controllers
         }
 
 
-        // Index (list with search + sort + pagination)
-
         public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
-            // Track current sort mode for the view
             ViewData["CurrentSort"] = sortOrder;
             ViewData["DateSortParm"] = string.IsNullOrEmpty(sortOrder) ? "date_desc" : "";
             ViewData["StatusSortParm"] = sortOrder == "Status" ? "status_desc" : "Status";
 
-            // Reset to page 1 if the user typed a new search term
-            if (searchString != null)
-                pageNumber = 1;
-            else
-                searchString = currentFilter;
-
+            if (searchString != null) pageNumber = 1;
+            else searchString = currentFilter;
             ViewData["CurrentFilter"] = searchString;
 
-            // Base query includes Student and Doctor for display
-            var appointments = _context.Appointments
+            // Base query with joins so names show in the table
+            var query = _context.Appointments
                 .Include(a => a.Student)
                 .Include(a => a.Doctor)
                 .AsQueryable();
 
-            // Search
-            // Try to interpret the search string as an AppointmentStatus
-            AppointmentStatus? statusFilter = null;
-            if (!string.IsNullOrWhiteSpace(searchString) &&
-                Enum.TryParse<AppointmentStatus>(searchString.Trim(), true, out var st))
-                statusFilter = st;
+            // >>> OWNERSHIP FILTER — put this back <<<
+            if (User.IsInRole("Student"))
+            {
+                var sid = await GetCurrentStudentIdAsync();
+                query = query.Where(a => a.StudentID == sid);
+            }
+            else if (User.IsInRole("Caregiver"))
+            {
+                var cid = await GetCurrentCaregiverIdAsync();
+                query = query.Where(a => a.Student.Caregivers.Any(c => c.CaregiverID == cid));
+            }
+            else if (User.IsInRole("Admin") || User.IsInRole("Doctor") || User.IsInRole("Teacher"))
+            {
+                // see all
+            }
+            else
+            {
+                return Forbid();
+            }
+            // <<< END OWNERSHIP FILTER >>>
 
-            // Text search over student name, doctor name, and reason
+            // Search by names, reason, or status
             if (!string.IsNullOrWhiteSpace(searchString))
             {
-                var term = searchString.Trim();
-                appointments = appointments.Where(a =>
-                    a.Student.FirstName.Contains(term) ||
-                    a.Student.LastName.Contains(term) ||
-                    a.Doctor.FirstName.Contains(term) ||
-                    a.Doctor.LastName.Contains(term) ||
-                    a.Reason.Contains(term));
+                var term = $"%{searchString.Trim()}%";
+                query = query.Where(a =>
+                    EF.Functions.Like(a.Student.FirstName, term) ||
+                    EF.Functions.Like(a.Student.LastName, term) ||
+                    EF.Functions.Like(a.Doctor.FirstName, term) ||
+                    EF.Functions.Like(a.Doctor.LastName, term) ||
+                    EF.Functions.Like(a.Reason, term) ||
+                    EF.Functions.Like(a.Status.ToString(), term));
             }
-
-            // Apply status filter if present
-            if (statusFilter.HasValue)
-                appointments = appointments.Where(a => a.Status == statusFilter.Value);
 
             // Sort
-            switch (sortOrder)
+            query = sortOrder switch
             {
-                case "date_desc":
-                    appointments = appointments.OrderByDescending(a => a.AppointmentDateTime);
-                    break;
-                case "Status":
-                    appointments = appointments.OrderBy(a => a.Status);
-                    break;
-                case "status_desc":
-                    appointments = appointments.OrderByDescending(a => a.Status);
-                    break;
-                default:
-                    appointments = appointments.OrderBy(a => a.AppointmentDateTime);
-                    break;
-            }
+                "date_desc" => query.OrderByDescending(a => a.AppointmentDateTime),
+                "Status" => query.OrderBy(a => a.Status),
+                "status_desc" => query.OrderByDescending(a => a.Status),
+                _ => query.OrderBy(a => a.AppointmentDateTime)
+            };
 
-            // Pagination: fixed 5 rows per page using helper PaginatedList<T>
-            int pageSize = 5;
-            return View(await PaginatedList<Appointment>.CreateAsync(
-                appointments.AsNoTracking(), pageNumber ?? 1, pageSize));
+            // Paging
+            const int pageSize = 5;
+            int page = pageNumber ?? 1;
+            var total = await query.CountAsync();
+            var rows = await query.AsNoTracking()
+                                  .Skip((page - 1) * pageSize)
+                                  .Take(pageSize)
+                                  .ToListAsync();
+
+            return View(new PaginatedList<Appointment>(rows, total, page, pageSize));
         }
 
 

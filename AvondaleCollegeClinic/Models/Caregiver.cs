@@ -59,13 +59,9 @@ namespace AvondaleCollegeClinic.Models
 
         [Required]
         [EmailAddress] // built-in email format check (basic but helpful)
+        [StringLength(50)]
         public string Email { get; set; }
 
-        [Required]
-        [Phone] // basic phone pattern (loose)
-        [RegularExpression(@"^02\d{1}[- ]?\d{3}[- ]?\d{4}$",
-            ErrorMessage = "Please enter a valid NZ mobile number (e.g., 021-123-4567).")]
-        public string Phone { get; set; }
 
         [Required]
         [Display(Name = "Relationship to Student")]

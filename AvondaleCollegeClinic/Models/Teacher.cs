@@ -34,6 +34,7 @@ namespace AvondaleCollegeClinic.Models
 
         [Required]
         [EmailAddress]
+        [StringLength(50)]
         public string Email { get; set; }
 
         // A short code the user types in (e.g., used for joining a homeroom)

@@ -48,16 +48,11 @@ namespace AvondaleCollegeClinic.Models
 
         [Required]
         [EmailAddress]
+        [StringLength(50)]
         [Display(Name = "Email Address")]
         public string Email { get; set; }
 
-        [Required]
-        [Phone]
-        [Display(Name = "Phone Number")]
-        // NZ mobile shape: 02X optional separators then 3-4 digits
-        [RegularExpression(@"^02\d{1}[- ]?\d{3}[- ]?\d{4}$",
-            ErrorMessage = "Please enter a valid NZ mobile number (e.g., 021-123-4567).")]
-        public string Phone { get; set; }
+
 
         // Optional link to ASP.NET Identity account for this doctor
         public string? IdentityUserId { get; set; }

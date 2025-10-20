@@ -215,7 +215,7 @@ namespace AvondaleCollegeClinic.Controllers
                 caregiver.LastName = form.LastName;
                 caregiver.DOB = form.DOB;
                 caregiver.Email = form.Email;
-                caregiver.Phone = form.Phone;
+
                 caregiver.Relationship = form.Relationship;
 
                 // Unique email check excluding the current record

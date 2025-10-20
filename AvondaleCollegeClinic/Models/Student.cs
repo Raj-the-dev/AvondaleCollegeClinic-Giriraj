@@ -48,6 +48,7 @@ namespace AvondaleCollegeClinic.Models
 
         // Contact
         [Required]
+        [StringLength(50)]
         [EmailAddress]                               // built-in email format check
         public string Email { get; set; }
 

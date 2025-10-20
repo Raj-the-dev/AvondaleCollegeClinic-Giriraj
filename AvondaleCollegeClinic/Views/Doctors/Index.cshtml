@@ -48,10 +48,6 @@
                     {
                         <span> · @d.Email</span>
                     }
-                    @if (!string.IsNullOrWhiteSpace(d.Phone))
-                    {
-                        <span> · @d.Phone</span>
-                    }
                 </p>
                 <div class="cg-actions">
                     @if (User.IsInRole("Admin") || User.IsInRole("Teacher"))

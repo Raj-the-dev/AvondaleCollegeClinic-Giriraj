@@ -123,7 +123,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 LastName = "Wilson",
                 DOB = new DateTime(1980, 6, 12),
                 Email = "emma.wilson@email.com",
-                Phone = "021-123-4567",
+
                 Relationship = RelationshipType.Parent,
                 ImagePath = "/images/caregivers/1.jpeg"
             },
@@ -134,7 +134,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 LastName = "Evans",
                 DOB = new DateTime(1975, 3, 8),
                 Email = "john.evans@email.com",
-                Phone = "022-987-6543",
+
                 Relationship = RelationshipType.Parent,
                 ImagePath = "/images/caregivers/2.jpeg"
             },
@@ -145,7 +145,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 LastName = "Singh",
                 DOB = new DateTime(1985, 9, 20),
                 Email = "maya.singh@email.com",
-                Phone = "021-555-8899",
+
                 Relationship = RelationshipType.Guardian,
                 ImagePath = "/images/caregivers/3.jpeg"
             },
@@ -156,7 +156,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 LastName = "Brown",
                 DOB = new DateTime(1979, 12, 4),
                 Email = "chris.brown@email.com",
-                Phone = "021-333-2222",
+
                 Relationship = RelationshipType.Sibling,
                 ImagePath = "/images/caregivers/5.jepg.jpg"
             },
@@ -167,7 +167,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 LastName = "Nguyen",
                 DOB = new DateTime(1982, 7, 17),
                 Email = "sophie.nguyen@email.com",
-                Phone = "022-111-5555",
+
                 Relationship = RelationshipType.Parent,
                 ImagePath = "/images/caregivers/6.jpg"
             },
@@ -178,7 +178,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 LastName = "King",
                 DOB = new DateTime(1973, 11, 25),
                 Email = "liam.king@email.com",
-                Phone = "021-456-7890",
+
                 Relationship = RelationshipType.Other,
                 ImagePath = "/images/caregivers/7.jpg"
             },
@@ -189,7 +189,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 LastName = "Rao",
                 DOB = new DateTime(1988, 2, 14),
                 Email = "olivia.rao@email.com",
-                Phone = "021-999-8888",
+
                 Relationship = RelationshipType.Parent,
                 ImagePath = "/images/caregivers/8.jpg"
             },
@@ -200,7 +200,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 LastName = "Lee",
                 DOB = new DateTime(1981, 5, 5),
                 Email = "ethan.lee@email.com",
-                Phone = "022-123-9999",
+
                 Relationship = RelationshipType.Guardian,
                 ImagePath = "/images/caregivers/9.jpg"
             },
@@ -211,7 +211,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 LastName = "Taylor",
                 DOB = new DateTime(1986, 10, 30),
                 Email = "grace.taylor@email.com",
-                Phone = "021-234-5678",
+
                 Relationship = RelationshipType.Parent,
                 ImagePath = "/images/caregivers/10.jpg"
             },
@@ -222,7 +222,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 LastName = "Patel",
                 DOB = new DateTime(1977, 8, 22),
                 Email = "raj.patel@email.com",
-                Phone = "022-777-3333",
+
                 Relationship = RelationshipType.Other,
                 ImagePath = "/images/caregivers/11.jpg"
             }
@@ -236,7 +236,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 LastName = "Roberts",
                 Specialization = SpecializationType.General,
                 Email = "anna.roberts@avondaleclinic.com",
-                Phone = "021-111-2345",
+
                 ImagePath = "/images/doctors/1.jpg",
                 WorksMon = true,
                 WorksTue = true,
@@ -256,7 +256,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 LastName = "Morris",
                 Specialization = SpecializationType.Pediatric,
                 Email = "ben.morris@avondaleclinic.com",
-                Phone = "021-222-3456",
+
                 ImagePath = "/images/doctors/2.jpg",
                 WorksMon = true,
                 WorksTue = true,
@@ -276,7 +276,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 LastName = "Nguyen",
                 Specialization = SpecializationType.MentalHealth,
                 Email = "claire.nguyen@avondaleclinic.com",
-                Phone = "021-333-4567",
+
                 ImagePath = "/images/doctors/3.png",
                 WorksMon = true,
                 WorksTue = true,
@@ -296,7 +296,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 LastName = "Chen",
                 Specialization = SpecializationType.SportsMedicine,
                 Email = "david.chen@avondaleclinic.com",
-                Phone = "021-444-5678",
+
                 ImagePath = "/images/doctors/4.png",
                 WorksMon = true,
                 WorksTue = true,
@@ -316,7 +316,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 LastName = "Turner",
                 Specialization = SpecializationType.Dermatology,
                 Email = "ella.turner@avondaleclinic.com",
-                Phone = "021-555-6789",
+
                 ImagePath = "/images/doctors/5.jpg",
                 WorksMon = true,
                 WorksTue = true,
@@ -336,7 +336,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 LastName = "White",
                 Specialization = SpecializationType.General,
                 Email = "frank.white@avondaleclinic.com",
-                Phone = "021-666-7890",
+
                 ImagePath = "/images/doctors/6.png",
                 WorksMon = true,
                 WorksTue = true,
@@ -356,7 +356,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 LastName = "Lee",
                 Specialization = SpecializationType.Pediatric,
                 Email = "grace.lee@avondaleclinic.com",
-                Phone = "021-777-8901",
+
                 ImagePath = "/images/doctors/7.jpg",
                 WorksMon = true,
                 WorksTue = true,
@@ -376,7 +376,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 LastName = "Singh",
                 Specialization = SpecializationType.MentalHealth,
                 Email = "harry.singh@avondaleclinic.com",
-                Phone = "021-888-9012",
+
                 ImagePath = "/images/doctors/8.jpg",
                 WorksMon = true,
                 WorksTue = true,
@@ -396,7 +396,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 LastName = "Walker",
                 Specialization = SpecializationType.SportsMedicine,
                 Email = "isla.walker@avondaleclinic.com",
-                Phone = "021-999-0123",
+
                 ImagePath = "/images/doctors/9.jpg",
                 WorksMon = true,
                 WorksTue = true,
@@ -416,7 +416,7 @@ public class AvondaleCollegeClinicContext : IdentityDbContext<AvondaleCollegeCli
                 LastName = "Patel",
                 Specialization = SpecializationType.Dermatology,
                 Email = "jack.patel@avondaleclinic.com",
-                Phone = "021-000-1234",
+
                 ImagePath = "/images/doctors/10.jpg",
                 WorksMon = true,
                 WorksTue = true,
