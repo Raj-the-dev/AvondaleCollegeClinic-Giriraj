@@ -120,6 +120,8 @@ namespace AvondaleCollegeClinic.Controllers
             // it proceeds when ModelState is NOT valid. We keep your behavior and add comments only.
             if (!ModelState.IsValid)
             {
+                if (string.IsNullOrWhiteSpace(doctor.DoctorID))
+                    doctor.DoctorID = GenerateDoctorID();
                 // 1) Unique email check
                 if (await _context.Doctors.AnyAsync(d => d.Email == doctor.Email))
                 {

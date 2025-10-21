@@ -112,8 +112,8 @@ namespace AvondaleCollegeClinic.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("TeacherID,FirstName,LastName,Email,TeacherCode,ImageFile,ImagePath")] Teacher teacher)
         {
-            // keep your pattern: save when !ModelState.IsValid
-            if (!ModelState.IsValid)
+            // keep your pattern: save when ModelState.IsValid
+            if (ModelState.IsValid)
             {
                 // Check email
                 if (await _context.Teachers.AnyAsync(t => t.Email == teacher.Email))

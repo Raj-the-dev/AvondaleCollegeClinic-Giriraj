@@ -79,28 +79,50 @@ namespace AvondaleCollegeClinic.Controllers
                 .AsNoTracking()
                 .AsQueryable();
 
-            // Filter
             if (!string.IsNullOrWhiteSpace(searchString))
             {
                 var term = searchString.Trim().ToLower();
-                query = query.Where(h =>
+
+                // EXACTLY like appointments: pull into memory, then filter and paginate
+                var results = await query
+                    .Include(h => h.Teacher)
+                    .AsNoTracking()
+                    .ToListAsync();
+
+                results = results.Where(h =>
                     h.Teacher.FirstName.ToLower().Contains(term) ||
                     h.Teacher.LastName.ToLower().Contains(term) ||
-                    h.Block.ToString().ToLower().Contains(term));
+                    h.Block.ToString().ToLower().Contains(term)
+                ).ToList();
+
+                const int pageSize = 5;
+                int page = pageNumber ?? 1;
+
+                return View(new PaginatedList<Homeroom>(
+                    results.Skip((page - 1) * pageSize).Take(pageSize).ToList(),
+                    results.Count,
+                    page,
+                    pageSize));
             }
-
-            // Sort
-            query = sortOrder switch
+            else
             {
-                "block_desc" => query.OrderByDescending(h => h.Block),
-                "Teacher" => query.OrderBy(h => h.Teacher.LastName).ThenBy(h => h.Teacher.FirstName),
-                "teacher_desc" => query.OrderByDescending(h => h.Teacher.LastName).ThenByDescending(h => h.Teacher.FirstName),
-                _ => query.OrderBy(h => h.Block)
-            };
+                // If no search, fetch paginated list directly from DB
+                query = query
+                    .Include(h => h.Teacher)
+                    .OrderBy(h => h.Block); // default order (mirrors appointments' fixed OrderBy)
 
-            // Paging
-            const int pageSize = 5;
-            return View(await PaginatedList<Homeroom>.CreateAsync(query, pageNumber ?? 1, pageSize));
+                const int pageSize = 5;
+                int page = pageNumber ?? 1;
+
+                var total = await query.CountAsync();
+                var rows = await query
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .AsNoTracking()
+                    .ToListAsync();
+
+                return View(new PaginatedList<Homeroom>(rows, total, page, pageSize));
+            }
         }
 
 
